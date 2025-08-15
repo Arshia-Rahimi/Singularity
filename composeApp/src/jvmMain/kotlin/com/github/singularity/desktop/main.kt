@@ -1,7 +1,8 @@
-package com.github.singularity
+package com.github.singularity.desktop
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.github.singularity.common.App
 
 fun main() = application {
     Window(
