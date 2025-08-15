@@ -9,7 +9,6 @@ import org.koin.dsl.KoinConfiguration
 class SingularityApplication: Application(), KoinStartup {
 
     override fun onKoinStartup(): KoinConfiguration {
-        
+        TODO("Not yet implemented")
     }
-    
 }
