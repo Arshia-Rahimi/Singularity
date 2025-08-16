@@ -55,7 +55,7 @@ koin-android-startup = { module = "io.insert-koin:koin-androidx-startup", versio
 room = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "room" }
+sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 ## kotlinx-serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 ## kmp settings
