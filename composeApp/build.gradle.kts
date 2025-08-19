@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -9,8 +8,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    //
-    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -54,12 +51,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
-            // ktor client
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.content.negotiation)
-            implementation(libs.ktor.auth)
-            implementation(libs.ktor.serialization.json)
             // koin 
             api(libs.koin.core)
             // serialization
@@ -68,10 +59,6 @@ kotlin {
             implementation(libs.settings)
             implementation(libs.settings.coroutines)
             implementation(libs.settings.serialization)
-            // room
-//            implementaion(libs.room)
-//            implementaion(libs.room.ktx)
-//            implementaion(libs.sqlite)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
