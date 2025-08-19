@@ -1,8 +1,8 @@
-package com.github.singularity.ios
+package com.github.singularity
 
 import androidx.compose.ui.window.ComposeUIViewController
-import com.github.singularity.common.app.App
-import com.github.singularity.common.app.di.initKoin
+import com.github.singularity.app.App
+import com.github.singularity.app.di.initKoin
 
 fun MainViewController() = ComposeUIViewController(
     configure = { initKoin() },

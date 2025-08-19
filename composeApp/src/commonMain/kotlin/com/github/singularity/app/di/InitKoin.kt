@@ -1,9 +1,9 @@
-package com.github.singularity.common.app.di
+package com.github.singularity.app.di
 
 import org.koin.core.context.startKoin
 
 fun initKoin() {
     startKoin {
-        modules(modulesList)
+        modules(ModulesList)
     }
 }

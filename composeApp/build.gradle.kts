@@ -36,9 +36,6 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             // koin
-            implementation(libs.koin.android)
-            implementation(libs.koin.android.compose)
-            implementation(libs.koin.android.compose.navigation)
             implementation(libs.koin.android.startup)
         }
         commonMain.dependencies {
@@ -53,12 +50,13 @@ kotlin {
             implementation(projects.shared)
             // koin 
             api(libs.koin.core)
+            api(libs.koin.compose)
+            api(libs.koin.compose.viewmodel)
+            api(libs.koin.compose.navigation)
             // serialization
             api(libs.kotlinx.serialization.json)
-            // settings
-            implementation(libs.settings)
-            implementation(libs.settings.coroutines)
-            implementation(libs.settings.serialization)
+            // datastore
+            api(libs.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -1,4 +1,4 @@
-package com.github.singularity.common.ui.designsystem.theme
+package com.github.singularity.ui.designsystem.theme
 
 import androidx.compose.material3.Typography
 
