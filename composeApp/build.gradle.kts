@@ -118,7 +118,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.github.singularity.MainKt"
+        mainClass = "com.github.singularity.app.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
