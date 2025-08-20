@@ -1,4 +1,4 @@
-package com.github.openstream.core.common.util
+package com.github.singularity.core.common.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -18,16 +18,10 @@ sealed interface Resource<out T> {
 
 fun <T> Flow<T>.asResult(
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    caller: String? = null,
-    message: String? = null,
 ): Flow<Resource<T>> =
     map<T, Resource<T>> { Resource.Success(it) }
-        .onStart {
-            getLogger().i("Resource: $caller", "$message")
-            emit(Resource.Loading)
-        }
+        .onStart { emit(Resource.Loading) }
         .catch {
-            getLogger().e("Resource: $caller", "resource error", it)
             coroutineContext.ensureActive()
             emit(Resource.Error(it))
         }.flowOn(dispatcher)

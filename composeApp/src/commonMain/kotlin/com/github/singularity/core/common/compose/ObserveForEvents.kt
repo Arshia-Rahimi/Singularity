@@ -1,4 +1,4 @@
-package com.github.openstream.core.common.compose
+package com.github.singularity.core.common.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

@@ -1,4 +1,4 @@
-package com.github.openstream.core.common.compose
+package com.github.singularity.core.common.compose
 
 import androidx.compose.material3.SnackbarDuration
 import kotlinx.coroutines.channels.Channel

@@ -28,8 +28,8 @@ kotlin {
             isStatic = true
         }
     }
-    
-    jvm()
+
+    jvm("desktop")
     
     sourceSets {
         androidMain.dependencies {

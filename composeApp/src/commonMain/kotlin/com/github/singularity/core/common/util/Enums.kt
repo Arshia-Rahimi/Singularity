@@ -1,4 +1,4 @@
-package com.github.openstream.core.common.util
+package com.github.singularity.core.common.util
 
 inline fun <reified T : Enum<T>> T.next(): T {
     val values = enumValues<T>()
