@@ -5,15 +5,12 @@ import androidx.compose.ui.window.application
 import com.github.singularity.app.App
 import com.github.singularity.app.di.initKoin
 
-fun main() {
+fun main() = application {
     initKoin()
-
-    application {
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "Singularity",
-        ) {
-            App()
-        }
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Singularity",
+    ) {
+        App()
     }
 }
