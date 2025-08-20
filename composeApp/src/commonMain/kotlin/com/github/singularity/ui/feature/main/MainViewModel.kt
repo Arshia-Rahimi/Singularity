@@ -6,7 +6,6 @@ import com.github.singularity.core.common.util.next
 import com.github.singularity.core.data.SettingsRepository
 import com.github.singularity.core.shared.AppTheme
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -21,7 +20,7 @@ class MainViewModel(
 
     fun toggleTheme() {
         viewModelScope.launch {
-            settingsRepo.setAppTheme(appTheme.first().next())
+            settingsRepo.setAppTheme(appTheme.value.next())
         }
     }
 }
