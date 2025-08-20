@@ -1,4 +1,4 @@
-package com.github.singularity.app
+package com.github.singularity.app.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class MainViewModel(
+class NavigationViewModel(
     settingsRepo: SettingsRepository,
 ) : ViewModel() {
 
