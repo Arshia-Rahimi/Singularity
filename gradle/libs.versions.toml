@@ -20,6 +20,7 @@ ksp = "2.2.10-2.0.2"
 serialization-json = "1.9.0"
 koin = "4.1.0"
 datastore = "1.1.7"
+appDirs = "1.4.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -53,6 +54,8 @@ koin-android-startup = { module = "io.insert-koin:koin-androidx-startup", versio
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 ## datastore
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+## appdirs
+appdirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
