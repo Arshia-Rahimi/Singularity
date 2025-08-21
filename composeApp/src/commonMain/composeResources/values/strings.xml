@@ -1,0 +1,7 @@
+<resources>
+    <string name="singularity">Singularity</string>
+    <string name="singularity_lower">singularity</string>
+    <string name="light">light</string>
+    <string name="dark">dark</string>
+    <string name="follow_system">follow system</string>
+</resources>
