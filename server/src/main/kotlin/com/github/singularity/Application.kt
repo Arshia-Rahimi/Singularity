@@ -1,4 +1,4 @@
-package com.github.singularity.server
+package com.github.singularity
 
 import com.github.singularity.shared.SERVER_PORT
 import io.ktor.server.application.Application

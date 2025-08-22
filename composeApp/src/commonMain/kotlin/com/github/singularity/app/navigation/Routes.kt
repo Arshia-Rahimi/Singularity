@@ -3,4 +3,13 @@ package com.github.singularity.app.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object MainRoute
+sealed interface Route {
+
+    @Serializable
+    object Main : Route
+
+    @Serializable
+    object Discover : Route
+
+}
+

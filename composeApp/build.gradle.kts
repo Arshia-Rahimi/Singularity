@@ -17,7 +17,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -39,7 +39,6 @@ kotlin {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
-                // koin
                 implementation(libs.koin.android.startup)
             }
         }
@@ -54,15 +53,13 @@ kotlin {
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(projects.shared)
-                // koin 
-                api(libs.koin.core)
-                api(libs.koin.compose)
-                api(libs.koin.compose.viewmodel)
-                api(libs.koin.compose.navigation)
-                // serialization
-                api(libs.kotlinx.serialization.json)
-                // datastore
-                api(libs.datastore.preferences)
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
+                implementation(libs.koin.compose.navigation)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.datastore.preferences)
+                implementation(libs.dns.sd)
             }
         }
         val commonTest by getting {
@@ -109,13 +106,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 }
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    coreLibraryDesugaring(libs.desugaring)
 }
 
 compose.desktop {

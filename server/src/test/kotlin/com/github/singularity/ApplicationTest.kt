@@ -1,6 +1,5 @@
 package com.github.singularity
 
-import com.github.singularity.server.module
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*

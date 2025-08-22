@@ -1,4 +1,4 @@
-package com.github.singularity
+package com.github.singularity.core.app
 
 import androidx.compose.ui.window.ComposeUIViewController
 import com.github.singularity.app.App

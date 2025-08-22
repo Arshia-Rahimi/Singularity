@@ -3,6 +3,7 @@ package com.github.singularity.app.di
 import com.github.singularity.app.navigation.NavigationViewModel
 import com.github.singularity.core.data.di.DataModule
 import com.github.singularity.core.datastore.di.DataStoreModule
+import com.github.singularity.core.mdns.di.MdnsModule
 import com.github.singularity.ui.di.ViewmodelModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,4 +24,5 @@ val ModulesList: List<Module> = listOf(
     ViewmodelModule,
     DataModule,
     DataStoreModule,
+    MdnsModule,
 )
