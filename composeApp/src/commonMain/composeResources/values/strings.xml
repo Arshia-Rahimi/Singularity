@@ -4,4 +4,6 @@
     <string name="light">light</string>
     <string name="dark">dark</string>
     <string name="follow_system">follow system</string>
+    <string name="discover">Discover</string>
+    <string name="back">back</string>
 </resources>

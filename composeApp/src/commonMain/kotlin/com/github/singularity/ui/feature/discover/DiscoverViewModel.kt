@@ -10,8 +10,8 @@ class DiscoverViewModel(
     val devices = deviceDiscoveryRepo.devices
 
     override fun onCleared() {
-        super.onCleared()
         deviceDiscoveryRepo.release()
+        super.onCleared()
     }
 
 }

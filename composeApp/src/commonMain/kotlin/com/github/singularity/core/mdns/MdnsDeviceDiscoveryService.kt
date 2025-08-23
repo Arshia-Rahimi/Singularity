@@ -14,11 +14,11 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 class MdnsDeviceDiscoveryService(
-    shouldBroadcastDevice: Boolean = true,
+    shouldBroadcastDevice: Boolean,
     private val scope: CoroutineScope,
     private val preferencesRepo: PreferencesRepository,
 ) : DeviceDiscoveryService {
-    
+
     override val devices = MutableStateFlow(emptyList<Device>())
 
     init {
@@ -41,11 +41,11 @@ class MdnsDeviceDiscoveryService(
             }
         }
     }
-    
+
     fun broadcastDevice() {
         scope.launch {
             val deviceId = preferencesRepo.preferences.first().deviceId.toString()
-            
+
             publishService(
                 type = MDNS_SERVICE_TYPE,
                 name = MDNS_SERVICE_NAME,
@@ -58,7 +58,7 @@ class MdnsDeviceDiscoveryService(
             }
         }
     }
-    
+
     override fun release() {
         scope.cancel()
     }
