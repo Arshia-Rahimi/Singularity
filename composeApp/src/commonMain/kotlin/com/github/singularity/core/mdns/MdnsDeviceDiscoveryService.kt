@@ -3,6 +3,7 @@ package com.github.singularity.core.mdns
 import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
 import com.appstractive.dnssd.publishService
+import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.MDNS_PORT
 import com.github.singularity.core.shared.MDNS_SERVICE_NAME
 import com.github.singularity.core.shared.MDNS_SERVICE_TYPE
@@ -10,17 +11,21 @@ import com.github.singularity.core.shared.getDeviceName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalUuidApi::class)
 class MdnsDeviceDiscoveryService(
-    shouldPublishDevice: Boolean = true,
+    shouldBroadcastDevice: Boolean = true,
     private val scope: CoroutineScope,
-) {
-
-    val devices = MutableStateFlow(emptyList<Device>())
+    private val preferencesRepo: PreferencesRepository,
+) : DeviceDiscoveryService {
+    
+    override val devices = MutableStateFlow(emptyList<Device>())
 
     init {
-        if (shouldPublishDevice) publishDevice()
+        if (shouldBroadcastDevice) broadcastDevice()
         discoverDevices()
     }
 
@@ -32,16 +37,18 @@ class MdnsDeviceDiscoveryService(
                     is DiscoveryEvent.Resolved -> devices.value += it.service.toDevice()
                     is DiscoveryEvent.Removed -> {
                         val newList = devices.value.toMutableList()
-                        newList.removeAll { d -> d.ip == it.service.addresses.first() }
+                        newList.removeAll { d -> d.deviceId == it.service.toDevice().deviceId }
                         devices.value = newList.toList()
                     }
                 }
             }
         }
     }
-
-    fun publishDevice() {
+    
+    fun broadcastDevice() {
         scope.launch {
+            val deviceId = preferencesRepo.preferences.first().deviceId.toString()
+            
             publishService(
                 type = MDNS_SERVICE_TYPE,
                 name = MDNS_SERVICE_NAME,
@@ -49,12 +56,13 @@ class MdnsDeviceDiscoveryService(
                 port = MDNS_PORT
                 txt = mapOf(
                     "deviceName" to getDeviceName(),
+                    "deviceId" to deviceId,
                 )
             }
         }
     }
-
-    fun release() {
+    
+    override fun release() {
         scope.cancel()
     }
 
