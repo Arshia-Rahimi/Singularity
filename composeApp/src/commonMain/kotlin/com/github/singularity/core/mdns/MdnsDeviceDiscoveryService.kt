@@ -4,9 +4,6 @@ import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
 import com.appstractive.dnssd.publishService
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.shared.MDNS_PORT
-import com.github.singularity.core.shared.MDNS_SERVICE_NAME
-import com.github.singularity.core.shared.MDNS_SERVICE_TYPE
 import com.github.singularity.core.shared.getDeviceName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
