@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.feature.discover.DiscoverScreen
 import com.github.singularity.ui.feature.main.MainScreen
+import com.github.singularity.ui.feature.settings.SettingsScreen
 import org.koin.compose.koinInject
 
 @Composable
@@ -30,6 +31,11 @@ fun Navigation() {
             }
             composable<Route.Discover> {
                 DiscoverScreen(
+                    navBack = navController::popBackStack,
+                )
+            }
+            composable<Route.Settings> {
+                SettingsScreen(
                     navBack = navController::popBackStack,
                 )
             }

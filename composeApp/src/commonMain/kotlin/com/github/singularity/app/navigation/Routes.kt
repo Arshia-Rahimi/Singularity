@@ -10,6 +10,9 @@ sealed interface Route {
 
     @Serializable
     object Discover : Route
+    
+    @Serializable
+    object Settings : Route
 
 }
 
