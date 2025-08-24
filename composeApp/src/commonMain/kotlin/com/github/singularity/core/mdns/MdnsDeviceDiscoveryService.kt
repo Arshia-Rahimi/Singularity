@@ -5,62 +5,49 @@ import com.appstractive.dnssd.discoverServices
 import com.appstractive.dnssd.publishService
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.getDeviceName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.singularity.core.shared.model.SyncGroup
+import com.github.singularity.core.shared.os
+import com.github.singularity.core.shared.platform
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.runningFold
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 class MdnsDeviceDiscoveryService(
-    shouldBroadcastDevice: Boolean,
-    private val scope: CoroutineScope,
     private val preferencesRepo: PreferencesRepository,
 ) : DeviceDiscoveryService {
 
-    override val devices = MutableStateFlow(emptyList<Device>())
+    override suspend fun discoverServers() = discoverServices(MDNS_SERVICE_TYPE)
+        .runningFold(mutableListOf<Server>()) { list, newServer ->
+            when (newServer) {
+                is DiscoveryEvent.Discovered -> newServer.resolve()
+                is DiscoveryEvent.Resolved -> list + newServer.service.toServer()
 
-    init {
-        if (shouldBroadcastDevice) broadcastDevice()
-        discoverDevices()
-    }
-
-    fun discoverDevices() {
-        scope.launch {
-            discoverServices(MDNS_SERVICE_TYPE).collect {
-                when (it) {
-                    is DiscoveryEvent.Discovered -> it.resolve()
-                    is DiscoveryEvent.Resolved -> devices.value += it.service.toDevice()
-                    is DiscoveryEvent.Removed -> {
-                        val newList = devices.value.toMutableList()
-                        newList.removeAll { d -> d.deviceId == it.service.toDevice().deviceId }
-                        devices.value = newList.toList()
-                    }
+                is DiscoveryEvent.Removed -> list.removeAll { item ->
+                    item.deviceId == newServer.service.toServer().deviceId
                 }
             }
+            return@runningFold list
+        }.distinctUntilChanged()
+
+    override suspend fun broadcastServer(group: SyncGroup) {
+        val deviceId = preferencesRepo.preferences.first().deviceId.toString()
+
+        publishService(
+            type = MDNS_SERVICE_TYPE,
+            name = MDNS_SERVICE_NAME,
+        ) {
+            port = MDNS_PORT
+            txt = mapOf(
+                "deviceName" to getDeviceName(),
+                "deviceId" to deviceId,
+                "devicePlatform" to platform,
+                "deviceOs" to os,
+                "syncGroupName" to group.name,
+                "syncGroupId" to group.id,
+            )
         }
-    }
-
-    fun broadcastDevice() {
-        scope.launch {
-            val deviceId = preferencesRepo.preferences.first().deviceId.toString()
-
-            publishService(
-                type = MDNS_SERVICE_TYPE,
-                name = MDNS_SERVICE_NAME,
-            ) {
-                port = MDNS_PORT
-                txt = mapOf(
-                    "deviceName" to getDeviceName(),
-                    "deviceId" to deviceId,
-                )
-            }
-        }
-    }
-
-    override fun release() {
-        scope.cancel()
     }
 
 }

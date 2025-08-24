@@ -1,3 +1,7 @@
 package com.github.singularity.core.shared
 
-actual val PLATFORM = "Android"
+import android.os.Build
+
+actual val platform = "Android"
+
+actual val os = platform + Build.VERSION.RELEASE

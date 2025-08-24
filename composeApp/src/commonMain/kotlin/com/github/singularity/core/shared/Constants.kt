@@ -1,5 +1,7 @@
 package com.github.singularity.core.shared
 
-expect val PLATFORM: String
+expect val platform: String
+
+expect val os: String
 
 const val DataStoreFileName = "singularity.preferences_pb"

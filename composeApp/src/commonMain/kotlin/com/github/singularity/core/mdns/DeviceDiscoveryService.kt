@@ -1,11 +1,12 @@
 package com.github.singularity.core.mdns
 
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.singularity.core.shared.model.SyncGroup
+import kotlinx.coroutines.flow.Flow
 
 interface DeviceDiscoveryService {
-    
-    val devices: MutableStateFlow<List<Device>>
-    
-    fun release()
+
+    suspend fun broadcastServer(group: SyncGroup)
+
+    suspend fun discoverServers(): Flow<List<Server>>
     
 }
