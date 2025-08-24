@@ -7,9 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
+import com.github.singularity.ui.feature.broadcast.BroadcastScreen
 import com.github.singularity.ui.feature.discover.DiscoverScreen
 import com.github.singularity.ui.feature.main.MainScreen
-import com.github.singularity.ui.feature.publish.PublishScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import org.koin.compose.koinInject
 
@@ -35,8 +35,8 @@ fun Navigation() {
                     navBack = navController::popBackStack,
                 )
             }
-            composable<Route.Publish> {
-                PublishScreen(
+            composable<Route.Broadcast> {
+                BroadcastScreen(
                     navBack = navController::popBackStack,
                 )
             }

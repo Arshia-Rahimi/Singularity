@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -11,9 +13,12 @@ plugins {
     // 
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
+    applyDefaultHierarchyTemplate()
+    
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -40,6 +45,12 @@ kotlin {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.koin.android.startup)
+                implementation(libs.sqldelight.driver.android)
+            }
+        }
+        val iosMain by getting {
+            dependencies {
+                implementation(libs.sqldelight.driver.native)
             }
         }
         val commonMain by getting {
@@ -60,6 +71,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.datastore.preferences)
                 implementation(libs.dns.sd)
+                implementation(libs.sqldelight.coroutines)
             }
         }
         val commonTest by getting {
@@ -71,8 +83,8 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
-                //
                 implementation(libs.appdirs)
+                implementation(libs.sqldelight.driver.sqlite)
             }
         }
     }
@@ -125,6 +137,14 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.github.singularity"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("SingularityDatabase") {
+            packageName.set("com.github.singularity.core.database.sql")
         }
     }
 }

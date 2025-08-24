@@ -1,4 +1,4 @@
-package com.github.singularity.core.mdns
+package com.github.singularity.core.discover
 
 import com.appstractive.dnssd.DiscoveredService
 

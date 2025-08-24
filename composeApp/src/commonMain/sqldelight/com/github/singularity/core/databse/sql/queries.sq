@@ -1,0 +1,19 @@
+CREATE TABLE HostedSyncGroups(
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    isDefault INTEGER NOT NULL CHECK (isDefault IN (0, 1))
+);
+
+CREATE TABLE SyncGroupNodes(
+    id TEXT PRIMARY KEY NOT NULL,
+    authToken TEXT NOT NULL,
+    hostedSyncGroupId TEXT NOT NULL,
+    FOREIGN KEY (hostedSyncGroupId) REFERENCES HostedSyncGroups(id)
+);
+
+CREATE TABLE SyncGroups(
+    id TEXT PRIMARY KEY NOT NULL,
+    isDefault INTEGER NOT NULL CHECK (isDefault IN (0, 1)),
+    name TEXT NOT NULL,
+    authToken TEXT NOT NULL
+);

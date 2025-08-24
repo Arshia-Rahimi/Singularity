@@ -2,8 +2,9 @@ package com.github.singularity.app.di
 
 import com.github.singularity.app.navigation.NavigationViewModel
 import com.github.singularity.core.data.di.DataModule
+import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.datastore.di.DataStoreModule
-import com.github.singularity.core.mdns.di.MdnsModule
+import com.github.singularity.core.discover.di.MdnsModule
 import com.github.singularity.ui.di.ViewmodelModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +15,11 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val MainModule = module {
-    factory { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
+
+factory { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
 
     viewModelOf(::NavigationViewModel)
+
 }
 
 val ModulesList: List<Module> = listOf(
@@ -25,4 +28,5 @@ val ModulesList: List<Module> = listOf(
     DataModule,
     DataStoreModule,
     MdnsModule,
+    DatabaseModule,
 )

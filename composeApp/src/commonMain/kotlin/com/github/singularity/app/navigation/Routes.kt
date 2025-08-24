@@ -12,7 +12,7 @@ sealed interface Route {
     object Discover : Route
 
     @Serializable
-    object Publish : Route
+    object Broadcast : Route
 
     @Serializable
     object Settings : Route
