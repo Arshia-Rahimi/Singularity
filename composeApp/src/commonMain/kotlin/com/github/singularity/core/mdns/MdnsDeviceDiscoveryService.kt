@@ -11,14 +11,12 @@ import com.github.singularity.core.shared.platform
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.runningFold
-import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class)
 class MdnsDeviceDiscoveryService(
     private val preferencesRepo: PreferencesRepository,
 ) : DeviceDiscoveryService {
 
-    override suspend fun discoverServers() = discoverServices(MDNS_SERVICE_TYPE)
+    override fun discoverServers() = discoverServices(MDNS_SERVICE_TYPE)
         .runningFold(mutableListOf<Server>()) { list, newServer ->
             when (newServer) {
                 is DiscoveryEvent.Discovered -> newServer.resolve()
@@ -32,7 +30,7 @@ class MdnsDeviceDiscoveryService(
         }.distinctUntilChanged()
 
     override suspend fun broadcastServer(group: SyncGroup) {
-        val deviceId = preferencesRepo.preferences.first().deviceId.toString()
+        val deviceId = preferencesRepo.preferences.first().deviceId
 
         publishService(
             type = MDNS_SERVICE_TYPE,

@@ -7,6 +7,6 @@ interface DeviceDiscoveryService {
 
     suspend fun broadcastServer(group: SyncGroup)
 
-    suspend fun discoverServers(): Flow<List<Server>>
+    fun discoverServers(): Flow<List<Server>>
     
 }

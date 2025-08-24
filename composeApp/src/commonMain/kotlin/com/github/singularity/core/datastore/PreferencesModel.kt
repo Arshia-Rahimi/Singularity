@@ -11,7 +11,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class PreferencesModel(
     val theme: AppTheme = AppTheme.System,
-    val deviceId: Uuid = Uuid.random(),
+    val deviceId: String = Uuid.random().toString(),
 )
 
 object DataStoreModelSerializer {
