@@ -2,7 +2,7 @@ package com.github.singularity.ui.feature.discover
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.core.discover.DeviceDiscoveryService
+import com.github.singularity.core.mdns.DeviceDiscoveryService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 

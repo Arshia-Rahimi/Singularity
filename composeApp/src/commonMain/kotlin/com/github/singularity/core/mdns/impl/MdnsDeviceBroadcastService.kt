@@ -1,11 +1,11 @@
-package com.github.singularity.core.discover.impl
+package com.github.singularity.core.mdns.impl
 
 import com.appstractive.dnssd.publishService
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.discover.DeviceBroadcastService
-import com.github.singularity.core.discover.MDNS_PORT
-import com.github.singularity.core.discover.MDNS_SERVICE_NAME
-import com.github.singularity.core.discover.MDNS_SERVICE_TYPE
+import com.github.singularity.core.mdns.DeviceBroadcastService
+import com.github.singularity.core.mdns.MDNS_PORT
+import com.github.singularity.core.mdns.MDNS_SERVICE_NAME
+import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.SyncGroup
 import com.github.singularity.core.shared.os

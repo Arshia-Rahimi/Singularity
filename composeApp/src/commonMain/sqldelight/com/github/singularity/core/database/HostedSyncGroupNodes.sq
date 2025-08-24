@@ -1,0 +1,14 @@
+CREATE TABLE HostedSyncGroupNodes(
+    nodeId TEXT PRIMARY KEY NOT NULL,
+    authToken TEXT NOT NULL,
+    hostedSyncGroupId TEXT NOT NULL,
+    FOREIGN KEY (hostedSyncGroupId) REFERENCES HostedSyncGroups(hostedSyncGroupId) ON DELETE CASCADE
+);
+
+insert: 
+INSERT INTO HostedSyncGroupNodes (nodeId, authToken, hostedSyncGroupId)
+    VALUES (?, ?, ?);
+
+delete: 
+DELETE FROM HostedSyncGroupNodes 
+    WHERE nodeId = ?;

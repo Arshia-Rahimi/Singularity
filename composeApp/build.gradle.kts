@@ -144,7 +144,7 @@ compose.desktop {
 sqldelight {
     databases {
         create("SingularityDatabase") {
-            packageName.set("com.github.singularity.core.database.sql")
+            packageName.set("com.github.singularity.core.database")
         }
     }
 }

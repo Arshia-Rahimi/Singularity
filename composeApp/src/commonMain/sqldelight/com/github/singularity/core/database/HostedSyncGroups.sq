@@ -1,0 +1,25 @@
+CREATE TABLE HostedSyncGroups(
+    hostedSyncGroupId TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    isDefault INTEGER NOT NULL CHECK (isDefault IN (0, 1))
+);
+
+index:
+SELECT *
+    FROM HostedSyncGroups g 
+    INNER JOIN HostedSyncGroupNodes n 
+    WHERE g.hostedSyncGroupId = n.nodeId 
+    ORDER BY g.name;
+
+insert:
+INSERT INTO HostedSyncGroups (hostedSyncGroupId, name, isDefault) 
+    VALUES (?, ?, ?);
+
+update: 
+UPDATE HostedSyncGroups 
+    SET name = ?, isDefault = ?
+     WHERE hostedSyncGroupId= ?;
+
+delete:
+DELETE FROM HostedSyncGroups 
+    WHERE hostedSyncGroupId = ?;

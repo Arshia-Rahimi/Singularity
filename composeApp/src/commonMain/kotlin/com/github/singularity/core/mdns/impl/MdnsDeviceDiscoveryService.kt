@@ -1,11 +1,11 @@
-package com.github.singularity.core.discover.impl
+package com.github.singularity.core.mdns.impl
 
 import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
-import com.github.singularity.core.discover.DeviceDiscoveryService
-import com.github.singularity.core.discover.MDNS_SERVICE_TYPE
-import com.github.singularity.core.discover.Server
-import com.github.singularity.core.discover.toServer
+import com.github.singularity.core.mdns.DeviceDiscoveryService
+import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
+import com.github.singularity.core.mdns.Server
+import com.github.singularity.core.mdns.toServer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.runningFold
 

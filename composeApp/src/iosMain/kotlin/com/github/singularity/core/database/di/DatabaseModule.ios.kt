@@ -1,11 +1,11 @@
 package com.github.singularity.core.database.di
 
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
-import com.github.singularity.core.database.sql.SingularityDatabase
-import org.koin.dsl.module
+import com.github.singularity.core.database.SingularityDatabase
+import org.koin.core.module.Module
 
-actual val DatabaseModule = module {
+actual fun Module.driver() {
     single {
-        NativeSqliteDriver(SingularityDatabase.Schema, "singularity.db")
+        SingularityDatabase(NativeSqliteDriver(SingularityDatabase.Schema, "singularity.db"))
     }
 }

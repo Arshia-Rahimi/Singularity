@@ -1,4 +1,4 @@
-package com.github.singularity.core.discover
+package com.github.singularity.core.mdns
 
 import kotlinx.coroutines.flow.Flow
 

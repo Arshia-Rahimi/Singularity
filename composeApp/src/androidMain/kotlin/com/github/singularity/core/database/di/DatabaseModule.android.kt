@@ -1,12 +1,18 @@
 package com.github.singularity.core.database.di
 
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.github.singularity.core.database.sql.SingularityDatabase
+import com.github.singularity.core.database.SingularityDatabase
 import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.module
+import org.koin.core.module.Module
 
-actual val DatabaseModule = module {
+actual fun Module.driver() {
     single {
-        AndroidSqliteDriver(SingularityDatabase.Schema, androidContext(), "singularity.db")
+        SingularityDatabase(
+            AndroidSqliteDriver(
+                SingularityDatabase.Schema,
+                androidContext(),
+                "singularity.db"
+            )
+        )
     }
 }
