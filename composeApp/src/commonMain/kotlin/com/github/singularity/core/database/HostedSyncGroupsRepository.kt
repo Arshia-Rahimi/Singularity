@@ -4,6 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.database.entities.HostedSyncGroupNode
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class HostedSyncGroupsRepository(
@@ -18,7 +19,7 @@ class HostedSyncGroupsRepository(
                 .map { (id, nodes) ->
                     val groupData = nodes.first()
                     HostedSyncGroup(
-                        id = id,
+                        hostedSyncGroupId = id,
                         name = groupData.name,
                         isDefault = groupData.isDefault == 1L,
                         nodes = nodes.map { node ->
@@ -34,7 +35,7 @@ class HostedSyncGroupsRepository(
 
     suspend fun insert(syncGroup: HostedSyncGroup) {
         db.hostedSyncGroupsQueries.insert(
-            hostedSyncGroupId = syncGroup.id,
+            hostedSyncGroupId = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
             isDefault = syncGroup.isDefault.toLong(),
         )
@@ -52,16 +53,21 @@ class HostedSyncGroupsRepository(
         db.hostedSyncGroupNodesQueries.delete(syncGroupNode.nodeId)
     }
 
-    suspend fun update(syncGroup: HostedSyncGroup) {
-        db.hostedSyncGroupsQueries.update(
-            name = syncGroup.name,
-            isDefault = syncGroup.isDefault.toLong(),
-            hostedSyncGroupId = syncGroup.id,
-        )
+    suspend fun delete(syncGroup: HostedSyncGroup) {
+        db.hostedSyncGroupsQueries.delete(syncGroup.hostedSyncGroupId)
     }
 
-    suspend fun delete(syncGroup: HostedSyncGroup) {
-        db.hostedSyncGroupsQueries.delete(syncGroup.id)
+    suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup) {
+        val groups = hostedSyncGroups.first()
+        db.joinedSyncGroupsQueries.transaction {
+            groups.forEach { group ->
+                val isDefault = group.hostedSyncGroupId == hostedSyncGroup.hostedSyncGroupId
+                db.hostedSyncGroupsQueries.updateIsDefault(
+                    hostedSyncGroupId = group.hostedSyncGroupId,
+                    isDefault = isDefault.toLong(),
+                )
+            }
+        }
     }
 
     private fun Boolean.toLong() = if (this) 1L else 0L

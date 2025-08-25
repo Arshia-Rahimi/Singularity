@@ -15,10 +15,10 @@ insert:
 INSERT INTO HostedSyncGroups (hostedSyncGroupId, name, isDefault) 
     VALUES (?, ?, ?);
 
-update: 
+updateIsDefault: 
 UPDATE HostedSyncGroups 
-    SET name = ?, isDefault = ?
-     WHERE hostedSyncGroupId= ?;
+    SET isDefault = ?
+    WHERE hostedSyncGroupId= ?;
 
 delete:
 DELETE FROM HostedSyncGroups 

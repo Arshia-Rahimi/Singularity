@@ -2,13 +2,14 @@ package com.github.singularity.core.database
 
 import app.cash.sqldelight.coroutines.asFlow
 import com.github.singularity.core.database.entities.JoinedSyncGroup
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class JoinedSyncGroupsRepository(
     private val db: SingularityDatabase,
 ) {
 
-    val joinedSyncGroup = db.joinedSyncGroupsQueries.index()
+    val joinedSyncGroups = db.joinedSyncGroupsQueries.index()
         .asFlow()
         .map { query ->
             query.executeAsList().map {
@@ -21,7 +22,7 @@ class JoinedSyncGroupsRepository(
             }
         }
 
-    suspend fun insert(joinedSyncGroup: JoinedSyncGroup) {
+    fun insert(joinedSyncGroup: JoinedSyncGroup) {
         db.joinedSyncGroupsQueries.insert(
             joinedSyncGroupId = joinedSyncGroup.joinedSyncGroupId,
             isDefault = joinedSyncGroup.isDefault.toLong(),
@@ -30,17 +31,21 @@ class JoinedSyncGroupsRepository(
         )
     }
 
-    suspend fun update(joinedSyncGroup: JoinedSyncGroup) {
-        db.joinedSyncGroupsQueries.update(
-            isDefault = joinedSyncGroup.isDefault.toLong(),
-            name = joinedSyncGroup.name,
-            authToken = joinedSyncGroup.authToken,
-            joinedSyncGroupId = joinedSyncGroup.joinedSyncGroupId,
-        )
+    fun delete(joinedSyncGroup: JoinedSyncGroup) {
+        db.joinedSyncGroupsQueries.delete(joinedSyncGroup.joinedSyncGroupId)
     }
 
-    suspend fun delete(joinedSyncGroup: JoinedSyncGroup) {
-        db.joinedSyncGroupsQueries.delete(joinedSyncGroup.joinedSyncGroupId)
+    suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup) {
+        val groups = joinedSyncGroups.first()
+        db.joinedSyncGroupsQueries.transaction {
+            groups.forEach { group ->
+                val isDefault = group.joinedSyncGroupId == joinedSyncGroup.joinedSyncGroupId
+                db.joinedSyncGroupsQueries.updateIsDefault(
+                    joinedSyncGroupId = group.joinedSyncGroupId,
+                    isDefault = isDefault.toLong(),
+                )
+            }
+        }
     }
 
     private fun Boolean.toLong() = if (this) 1L else 0L
