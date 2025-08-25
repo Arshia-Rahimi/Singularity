@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    // 
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.sqldelight)
@@ -68,7 +67,6 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.navigation)
-                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.datastore.preferences)
                 implementation(libs.dns.sd)
                 implementation(libs.sqldelight.coroutines)

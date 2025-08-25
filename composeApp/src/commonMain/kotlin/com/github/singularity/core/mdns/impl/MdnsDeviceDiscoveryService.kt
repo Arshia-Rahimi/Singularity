@@ -7,6 +7,7 @@ import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
 import com.github.singularity.core.mdns.Server
 import com.github.singularity.core.mdns.toServer
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
 
 class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
@@ -22,6 +23,6 @@ class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
                 }
             }
             return@runningFold list
-        }.distinctUntilChanged()
+        }.distinctUntilChanged().map { it.toList() }
 
 }

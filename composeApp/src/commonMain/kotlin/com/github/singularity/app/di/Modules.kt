@@ -1,6 +1,7 @@
 package com.github.singularity.app.di
 
 import com.github.singularity.app.navigation.NavigationViewModel
+import com.github.singularity.core.client.di.ClientModule
 import com.github.singularity.core.data.di.DataModule
 import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.datastore.di.DataStoreModule
@@ -29,4 +30,5 @@ val ModulesList: List<Module> = listOf(
     DataStoreModule,
     MdnsModule,
     DatabaseModule,
+    ClientModule,
 )

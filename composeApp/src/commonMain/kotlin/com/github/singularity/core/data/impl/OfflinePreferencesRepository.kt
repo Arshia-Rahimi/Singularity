@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
-class DataStorePreferencesRepository(
+class OfflinePreferencesRepository(
     scope: CoroutineScope,
     private val dataStore: DataStore<Preferences>,
 ) : PreferencesRepository {
