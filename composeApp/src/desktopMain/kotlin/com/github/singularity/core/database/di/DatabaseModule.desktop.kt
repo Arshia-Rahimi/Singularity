@@ -9,9 +9,9 @@ actual fun Module.driver() {
     single {
         SingularityDatabase(
             JdbcSqliteDriver(
-                "jdbc:sqlite:singularity.db",
-                Properties(),
-                SingularityDatabase.Schema
+                url = "jdbc:sqlite:singularity.db",
+                schema = SingularityDatabase.Schema,
+                properties = Properties().apply { put("foreign_keys", "true") },
             )
         )
     }
