@@ -9,7 +9,7 @@ interface DiscoverRepository {
 
     val discoveredServers: Flow<List<Server>>
 
-    suspend fun sendPairRequest(server: Server): Flow<Resource<Success>>
+    fun sendPairRequest(server: Server): Flow<Resource<Success>>
 
     fun release()
     

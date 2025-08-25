@@ -29,14 +29,30 @@ import singularity.composeapp.generated.resources.arrow_back
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.discover
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverScreen(
     navBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<DiscoverViewModel>()
-    val servers by viewModel.servers.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    DiscoverScreen(
+        uiState = uiState,
+        execute = {
+            when (this) {
+                is DiscoverIntent.NavBack -> navBack()
+                else -> viewModel.execute(this)
+            }
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DiscoverScreen(
+    uiState: DiscoverUiState,
+    execute: DiscoverIntent.() -> Unit,
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -44,7 +60,7 @@ fun DiscoverScreen(
                 title = { Text(Res.string.discover.getString()) },
                 navigationIcon = {
                     IconButton(
-                        onClick = navBack,
+                        onClick = { DiscoverIntent.NavBack.execute() },
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.arrow_back),
@@ -60,7 +76,7 @@ fun DiscoverScreen(
                 .padding(ip)
                 .padding(4.dp),
         ) {
-            items(servers) {
+            items(uiState.servers) {
                 Column {
                     Text(it.ip)
                     Text(it.deviceName)

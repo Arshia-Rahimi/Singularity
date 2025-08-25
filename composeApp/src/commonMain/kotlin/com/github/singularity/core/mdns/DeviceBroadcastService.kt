@@ -1,9 +1,9 @@
 package com.github.singularity.core.mdns
 
-import com.github.singularity.core.shared.model.SyncGroup
+import com.github.singularity.core.database.entities.HostedSyncGroup
 
 interface DeviceBroadcastService {
 
-    suspend fun broadcastServer(group: SyncGroup)
+    suspend fun broadcastServer(group: HostedSyncGroup)
 
 }

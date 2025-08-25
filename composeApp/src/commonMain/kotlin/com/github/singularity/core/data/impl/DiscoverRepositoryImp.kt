@@ -23,7 +23,7 @@ class DiscoverRepositoryImp(
 
     override val discoveredServers = discoveryService.discoverServers()
 
-    override suspend fun sendPairRequest(server: Server) = flow {
+    override fun sendPairRequest(server: Server) = flow {
         val httpResponse = try {
             client.sendPairRequest(server)
         } catch (_: Exception) {

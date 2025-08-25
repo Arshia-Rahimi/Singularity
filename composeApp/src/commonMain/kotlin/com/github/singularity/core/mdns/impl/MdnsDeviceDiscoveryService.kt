@@ -23,6 +23,8 @@ class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
                 }
             }
             return@runningFold list
-        }.distinctUntilChanged().map { it.toList() }
+        }
+        .map { it.toList() }
+        .distinctUntilChanged()
 
 }

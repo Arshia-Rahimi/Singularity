@@ -33,7 +33,7 @@ class HostedSyncGroupsRepository(
                 }
         }.distinctUntilChanged()
 
-    suspend fun insert(syncGroup: HostedSyncGroup) {
+    fun insert(syncGroup: HostedSyncGroup) {
         db.hostedSyncGroupsQueries.insert(
             hostedSyncGroupId = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
@@ -41,7 +41,7 @@ class HostedSyncGroupsRepository(
         )
     }
 
-    suspend fun insert(syncGroupNode: HostedSyncGroupNode) {
+    fun insert(syncGroupNode: HostedSyncGroupNode) {
         db.hostedSyncGroupNodesQueries.insert(
             nodeId = syncGroupNode.nodeId,
             authToken = syncGroupNode.authToken,
@@ -49,11 +49,11 @@ class HostedSyncGroupsRepository(
         )
     }
 
-    suspend fun delete(syncGroupNode: HostedSyncGroupNode) {
+    fun delete(syncGroupNode: HostedSyncGroupNode) {
         db.hostedSyncGroupNodesQueries.delete(syncGroupNode.nodeId)
     }
 
-    suspend fun delete(syncGroup: HostedSyncGroup) {
+    fun delete(syncGroup: HostedSyncGroup) {
         db.hostedSyncGroupsQueries.delete(syncGroup.hostedSyncGroupId)
     }
 
