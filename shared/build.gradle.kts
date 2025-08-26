@@ -23,11 +23,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.ktor.client.cio)
-            api(libs.ktor.client.core)
-            api(libs.ktor.content.negotiation)
-            api(libs.ktor.auth)
-            api(libs.ktor.serialization.json)
+            api(libs.ktor.server.cio)
+            api(libs.ktor.server.core)
+            api(libs.ktor.server.content.negotiation)
+            api(libs.ktor.server.auth)
+            api(libs.ktor.json)
+            api(libs.koin.ktor)
             api(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {

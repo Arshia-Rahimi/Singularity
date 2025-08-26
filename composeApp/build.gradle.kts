@@ -70,6 +70,10 @@ kotlin {
                 implementation(libs.datastore.preferences)
                 implementation(libs.dns.sd)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.client.auth)
             }
         }
         val commonTest by getting {

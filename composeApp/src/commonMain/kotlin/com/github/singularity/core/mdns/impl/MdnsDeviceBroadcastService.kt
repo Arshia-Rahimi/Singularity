@@ -1,10 +1,10 @@
 package com.github.singularity.core.mdns.impl
 
 import com.appstractive.dnssd.publishService
+import com.github.singularity.HTTP_SERVER_PORT
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
-import com.github.singularity.core.mdns.MDNS_PORT
 import com.github.singularity.core.mdns.MDNS_SERVICE_NAME
 import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
 import com.github.singularity.core.shared.getDeviceName
@@ -23,7 +23,7 @@ class MdnsDeviceBroadcastService(
             type = MDNS_SERVICE_TYPE,
             name = MDNS_SERVICE_NAME,
         ) {
-            port = MDNS_PORT
+            port = HTTP_SERVER_PORT
             txt = mapOf(
                 "deviceName" to getDeviceName(),
                 "deviceId" to deviceId,

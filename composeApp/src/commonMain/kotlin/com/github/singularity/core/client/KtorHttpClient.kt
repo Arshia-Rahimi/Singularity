@@ -1,6 +1,6 @@
 package com.github.singularity.core.client
 
-import com.github.singularity.core.mdns.MDNS_PORT
+import com.github.singularity.HTTP_SERVER_PORT
 import com.github.singularity.core.mdns.Server
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -17,7 +17,7 @@ class KtorHttpClient {
     }
 
     suspend fun sendPairRequest(server: Server) =
-        client.post("${server.ip}:$MDNS_PORT") {
+        client.post("${server.ip}:$HTTP_SERVER_PORT/pair") {
             // todo
         }
 
