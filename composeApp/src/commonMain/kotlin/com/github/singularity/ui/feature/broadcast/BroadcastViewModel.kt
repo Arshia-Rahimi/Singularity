@@ -2,6 +2,7 @@ package com.github.singularity.ui.feature.broadcast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.singularity.core.common.util.Resource
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.Node
@@ -48,20 +49,18 @@ class BroadcastViewModel(
 
     private fun approve(node: Node) {
         broadcastRepository.approvePairRequest(node).onEach {
-            // todo
+            if(it !is Resource.Loading) {
+                requestedNodes.value = requestedNodes.value - node
+            }
         }.launchIn(viewModelScope)
     }
 
     private fun create(groupName: String) {
-        broadcastRepository.create(HostedSyncGroup(groupName)).onEach {
-            // todo
-        }.launchIn(viewModelScope)
+        broadcastRepository.create(HostedSyncGroup(groupName)).launchIn(viewModelScope)
     }
 
     private fun delete(group: HostedSyncGroup) {
-        broadcastRepository.delete(group).onEach {
-            // todo
-        }.launchIn(viewModelScope)
+        broadcastRepository.delete(group).launchIn(viewModelScope)
     }
 
     override fun onCleared() {
