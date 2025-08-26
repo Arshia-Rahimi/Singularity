@@ -39,12 +39,18 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.testExt.junit)
+            implementation(libs.androidx.espresso.core)
+        }
         val androidMain by getting {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.koin.android.startup)
                 implementation(libs.sqldelight.driver.android)
+                implementation(libs.sqldelight.driver.android)
+                implementation(libs.junit)
             }
         }
         val iosMain by getting {
@@ -125,11 +131,16 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
     debugImplementation(compose.uiTooling)
     coreLibraryDesugaring(libs.desugaring)
+    testImplementation(libs.junit)
 }
 
 compose.desktop {
