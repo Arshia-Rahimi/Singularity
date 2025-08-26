@@ -11,9 +11,9 @@ interface BroadcastRepository {
 
     val syncGroups: SharedFlow<List<HostedSyncGroup>>
 
-    suspend fun create(group: HostedSyncGroup): Flow<Resource<Success>>
+    fun create(group: HostedSyncGroup): Flow<Resource<Success>>
 
-    suspend fun delete(group: HostedSyncGroup): Flow<Resource<Success>>
+    fun delete(group: HostedSyncGroup): Flow<Resource<Success>>
 
     fun broadcastGroup(group: HostedSyncGroup): Flow<Node>
 

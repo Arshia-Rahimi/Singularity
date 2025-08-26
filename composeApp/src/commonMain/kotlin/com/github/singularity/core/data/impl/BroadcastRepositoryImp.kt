@@ -24,12 +24,12 @@ class BroadcastRepositoryImp(
     override val syncGroups = hostedSyncGroupsRepo.hostedSyncGroups
         .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
 
-    override suspend fun create(group: HostedSyncGroup) = flow {
+    override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupsRepo.insert(group)
         emit(Success)
     }.asResult(Dispatchers.IO)
 
-    override suspend fun delete(group: HostedSyncGroup) = flow {
+    override fun delete(group: HostedSyncGroup) = flow {
         hostedSyncGroupsRepo.delete(group)
         emit(Success)
     }.asResult(Dispatchers.IO)
