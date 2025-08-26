@@ -37,7 +37,6 @@ class DiscoverRepositoryImp(
                 val newGroup = JoinedSyncGroup(
                     joinedSyncGroupId = server.syncGroupId,
                     name = server.syncGroupName,
-                    isDefault = false,
                     authToken = response.authToken ?: "",
                 )
                 joinedSyncGroupsRepo.insert(newGroup)

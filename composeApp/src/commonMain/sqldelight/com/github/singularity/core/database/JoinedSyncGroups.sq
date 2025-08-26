@@ -11,8 +11,8 @@ SELECT *
     ORDER BY name;
     
 insert:
-INSERT INTO JoinedSyncGroups (joinedSyncGroupId, isDefault, name, authToken)
-    VALUES (?, ?, ?, ?);
+INSERT INTO JoinedSyncGroups (joinedSyncGroupId, name, authToken, isDefault)
+    VALUES (?, ?, ?, 0);
     
 updateIsDefault:
 UPDATE JoinedSyncGroups 

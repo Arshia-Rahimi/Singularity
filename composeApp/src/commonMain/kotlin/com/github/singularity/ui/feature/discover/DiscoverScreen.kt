@@ -82,7 +82,7 @@ private fun DiscoverScreen(
                     Text(it.deviceName)
                     Text(it.deviceId)
                 }
-                Spacer(Modifier.fillMaxWidth().height(2.dp).background(Color.Red))
+                Spacer(Modifier.fillMaxWidth().height(2.dp).background(Color.White))
             }
         }
     }

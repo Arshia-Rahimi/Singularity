@@ -37,7 +37,6 @@ class HostedSyncGroupsRepository(
         db.hostedSyncGroupsQueries.insert(
             hostedSyncGroupId = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
-            isDefault = syncGroup.isDefault.toLong(),
         )
     }
 

@@ -25,7 +25,6 @@ class JoinedSyncGroupsRepository(
     fun insert(joinedSyncGroup: JoinedSyncGroup) {
         db.joinedSyncGroupsQueries.insert(
             joinedSyncGroupId = joinedSyncGroup.joinedSyncGroupId,
-            isDefault = joinedSyncGroup.isDefault.toLong(),
             name = joinedSyncGroup.name,
             authToken = joinedSyncGroup.authToken,
         )
