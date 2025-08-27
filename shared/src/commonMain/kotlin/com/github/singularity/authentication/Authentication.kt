@@ -11,7 +11,7 @@ fun Application.registerAuthentication() {
     install(Authentication) {
         bearer {
             authenticate {
-                authRepo.getDevice(it)
+                authRepo.getNode(it)
             }
         }
     }

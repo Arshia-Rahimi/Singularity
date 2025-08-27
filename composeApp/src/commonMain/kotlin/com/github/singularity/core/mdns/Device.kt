@@ -1,21 +1,10 @@
 package com.github.singularity.core.mdns
 
 import com.appstractive.dnssd.DiscoveredService
+import com.github.singularity.models.Device
+import kotlinx.serialization.Serializable
 
-sealed interface Device {
-    val ip: String
-    val deviceName: String
-    val deviceId: String
-    val deviceOs: String
-}
-
-class Node(
-    override val ip: String,
-    override val deviceName: String,
-    override val deviceId: String,
-    override val deviceOs: String
-) : Device
-
+@Serializable
 data class Server(
     override val ip: String,
     override val deviceName: String,
