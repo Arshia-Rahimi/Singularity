@@ -1,7 +1,7 @@
 package com.github.singularity.core.mdns
 
-import com.github.singularity.core.common.util.Resource
 import com.github.singularity.core.database.entities.JoinedSyncGroup
+import com.github.singularity.core.shared.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface DeviceDiscoveryService {

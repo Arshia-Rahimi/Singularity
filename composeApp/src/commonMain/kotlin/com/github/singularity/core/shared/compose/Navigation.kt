@@ -1,4 +1,4 @@
-package com.github.singularity.core.common.compose
+package com.github.singularity.core.shared.compose
 
 import androidx.navigation.NavController
 

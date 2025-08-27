@@ -1,13 +1,13 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.client.KtorHttpClient
-import com.github.singularity.core.common.util.Success
-import com.github.singularity.core.common.util.asResult
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.database.LocalJoinedSyncGroupsDataSource
 import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.mdns.Server
+import com.github.singularity.core.shared.util.Success
+import com.github.singularity.core.shared.util.asResult
 import com.github.singularity.models.PairRequestResponse
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode

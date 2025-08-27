@@ -2,10 +2,10 @@ package com.github.singularity.ui.feature.broadcast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.core.common.util.Resource
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.Node
+import com.github.singularity.core.shared.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

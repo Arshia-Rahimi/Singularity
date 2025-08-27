@@ -1,4 +1,4 @@
-package com.github.singularity.core.common.util
+package com.github.singularity.core.shared.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

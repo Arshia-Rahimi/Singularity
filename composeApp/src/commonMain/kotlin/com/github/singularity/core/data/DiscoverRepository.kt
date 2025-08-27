@@ -1,8 +1,8 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.common.util.Resource
-import com.github.singularity.core.common.util.Success
 import com.github.singularity.core.mdns.Server
+import com.github.singularity.core.shared.util.Resource
+import com.github.singularity.core.shared.util.Success
 import kotlinx.coroutines.flow.Flow
 
 interface DiscoverRepository {

@@ -2,9 +2,9 @@ package com.github.singularity.ui.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.core.common.util.next
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.AppTheme
+import com.github.singularity.core.shared.util.next
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map

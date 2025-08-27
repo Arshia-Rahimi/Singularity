@@ -1,4 +1,4 @@
-package com.github.singularity.core.common.util
+package com.github.singularity.core.shared.util
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
