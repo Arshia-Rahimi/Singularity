@@ -39,27 +39,9 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
-        androidInstrumentedTest.dependencies {
-            implementation(libs.androidx.testExt.junit)
-            implementation(libs.androidx.espresso.core)
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(compose.preview)
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.koin.android.startup)
-                implementation(libs.sqldelight.driver.android)
-                implementation(libs.sqldelight.driver.android)
-                implementation(libs.junit)
-            }
-        }
-        val iosMain by getting {
-            dependencies {
-                implementation(libs.sqldelight.driver.native)
-            }
-        }
         val commonMain by getting {
             dependencies {
+                implementation(projects.shared)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
@@ -68,7 +50,6 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
-                implementation(projects.shared)
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
@@ -86,6 +67,27 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+            }
+        }
+        val androidInstrumentedTest by getting {
+            dependencies {
+                implementation(libs.androidx.testExt.junit)
+                implementation(libs.androidx.espresso.core)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.koin.android.startup)
+                implementation(libs.sqldelight.driver.android)
+                implementation(libs.sqldelight.driver.android)
+                implementation(libs.junit)
+            }
+        }
+        val iosMain by getting {
+            dependencies {
+                implementation(libs.sqldelight.driver.native)
             }
         }
         val desktopMain by getting {

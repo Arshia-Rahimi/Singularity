@@ -6,6 +6,7 @@ import com.github.singularity.core.data.di.DataModule
 import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.datastore.di.DataStoreModule
 import com.github.singularity.core.mdns.di.MdnsModule
+import com.github.singularity.core.server.di.ServerModule
 import com.github.singularity.ui.di.ViewmodelModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,4 +32,5 @@ val ModulesList: List<Module> = listOf(
     MdnsModule,
     DatabaseModule,
     ClientModule,
+    ServerModule,
 )
