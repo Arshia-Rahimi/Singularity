@@ -14,5 +14,5 @@ fun main() {
 }
 
 fun Application.module() {
-    ServerModules.forEach { it() }
+    ServerModules.forEach { module -> module() }
 }
