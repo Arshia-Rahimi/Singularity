@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class HostedSyncGroupsRepository(
+class LocalHostedSyncGroupsDataSource(
     private val db: SingularityDatabase,
 ) {
 

@@ -3,7 +3,7 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.common.util.Success
 import com.github.singularity.core.common.util.asResult
 import com.github.singularity.core.data.BroadcastRepository
-import com.github.singularity.core.database.HostedSyncGroupsRepository
+import com.github.singularity.core.database.LocalHostedSyncGroupsDataSource
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.mdns.Node
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.shareIn
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
-    private val hostedSyncGroupsRepo: HostedSyncGroupsRepository,
+    private val hostedSyncGroupsRepo: LocalHostedSyncGroupsDataSource,
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 

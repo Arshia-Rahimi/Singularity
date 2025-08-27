@@ -5,7 +5,7 @@ import com.github.singularity.core.database.entities.JoinedSyncGroup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class JoinedSyncGroupsRepository(
+class LocalJoinedSyncGroupsDataSource(
     private val db: SingularityDatabase,
 ) {
 

@@ -4,7 +4,7 @@ import com.github.singularity.core.client.KtorHttpClient
 import com.github.singularity.core.common.util.Success
 import com.github.singularity.core.common.util.asResult
 import com.github.singularity.core.data.DiscoverRepository
-import com.github.singularity.core.database.JoinedSyncGroupsRepository
+import com.github.singularity.core.database.LocalJoinedSyncGroupsDataSource
 import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.mdns.Server
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flow
 
 class DiscoverRepositoryImp(
     discoveryService: DeviceDiscoveryService,
-    private val joinedSyncGroupsRepo: JoinedSyncGroupsRepository,
+    private val joinedSyncGroupsRepo: LocalJoinedSyncGroupsDataSource,
     private val client: KtorHttpClient,
 ) : DiscoverRepository {
 
