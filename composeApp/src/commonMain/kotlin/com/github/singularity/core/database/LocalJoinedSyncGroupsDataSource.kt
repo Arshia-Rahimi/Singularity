@@ -16,7 +16,7 @@ class LocalJoinedSyncGroupsDataSource(
                 JoinedSyncGroup(
                     joinedSyncGroupId = it.joinedSyncGroupId,
                     name = it.name,
-                    isDefault = it.isDefault == 1L,
+                    isDefault = it.isDefault.toBoolean(),
                     authToken = it.authToken,
                 )
             }
@@ -46,7 +46,5 @@ class LocalJoinedSyncGroupsDataSource(
             }
         }
     }
-
-    private fun Boolean.toLong() = if (this) 1L else 0L
 
 }

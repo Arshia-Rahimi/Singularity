@@ -21,7 +21,7 @@ class LocalHostedSyncGroupsDataSource(
                     HostedSyncGroup(
                         hostedSyncGroupId = id,
                         name = groupData.name,
-                        isDefault = groupData.isDefault == 1L,
+                        isDefault = groupData.isDefault.toBoolean(),
                         nodes = nodes.map { node ->
                             HostedSyncGroupNode(
                                 nodeId = node.nodeId,
@@ -68,7 +68,5 @@ class LocalHostedSyncGroupsDataSource(
             }
         }
     }
-
-    private fun Boolean.toLong() = if (this) 1L else 0L
 
 }
