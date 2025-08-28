@@ -18,7 +18,7 @@ import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.shared.compose.getString
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.default
-import singularity.composeapp.generated.resources.nodes_connected
+import singularity.composeapp.generated.resources.nodes_paired
 
 @Composable
 fun HostedSyncGroupItem(
@@ -55,7 +55,7 @@ fun HostedSyncGroupItem(
         }
 
         Text(
-            text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_connected.getString()}",
+            text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_paired.getString()}",
             fontSize = 12.sp,
         )
     }

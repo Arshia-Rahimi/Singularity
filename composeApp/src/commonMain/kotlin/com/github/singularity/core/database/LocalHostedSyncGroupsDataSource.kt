@@ -14,7 +14,6 @@ class LocalHostedSyncGroupsDataSource(
     val hostedSyncGroups = db.hostedSyncGroupsQueries.index()
         .asFlow()
         .map { query ->
-            println(query)
             query.executeAsList()
                 .groupBy { it.hosted_sync_group_id }
                 .map { (id, nodes) ->

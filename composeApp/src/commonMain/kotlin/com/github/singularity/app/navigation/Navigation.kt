@@ -1,5 +1,8 @@
 package com.github.singularity.app.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,7 +25,30 @@ fun Navigation() {
 
     SingularityTheme(theme) {
         NavHost(
-            // todo: add slide transition
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(500),
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(500),
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(500),
+                    targetOffsetX = { -it },
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(500),
+                    targetOffsetX = { it },
+                )
+            },
             navController = navController,
             startDestination = Route.Main,
         ) {

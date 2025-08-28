@@ -12,5 +12,5 @@
     <string name="create">create</string>
     <string name="cancel">cancel</string>
     <string name="default">default</string>
-    <string name="nodes_connected">nodes_connected</string>
+    <string name="nodes_paired">nodes paired</string>
 </resources>
