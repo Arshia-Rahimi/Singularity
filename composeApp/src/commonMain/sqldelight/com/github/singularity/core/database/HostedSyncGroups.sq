@@ -1,25 +1,24 @@
 CREATE TABLE HostedSyncGroups(
-    hostedSyncGroupId TEXT PRIMARY KEY NOT NULL,
+    hosted_sync_group_id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
-    isDefault INTEGER NOT NULL CHECK (isDefault IN (0, 1))
+    is_default INTEGER NOT NULL CHECK (is_default IN (0, 1))
 );
 
 index:
 SELECT *
-    FROM HostedSyncGroups g 
-    INNER JOIN HostedSyncGroupNodes n 
-    WHERE g.hostedSyncGroupId = n.nodeId 
-    ORDER BY g.name;
+    FROM HostedSyncGroups
+    LEFT JOIN HostedSyncGroupNodes ON HostedSyncGroups.hosted_sync_group_id = HostedSyncGroupNodes.hosted_sync_group_id 
+    ORDER BY HostedSyncGroups.name;
 
 insert:
-INSERT INTO HostedSyncGroups (hostedSyncGroupId, name, isDefault) 
+INSERT INTO HostedSyncGroups (hosted_sync_group_id, name, is_default) 
     VALUES (?, ?, 0);
 
 updateIsDefault: 
 UPDATE HostedSyncGroups 
-    SET isDefault = ?
-    WHERE hostedSyncGroupId= ?;
+    SET is_default = ?
+    WHERE hosted_sync_group_id= ?;
 
 delete:
 DELETE FROM HostedSyncGroups 
-    WHERE hostedSyncGroupId = ?;
+    WHERE hosted_sync_group_id = ?;

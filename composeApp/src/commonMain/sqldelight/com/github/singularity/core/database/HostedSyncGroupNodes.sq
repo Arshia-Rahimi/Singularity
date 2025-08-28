@@ -1,14 +1,14 @@
 CREATE TABLE HostedSyncGroupNodes(
-    nodeId TEXT PRIMARY KEY NOT NULL,
-    authToken TEXT NOT NULL,
-    hostedSyncGroupId TEXT NOT NULL,
-    FOREIGN KEY (hostedSyncGroupId) REFERENCES HostedSyncGroups(hostedSyncGroupId) ON DELETE CASCADE
+    node_id TEXT PRIMARY KEY NOT NULL,
+    auth_token TEXT NOT NULL,
+    hosted_sync_group_id TEXT NOT NULL,
+    FOREIGN KEY (hosted_sync_group_id) REFERENCES HostedSyncGroups(hosted_sync_group_id) ON DELETE CASCADE
 );
 
 insert: 
-INSERT INTO HostedSyncGroupNodes (nodeId, authToken, hostedSyncGroupId)
+INSERT INTO HostedSyncGroupNodes (node_id, auth_token, hosted_sync_group_id)
     VALUES (?, ?, ?);
 
 delete: 
 DELETE FROM HostedSyncGroupNodes 
-    WHERE nodeId = ?;
+    WHERE node_id = ?;

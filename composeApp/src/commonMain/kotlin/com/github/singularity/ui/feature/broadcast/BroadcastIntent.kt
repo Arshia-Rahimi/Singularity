@@ -1,7 +1,7 @@
 package com.github.singularity.ui.feature.broadcast
 
 import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.mdns.Node
+import com.github.singularity.models.Node
 
 sealed interface BroadcastIntent {
     data class Broadcast(val group: HostedSyncGroup): BroadcastIntent

@@ -4,12 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.mdns.Node
 import com.github.singularity.core.shared.util.Resource
+import com.github.singularity.models.Node
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
@@ -18,6 +19,7 @@ class BroadcastViewModel(
 ) : ViewModel() {
 
     private val syncGroups = broadcastRepository.syncGroups
+        .map { it.sortedWith(compareBy<HostedSyncGroup> { group -> group.isDefault }.thenBy { group -> group.name }) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val requestedNodes = MutableStateFlow(emptyList<Node>())
@@ -25,7 +27,7 @@ class BroadcastViewModel(
     val uiState = requestedNodes.combine(syncGroups) { requestedNodes, syncGroups ->
         BroadcastUiState(
             syncGroups = syncGroups,
-            defaultSyncGroup = syncGroups.first { group -> group.isDefault },
+            defaultSyncGroup = syncGroups.firstOrNull { group -> group.isDefault },
             requestedNodes = requestedNodes,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BroadcastUiState())
@@ -49,7 +51,7 @@ class BroadcastViewModel(
 
     private fun approve(node: Node) {
         broadcastRepository.approvePairRequest(node).onEach {
-            if(it !is Resource.Loading) {
+            if (it !is Resource.Loading) {
                 requestedNodes.value = requestedNodes.value - node
             }
         }.launchIn(viewModelScope)

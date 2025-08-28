@@ -14,37 +14,39 @@ class LocalHostedSyncGroupsDataSource(
     val hostedSyncGroups = db.hostedSyncGroupsQueries.index()
         .asFlow()
         .map { query ->
+            println(query)
             query.executeAsList()
-                .groupBy { it.hostedSyncGroupId }
+                .groupBy { it.hosted_sync_group_id }
                 .map { (id, nodes) ->
                     val groupData = nodes.first()
                     HostedSyncGroup(
                         hostedSyncGroupId = id,
                         name = groupData.name,
-                        isDefault = groupData.isDefault.toBoolean(),
-                        nodes = nodes.map { node ->
+                        isDefault = groupData.is_default.toBoolean(),
+                        nodes = nodes.mapNotNull { node ->
+                            if (node.node_id == null) return@mapNotNull null
                             HostedSyncGroupNode(
-                                nodeId = node.nodeId,
-                                authToken = node.authToken,
+                                nodeId = node.node_id,
+                                authToken = node.auth_token ?: "",
                                 syncGroupId = id,
                             )
-                        }
+                        },
                     )
                 }
         }.distinctUntilChanged()
 
     fun insert(syncGroup: HostedSyncGroup) {
         db.hostedSyncGroupsQueries.insert(
-            hostedSyncGroupId = syncGroup.hostedSyncGroupId,
+            hosted_sync_group_id = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
         )
     }
 
     fun insert(syncGroupNode: HostedSyncGroupNode) {
         db.hostedSyncGroupNodesQueries.insert(
-            nodeId = syncGroupNode.nodeId,
-            authToken = syncGroupNode.authToken,
-            hostedSyncGroupId = syncGroupNode.syncGroupId,
+            node_id = syncGroupNode.nodeId,
+            auth_token = syncGroupNode.authToken,
+            hosted_sync_group_id = syncGroupNode.syncGroupId,
         )
     }
 
@@ -62,8 +64,8 @@ class LocalHostedSyncGroupsDataSource(
             groups.forEach { group ->
                 val isDefault = group.hostedSyncGroupId == hostedSyncGroup.hostedSyncGroupId
                 db.hostedSyncGroupsQueries.updateIsDefault(
-                    hostedSyncGroupId = group.hostedSyncGroupId,
-                    isDefault = isDefault.toLong(),
+                    hosted_sync_group_id = group.hostedSyncGroupId,
+                    is_default = isDefault.toLong(),
                 )
             }
         }

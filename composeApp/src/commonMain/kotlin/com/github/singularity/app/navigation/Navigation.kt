@@ -22,6 +22,7 @@ fun Navigation() {
 
     SingularityTheme(theme) {
         NavHost(
+            // todo: add slide transition
             navController = navController,
             startDestination = Route.Main,
         ) {

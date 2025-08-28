@@ -7,7 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 fun <T> Flow<List<T>>.collectToSnapShotStateList(
@@ -26,3 +28,6 @@ fun AnchoredDraggableState<*>.safeOffset() = if (offset.isNaN()) 0f else offset
 
 @Composable
 fun StringResource.getString() = stringResource(this)
+
+@Composable
+fun DrawableResource.getPainter() = painterResource(this)

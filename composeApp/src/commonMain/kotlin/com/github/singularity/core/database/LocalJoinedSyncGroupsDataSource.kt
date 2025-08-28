@@ -14,19 +14,19 @@ class LocalJoinedSyncGroupsDataSource(
         .map { query ->
             query.executeAsList().map {
                 JoinedSyncGroup(
-                    joinedSyncGroupId = it.joinedSyncGroupId,
+                    joinedSyncGroupId = it.joined_sync_group_id,
                     name = it.name,
-                    isDefault = it.isDefault.toBoolean(),
-                    authToken = it.authToken,
+                    isDefault = it.is_default.toBoolean(),
+                    authToken = it.auth_token,
                 )
             }
         }
 
     fun insert(joinedSyncGroup: JoinedSyncGroup) {
         db.joinedSyncGroupsQueries.insert(
-            joinedSyncGroupId = joinedSyncGroup.joinedSyncGroupId,
+            joined_sync_group_id = joinedSyncGroup.joinedSyncGroupId,
             name = joinedSyncGroup.name,
-            authToken = joinedSyncGroup.authToken,
+            auth_token = joinedSyncGroup.authToken,
         )
     }
 
@@ -40,8 +40,8 @@ class LocalJoinedSyncGroupsDataSource(
             groups.forEach { group ->
                 val isDefault = group.joinedSyncGroupId == joinedSyncGroup.joinedSyncGroupId
                 db.joinedSyncGroupsQueries.updateIsDefault(
-                    joinedSyncGroupId = group.joinedSyncGroupId,
-                    isDefault = isDefault.toLong(),
+                    joined_sync_group_id = group.joinedSyncGroupId,
+                    is_default = isDefault.toLong(),
                 )
             }
         }

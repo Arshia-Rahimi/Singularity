@@ -12,16 +12,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
+import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_back
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.broadcast
+import singularity.composeapp.generated.resources.cancel
+import singularity.composeapp.generated.resources.create
+import singularity.composeapp.generated.resources.create_new_sync_group
+import singularity.composeapp.generated.resources.plus
 
 @Composable
 fun BroadcastScreen(
@@ -47,6 +57,8 @@ private fun BroadcastScreen(
     uiState: BroadcastUiState,
     execute: BroadcastIntent.() -> Unit,
 ) {
+    var showCreateGroupDialog by remember { mutableStateOf(false) }
+    
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -62,6 +74,16 @@ private fun BroadcastScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(
+                        onClick = { showCreateGroupDialog = true },
+                    ) {
+                        Icon(
+                            painter = Res.drawable.plus.getPainter(),
+                            contentDescription = Res.string.create_new_sync_group.getString(),
+                        )
+                    }
+                }
             )
         },
     ) { ip ->
@@ -71,8 +93,17 @@ private fun BroadcastScreen(
                 .padding(4.dp),
         ) {
             items(uiState.syncGroups) {
-
+                HostedSyncGroupItem(it)
             }
         }
     }
+
+    InputDialog(
+        visible = showCreateGroupDialog,
+        onConfirm = { BroadcastIntent.CreateGroup(it).execute() },
+        onDismiss = { showCreateGroupDialog = false },
+        confirmText = Res.string.create.getString(),
+        cancelText = Res.string.cancel.getString(),
+        title = Res.string.create_new_sync_group.getString(),
+    )
 }
