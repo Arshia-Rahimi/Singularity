@@ -4,5 +4,7 @@ import com.github.singularity.models.Node
 import io.ktor.http.parameters
 
 fun Node.toFormParameters() = parameters {
-
+    append("deviceName", deviceName)
+    append("deviceId", deviceId)
+    append("deviceOs", deviceOs)
 }

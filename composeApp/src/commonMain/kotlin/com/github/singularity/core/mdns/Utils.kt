@@ -1,20 +1,16 @@
 package com.github.singularity.core.mdns
 
 import com.appstractive.dnssd.DiscoveredService
-import com.github.singularity.models.Device
-import kotlinx.serialization.Serializable
+import com.github.singularity.core.shared.getDeviceName
+import com.github.singularity.core.shared.model.LocalServer
+import com.github.singularity.core.shared.platform
 
-@Serializable
-data class Server(
-    override val ip: String,
-    override val deviceName: String,
-    override val deviceId: String,
-    override val deviceOs: String,
-    val syncGroupName: String,
-    val syncGroupId: String,
-) : Device
+expect val canHostSyncServer: Boolean
 
-fun DiscoveredService.toServer() = Server(
+val MDNS_SERVICE_NAME = "Singularity-$platform-${getDeviceName()}"
+const val MDNS_SERVICE_TYPE = "_sync_service._tcp"
+
+fun DiscoveredService.toServer() = LocalServer(
     ip = addresses.first(),
     deviceName = txt["deviceName"]?.decodeToString() ?: "Unknown Device",
     deviceId = txt["deviceId"]?.decodeToString() ?: "Unknown",

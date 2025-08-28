@@ -3,7 +3,7 @@ package com.github.singularity.ui.feature.discover
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
-import com.github.singularity.core.mdns.Server
+import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -30,7 +30,7 @@ class DiscoverViewModel(
         }
     }
 
-    private fun sendPairRequest(server: Server) {
+    private fun sendPairRequest(server: LocalServer) {
         discoverRepository.sendPairRequest(server).onEach {
             // todo
         }.launchIn(viewModelScope)

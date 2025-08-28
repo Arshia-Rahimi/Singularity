@@ -1,8 +1,8 @@
 package com.github.singularity.ui.feature.discover
 
-import com.github.singularity.core.mdns.Server
+import com.github.singularity.core.shared.model.LocalServer
 
 sealed interface DiscoverIntent {
-    data class SendPairRequest(val server: Server) : DiscoverIntent
+    data class SendPairRequest(val server: LocalServer) : DiscoverIntent
     data object NavBack : DiscoverIntent
 }

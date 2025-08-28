@@ -1,56 +1,56 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.client.KtorHttpClient
+import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
+import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.LocalJoinedSyncGroupsDataSource
 import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
-import com.github.singularity.core.mdns.Server
+import com.github.singularity.core.shared.getDeviceName
+import com.github.singularity.core.shared.model.LocalServer
+import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
-import com.github.singularity.models.PairRequestResponse
-import io.ktor.client.call.body
-import io.ktor.http.HttpStatusCode
+import com.github.singularity.models.Node
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import okio.IOException
 
 class DiscoverRepositoryImp(
     discoveryService: DeviceDiscoveryService,
     private val joinedSyncGroupsRepo: LocalJoinedSyncGroupsDataSource,
-    private val client: KtorHttpClient,
+    private val preferencesRepo: PreferencesRepository,
+    private val httpClientDataSource: HttpClientDataSource,
 ) : DiscoverRepository {
 
     override val discoveredServers = discoveryService.discoverServers()
 
-    override fun sendPairRequest(server: Server) = flow {
-        val httpResponse = try {
-            client.sendPairRequest(server)
-        } catch (_: Exception) {
+    override fun sendPairRequest(server: LocalServer) = flow {
+        try {
+            val response = httpClientDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
+            val newGroup = JoinedSyncGroup(
+                joinedSyncGroupId = server.syncGroupId,
+                name = server.syncGroupName,
+                authToken = response.authToken ?: "",
+            )
+            joinedSyncGroupsRepo.insert(newGroup)
+            joinedSyncGroupsRepo.setAsDefault(newGroup)
+            emit(Success)
+        } catch (_: IOException) {
             throw Exception("failed to send pair request")
         }
-        val statusCode = httpResponse.status
-        val response = httpResponse.body<PairRequestResponse>()
-
-        when (statusCode) {
-            HttpStatusCode.OK -> {
-                val newGroup = JoinedSyncGroup(
-                    joinedSyncGroupId = server.syncGroupId,
-                    name = server.syncGroupName,
-                    authToken = response.authToken ?: "",
-                )
-                joinedSyncGroupsRepo.insert(newGroup)
-                joinedSyncGroupsRepo.setAsDefault(newGroup)
-                emit(Success)
-            }
-
-            else -> throw Exception(response.message)
-        }
-
     }.asResult(Dispatchers.IO)
 
     override fun release() {
-        client.release()
+        httpClientDataSource.release()
     }
+
+    private suspend fun getCurrentDeviceAsNode() = Node(
+        deviceName = getDeviceName(),
+        deviceOs = os,
+        deviceId = preferencesRepo.preferences.first().deviceId,
+    )
 
 }

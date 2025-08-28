@@ -5,8 +5,8 @@ import com.appstractive.dnssd.discoverServices
 import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
-import com.github.singularity.core.mdns.Server
 import com.github.singularity.core.mdns.toServer
+import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.asResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.runningFold
 class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
     override fun discoverServers() = discoverServices(MDNS_SERVICE_TYPE)
-        .runningFold(mutableListOf<Server>()) { list, newServer ->
+        .runningFold(mutableListOf<LocalServer>()) { list, newServer ->
             when (newServer) {
                 is DiscoveryEvent.Discovered -> newServer.resolve()
                 is DiscoveryEvent.Resolved -> list + newServer.service.toServer()
