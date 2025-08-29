@@ -7,9 +7,11 @@ import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.models.Node
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -26,17 +28,24 @@ class BroadcastViewModel(
 
     private val requestedNodes = MutableStateFlow(emptyList<Node>())
 
-    val uiState = requestedNodes.combine(syncGroups) { requestedNodes, syncGroups ->
+    private val isBroadcasting = MutableStateFlow(false)
+
+    @OptIn(FlowPreview::class)
+    val uiState = combine(
+        requestedNodes,
+        syncGroups,
+        isBroadcasting,
+    ) { requestedNodes, syncGroups, isBroadcasting ->
         BroadcastUiState(
             syncGroups = syncGroups.toMutableStateList(),
-            defaultSyncGroup = syncGroups.firstOrNull { group -> group.isDefault },
             requestedNodes = requestedNodes,
+            isBroadcasting = isBroadcasting,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BroadcastUiState())
+    }.debounce(10).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BroadcastUiState())
 
     fun execute(intent: BroadcastIntent) {
         when (intent) {
-            is BroadcastIntent.Broadcast -> broadcast()
+            is BroadcastIntent.ToggleBroadcast -> if (uiState.value.isBroadcasting) stopBroadcast() else broadcast()
             is BroadcastIntent.Approve -> approve(intent.node)
             is BroadcastIntent.CreateGroup -> create(intent.groupName)
             is BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
@@ -50,9 +59,17 @@ class BroadcastViewModel(
         broadcastRepo.stopBroadcast()
         val defaultGroup = syncGroups.value.firstOrNull { it.isDefault } ?: return
 
+        requestedNodes.value = emptyList()
+        isBroadcasting.value = true
         broadcastRepo.broadcastGroup(defaultGroup).onEach {
             requestedNodes.value = requestedNodes.value + it
         }.launchIn(viewModelScope)
+    }
+
+    private fun stopBroadcast() {
+        broadcastRepo.stopBroadcast()
+        requestedNodes.value = emptyList()
+        isBroadcasting.value = false
     }
 
     private fun approve(node: Node) {

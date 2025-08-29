@@ -56,6 +56,7 @@ fun InputDialog(
         onConfirm(input)
         onDismiss()
     }
+    // todo: focus at the end of the text
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(visible) {

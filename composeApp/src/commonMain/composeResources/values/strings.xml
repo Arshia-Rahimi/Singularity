@@ -20,5 +20,7 @@
     <string name="delete">delete</string>
     <string name="options">options</string>
     <string name="edit">edit</string>
+    <string name="pair_requests">Pair requests:</string>
     <string name="edit_group_name">Edit group name</string>
+    <string name="approve_pair_request">Approve pair request?</string>
 </resources>

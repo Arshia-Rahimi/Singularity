@@ -1,6 +1,6 @@
 package com.github.singularity.ui.feature.broadcast.components
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -29,12 +28,12 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.broadcast.BroadcastIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
-import singularity.composeapp.generated.resources.default
 import singularity.composeapp.generated.resources.delete
 import singularity.composeapp.generated.resources.delete_group
 import singularity.composeapp.generated.resources.edit
@@ -46,6 +45,7 @@ import singularity.composeapp.generated.resources.set_group_as_default
 @Composable
 fun LazyItemScope.HostedSyncGroupItem(
     hostedSyncGroup: HostedSyncGroup,
+    modifier: Modifier = Modifier,
     execute: BroadcastIntent.() -> Unit,
 ) {
     var showSetAsDefaultDialog by remember { mutableStateOf(false) }
@@ -56,34 +56,19 @@ fun LazyItemScope.HostedSyncGroupItem(
     val focusManager = LocalFocusManager.current
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .animateItem()
+            .onCondition(hostedSyncGroup.isDefault) { background(MaterialTheme.colorScheme.primaryContainer) }
             .clickable { showSetAsDefaultDialog = true }
             .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         Column(
             modifier = Modifier.weight(1f),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    fontSize = 16.sp,
-                    text = hostedSyncGroup.name,
-                    modifier = Modifier.padding(end = 8.dp),
-                )
-                if (hostedSyncGroup.isDefault) {
-                    Text(
-                        fontSize = 16.sp,
-                        text = Res.string.default.getString(),
-                        modifier = Modifier.border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(4.dp),
-                        )
-                    )
-                }
-            }
+            Text(
+                fontSize = 16.sp,
+                text = hostedSyncGroup.name,
+            )
 
             Text(
                 text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_paired.getString()}",
@@ -106,6 +91,7 @@ fun LazyItemScope.HostedSyncGroupItem(
             ) {
                 DropdownMenuItem(
                     text = { Text(Res.string.delete.getString()) },
+                    enabled = !hostedSyncGroup.isDefault,
                     onClick = {
                         showDeletionDialog = true
                         showDropDownMenu = false
@@ -115,7 +101,7 @@ fun LazyItemScope.HostedSyncGroupItem(
                             painter = Res.drawable.delete.getPainter(),
                             contentDescription = Res.string.delete.getString(),
                         )
-                    }
+                    },
                 )
                 DropdownMenuItem(
                     text = { Text(Res.string.edit.getString()) },
@@ -128,7 +114,7 @@ fun LazyItemScope.HostedSyncGroupItem(
                             painter = Res.drawable.edit.getPainter(),
                             contentDescription = Res.string.edit.getString(),
                         )
-                    }
+                    },
                 )
             }
         }
@@ -163,5 +149,5 @@ fun LazyItemScope.HostedSyncGroupItem(
         confirmText = Res.string.edit.getString(),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     )
-    
+
 }

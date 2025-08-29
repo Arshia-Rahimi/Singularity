@@ -9,6 +9,6 @@ import com.github.singularity.models.Node
 @Immutable
 data class BroadcastUiState(
     val syncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
-    val defaultSyncGroup: HostedSyncGroup? = null,
+    val isBroadcasting: Boolean = false,
     val requestedNodes: List<Node> = emptyList(),
 )
