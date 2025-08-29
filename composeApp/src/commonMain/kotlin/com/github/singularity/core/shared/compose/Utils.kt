@@ -27,7 +27,7 @@ fun <T> Flow<List<T>>.collectToSnapShotStateList(
 fun AnchoredDraggableState<*>.safeOffset() = if (offset.isNaN()) 0f else offset
 
 @Composable
-fun StringResource.getString() = stringResource(this)
+fun StringResource.getString(vararg formatArgs: Any) = stringResource(this, *formatArgs)
 
 @Composable
 fun DrawableResource.getPainter() = painterResource(this)

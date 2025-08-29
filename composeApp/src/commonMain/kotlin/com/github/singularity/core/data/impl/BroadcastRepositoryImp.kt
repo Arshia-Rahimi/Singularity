@@ -35,11 +35,14 @@ class BroadcastRepositoryImp(
     }.asResult(Dispatchers.IO)
 
     override fun broadcastGroup(group: HostedSyncGroup) = flow {
-        hostedSyncGroupsRepo.setAsDefault(group)
         broadcastService.broadcastServer(group)
         // todo: run http server and listen for pair requests
 
         emit(Node("", "", ""))
+    }
+
+    override suspend fun setAsDefault(group: HostedSyncGroup) {
+        hostedSyncGroupsRepo.setAsDefault(group)
     }
 
     override fun approvePairRequest(node: Node) = flow {

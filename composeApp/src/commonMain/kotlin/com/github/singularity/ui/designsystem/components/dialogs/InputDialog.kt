@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -18,29 +19,49 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.github.singularity.core.shared.compose.getString
+import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.cancel
 
 @Composable
 fun InputDialog(
     visible: Boolean,
     title: String,
     confirmText: String,
-    cancelText: String,
+    cancelText: String = Res.string.cancel.getString(),
     placeholder: String = "",
     initialValue: String = "",
-    keyboardType: KeyboardType = KeyboardType.Text,
     onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
 ) {
+    val confirm = { input: String ->
+        onConfirm(input)
+        onDismiss()
+    }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(visible) {
+        if (visible) focusRequester.requestFocus()
+    }
+    
     if (visible) {
         var inputValue by remember { mutableStateOf(initialValue) }
 
@@ -65,8 +86,26 @@ fun InputDialog(
                         value = inputValue,
                         onValueChange = { inputValue = it },
                         placeholder = { Text(placeholder) },
-                        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = keyboardOptions,
+                        keyboardActions = KeyboardActions(
+                            onDone = { confirm(inputValue) },
+                            onSend = { confirm(inputValue) },
+                            onSearch = { confirm(inputValue) },
+                            onGo = { confirm(inputValue) },
+                            onNext = { confirm(inputValue) },
+                            onPrevious = { confirm(inputValue) },
+                        ),
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                            .focusRequester(focusRequester)
+                            .onPreviewKeyEvent { keyEvent ->
+                                if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
+                                    confirm(inputValue)
+                                    true
+                                } else {
+                                    false
+                                }
+                            },
                         shape = MaterialTheme.shapes.large,
                         colors = TextFieldDefaults.colors(
                             cursorColor = MaterialTheme.colorScheme.onSurface,
@@ -96,10 +135,7 @@ fun InputDialog(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Button(
-                            onClick = {
-                                onConfirm(inputValue)
-                                onDismiss()
-                            }
+                            onClick = { confirm(inputValue) }
                         ) {
                             Text(confirmText)
                         }

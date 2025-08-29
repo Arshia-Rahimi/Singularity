@@ -17,6 +17,8 @@ interface BroadcastRepository {
 
     fun broadcastGroup(group: HostedSyncGroup): Flow<Node>
 
+    suspend fun setAsDefault(group: HostedSyncGroup)
+
     fun approvePairRequest(node: Node): Flow<Resource<Success>>
 
     fun stopBroadcast()

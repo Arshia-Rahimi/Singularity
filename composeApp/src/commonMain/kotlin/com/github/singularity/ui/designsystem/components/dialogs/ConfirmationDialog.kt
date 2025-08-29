@@ -19,14 +19,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.github.singularity.core.shared.compose.getString
+import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.cancel
+import singularity.composeapp.generated.resources.confirm
+import singularity.composeapp.generated.resources.confirm_action
 
 @Composable
 fun ConfirmationDialog(
     visible: Boolean,
-    title: String,
+    title: String = Res.string.confirm_action.getString(),
     message: String,
-    confirmText: String,
-    cancelText: String,
+    confirmText: String = Res.string.confirm.getString(),
+    cancelText: String = Res.string.cancel.getString(),
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
