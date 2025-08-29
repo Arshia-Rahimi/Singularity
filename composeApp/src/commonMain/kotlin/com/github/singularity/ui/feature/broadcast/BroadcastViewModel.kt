@@ -39,6 +39,7 @@ class BroadcastViewModel(
             is BroadcastIntent.Broadcast -> broadcast()
             is BroadcastIntent.Approve -> approve(intent.node)
             is BroadcastIntent.CreateGroup -> create(intent.groupName)
+            is BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
             is BroadcastIntent.DeleteGroup -> delete(intent.group)
             is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.NavBack -> Unit
@@ -64,6 +65,10 @@ class BroadcastViewModel(
 
     private fun create(groupName: String) {
         broadcastRepo.create(HostedSyncGroup(groupName)).launchIn(viewModelScope)
+    }
+
+    private fun editName(groupName: String, group: HostedSyncGroup) {
+        broadcastRepo.editName(groupName, group).launchIn(viewModelScope)
     }
 
     private fun delete(group: HostedSyncGroup) {

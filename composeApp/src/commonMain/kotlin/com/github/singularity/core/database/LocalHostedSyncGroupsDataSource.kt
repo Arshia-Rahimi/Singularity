@@ -41,6 +41,10 @@ class LocalHostedSyncGroupsDataSource(
         )
     }
 
+    fun updateName(groupName: String, groupId: String) {
+        db.hostedSyncGroupsQueries.updateName(groupName, groupId)
+    }
+
     fun insert(syncGroupNode: HostedSyncGroupNode) {
         db.hostedSyncGroupNodesQueries.insert(
             node_id = syncGroupNode.nodeId,

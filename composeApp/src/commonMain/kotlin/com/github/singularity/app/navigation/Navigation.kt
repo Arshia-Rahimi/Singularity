@@ -56,6 +56,7 @@ fun Navigation() {
                 MainScreen(
                     toDiscoverScreen = { navController.navigate(Route.Discover) },
                     toBroadcastScreen = { navController.navigate(Route.Broadcast) },
+                    toSettingsScreen = { navController.navigate(Route.Settings) },
                 )
             }
             composable<Route.Discover> {

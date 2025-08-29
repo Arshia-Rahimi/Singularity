@@ -3,6 +3,7 @@ package com.github.singularity.ui.feature.settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,12 +70,13 @@ private fun SettingsScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
                 .padding(ip)
-                .padding(4.dp),
         ) {
             item {
                 Row(
                     modifier = Modifier
-                        .clickable { SettingsIntent.ToggleApptheme.execute() },
+                        .fillMaxWidth()
+                        .clickable { SettingsIntent.ToggleApptheme.execute() }
+                        .padding(vertical = 4.dp, horizontal = 8.dp),
                 ) {
                     Text("theme: ${uiState.appTheme.title.getString()}")
                 }

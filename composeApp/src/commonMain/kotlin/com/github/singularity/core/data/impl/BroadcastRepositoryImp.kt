@@ -17,20 +17,25 @@ import kotlinx.coroutines.flow.shareIn
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
-    private val hostedSyncGroupsRepo: LocalHostedSyncGroupsDataSource,
+    private val hostedSyncGroupsDataSource: LocalHostedSyncGroupsDataSource,
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
-    override val syncGroups = hostedSyncGroupsRepo.hostedSyncGroups
+    override val syncGroups = hostedSyncGroupsDataSource.hostedSyncGroups
         .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
 
     override fun create(group: HostedSyncGroup) = flow {
-        hostedSyncGroupsRepo.insert(group)
+        hostedSyncGroupsDataSource.insert(group)
+        emit(Success)
+    }.asResult(Dispatchers.IO)
+
+    override fun editName(groupName: String, group: HostedSyncGroup) = flow {
+        hostedSyncGroupsDataSource.updateName(groupName, group.hostedSyncGroupId)
         emit(Success)
     }.asResult(Dispatchers.IO)
 
     override fun delete(group: HostedSyncGroup) = flow {
-        hostedSyncGroupsRepo.delete(group)
+        hostedSyncGroupsDataSource.delete(group)
         emit(Success)
     }.asResult(Dispatchers.IO)
 
@@ -42,7 +47,7 @@ class BroadcastRepositoryImp(
     }
 
     override suspend fun setAsDefault(group: HostedSyncGroup) {
-        hostedSyncGroupsRepo.setAsDefault(group)
+        hostedSyncGroupsDataSource.setAsDefault(group)
     }
 
     override fun approvePairRequest(node: Node) = flow {

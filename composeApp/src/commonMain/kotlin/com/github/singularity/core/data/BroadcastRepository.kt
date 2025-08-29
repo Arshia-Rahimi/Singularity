@@ -13,6 +13,8 @@ interface BroadcastRepository {
 
     fun create(group: HostedSyncGroup): Flow<Resource<Success>>
 
+    fun editName(groupName: String, group: HostedSyncGroup): Flow<Resource<Success>>
+
     fun delete(group: HostedSyncGroup): Flow<Resource<Success>>
 
     fun broadcastGroup(group: HostedSyncGroup): Flow<Node>

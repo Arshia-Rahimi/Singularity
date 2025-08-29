@@ -19,4 +19,6 @@
     <string name="confirm">confirm</string>
     <string name="delete">delete</string>
     <string name="options">options</string>
+    <string name="edit">edit</string>
+    <string name="edit_group_name">Edit group name</string>
 </resources>

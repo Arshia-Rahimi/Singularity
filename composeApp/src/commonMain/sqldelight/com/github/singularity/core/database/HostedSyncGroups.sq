@@ -18,6 +18,11 @@ updateIsDefault:
 UPDATE HostedSyncGroups 
     SET is_default = ?
     WHERE hosted_sync_group_id= ?;
+    
+updateName:
+UPDATE HostedSyncGroups
+    SET name = ?
+    WHERE hosted_sync_group_id = ?;
 
 delete:
 DELETE FROM HostedSyncGroups 
