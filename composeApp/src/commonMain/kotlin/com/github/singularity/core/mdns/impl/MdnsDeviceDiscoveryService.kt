@@ -7,13 +7,12 @@ import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
 import com.github.singularity.core.mdns.toServer
 import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.core.shared.util.asResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.withTimeoutOrNull
 
 class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
@@ -32,19 +31,23 @@ class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
         .map { it.toList() }
         .distinctUntilChanged()
 
-    override fun discoverServer(syncGroup: JoinedSyncGroup) = flow {
-        discoverServices(MDNS_SERVICE_TYPE).collect { newServer ->
+    override suspend fun discoverServer(syncGroup: JoinedSyncGroup) = withTimeoutOrNull(30000) {
+        discoverServices(MDNS_SERVICE_TYPE).mapNotNull { newServer ->
             when (newServer) {
-                is DiscoveryEvent.Discovered -> newServer.resolve()
+                is DiscoveryEvent.Discovered -> {
+                    newServer.resolve()
+                    null
+                }
                 is DiscoveryEvent.Resolved -> {
                     val server = newServer.service.toServer()
                     if(server.syncGroupId == syncGroup.joinedSyncGroupId) {
-                        emit(server)
-                    }
+                        server
+                    } else null
                 }
-                else -> Unit
+
+                is DiscoveryEvent.Removed -> null
             }
-        }
-    }.asResult(Dispatchers.IO)
+        }.first()
+    }
 
 }

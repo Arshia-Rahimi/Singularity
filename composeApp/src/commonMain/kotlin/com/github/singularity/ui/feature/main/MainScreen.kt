@@ -12,20 +12,44 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.mdns.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.settings
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     toDiscoverScreen: () -> Unit,
     toBroadcastScreen: () -> Unit,
     toSettingsScreen: () -> Unit,
+) {
+    val viewModel = koinViewModel<MainViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    MainScreen(
+        uiState = uiState,
+        execute = {
+            when (this) {
+                is MainIntent.ToDiscoverScreen -> toDiscoverScreen()
+                is MainIntent.ToSettingsScreen -> toSettingsScreen()
+                is MainIntent.ToBroadcastScreen -> toBroadcastScreen()
+                else -> viewModel.execute(this)
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MainScreen(
+    uiState: MainUiState,
+    execute: MainIntent.() -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -34,7 +58,7 @@ fun MainScreen(
                 title = {},
                 actions = {
                     IconButton(
-                        onClick = toSettingsScreen,
+                        onClick = { MainIntent.ToSettingsScreen.execute() },
                     ) {
                         Icon(
                             painter = Res.drawable.settings.getPainter(),
@@ -52,13 +76,13 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
-                onClick = toDiscoverScreen,
+                onClick = { MainIntent.ToDiscoverScreen.execute() },
             ) {
                 Text("discover")
             }
             if (canHostSyncServer) {
                 Button(
-                    onClick = toBroadcastScreen,
+                    onClick = { MainIntent.ToBroadcastScreen.execute() },
                 ) {
                     Text("broadcast")
                 }

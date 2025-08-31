@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
 class DiscoverViewModel(
-    private val discoverRepository: DiscoverRepository,
+    private val discoverRepo: DiscoverRepository,
 ) : ViewModel() {
 
-    private val servers = discoverRepository.discoveredServers
+    private val servers = discoverRepo.discoveredServers
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val uiState = combine(servers) { server ->
@@ -31,13 +31,13 @@ class DiscoverViewModel(
     }
 
     private fun sendPairRequest(server: LocalServer) {
-        discoverRepository.sendPairRequest(server).onEach {
+        discoverRepo.sendPairRequest(server).onEach {
             // todo
         }.launchIn(viewModelScope)
     }
 
     override fun onCleared() {
-        discoverRepository.release()
+        discoverRepo.release()
         super.onCleared()
     }
 
