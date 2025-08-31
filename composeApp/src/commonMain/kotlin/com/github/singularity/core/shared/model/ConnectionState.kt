@@ -9,6 +9,6 @@ sealed interface ConnectionState {
     data class Connected(val server: IServer) : ConnectionState
     data class ServerNotFound(
         val joinedSyncGroup: JoinedSyncGroup,
-        val message: String
+        val message: String,
     ) : ConnectionState
 }
