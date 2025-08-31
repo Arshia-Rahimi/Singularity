@@ -1,4 +1,4 @@
-package com.github.singularity.core.client
+package com.github.singularity.core.client.utils
 
 import com.github.singularity.models.Node
 import io.ktor.http.parameters

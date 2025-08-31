@@ -1,5 +1,6 @@
 package com.github.singularity.core.data.impl
 
+import com.github.singularity.core.client.impl.KtorWebSocketClientDataSource
 import com.github.singularity.core.data.ConnectionRepository
 import com.github.singularity.core.database.LocalJoinedSyncGroupsDataSource
 import com.github.singularity.core.mdns.DeviceDiscoveryService
@@ -17,19 +18,23 @@ class ConnectionRepositoryImpl(
     joinedSyncGroupsDataSource: LocalJoinedSyncGroupsDataSource,
     scope: CoroutineScope,
     deviceDiscoveryService: DeviceDiscoveryService,
+    webSocketClientDataSource: KtorWebSocketClientDataSource,
 ) : ConnectionRepository {
 
     override val connection = joinedSyncGroupsDataSource.joinedSyncGroups
         .map { it.firstOrNull { group -> group.isDefault } }
         .flatMapLatest { defaultServer ->
-            if (defaultServer == null) return@flatMapLatest flow { emit(null) }
-            ConnectionState.Searching(defaultServer)
-            val server = deviceDiscoveryService.discoverServer(defaultServer)
-            if (server == null) {
-                ConnectionState.ServerNotFound(defaultServer, "time out")
-            } else {
-                // todo connect websocket
-                ConnectionState.Connected(server)
+            if (defaultServer == null) flow { emit(ConnectionState.NoDefaultServer) }
+            else flow {
+                emit(ConnectionState.Searching(defaultServer))
+
+                val server = deviceDiscoveryService.discoverServer(defaultServer)
+                if (server == null) {
+                    emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
+                } else {
+                    // todo
+                    emit(ConnectionState.Connected(server))
+                }
             }
         }.shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
 
