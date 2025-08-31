@@ -17,9 +17,9 @@ class DiscoverViewModel(
     private val servers = discoverRepository.discoveredServers
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val uiState = combine(servers) {
+    val uiState = combine(servers) { server ->
         DiscoverUiState(
-            servers = it[0],
+            servers = server[0],
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DiscoverUiState())
 

@@ -23,4 +23,5 @@
     <string name="pair_requests">Pair requests:</string>
     <string name="edit_group_name">Edit group name</string>
     <string name="approve_pair_request">Approve pair request?</string>
+    <string name="send_pair_request">Send pair request to %1$d?</string>
 </resources>

@@ -1,11 +1,6 @@
 package com.github.singularity.ui.feature.discover
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,10 +13,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.feature.discover.components.ServerItem
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
@@ -77,12 +72,10 @@ private fun DiscoverScreen(
                 .padding(4.dp),
         ) {
             items(uiState.servers) {
-                Column {
-                    Text(it.ip)
-                    Text(it.deviceName)
-                    Text(it.deviceId)
-                }
-                Spacer(Modifier.fillMaxWidth().height(2.dp).background(Color.White))
+                ServerItem(
+                    server = it,
+                    execute = execute,
+                )
             }
         }
     }

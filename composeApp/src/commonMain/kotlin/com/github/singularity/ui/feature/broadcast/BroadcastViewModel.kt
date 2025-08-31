@@ -74,8 +74,10 @@ class BroadcastViewModel(
 
     private fun approve(node: Node) {
         broadcastRepo.approvePairRequest(node).onEach {
-            if (it !is Resource.Loading) {
-                requestedNodes.value = requestedNodes.value - node
+            when (it) {
+                is Resource.Loading -> Unit
+                is Resource.Error -> Unit // todo: show error
+                is Resource.Success -> requestedNodes.value = requestedNodes.value - node
             }
         }.launchIn(viewModelScope)
     }
