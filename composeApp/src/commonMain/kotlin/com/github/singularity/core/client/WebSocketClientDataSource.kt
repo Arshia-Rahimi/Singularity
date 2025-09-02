@@ -1,11 +1,11 @@
 package com.github.singularity.core.client
 
-import com.github.singularity.models.Server
-import com.github.singularity.models.websocket.WebsocketResponse
+import com.github.singularity.models.IServer
+import com.github.singularity.models.sync.SyncEvent
 import kotlinx.coroutines.flow.Flow
 
 interface WebSocketClientDataSource {
 
-    fun connect(server: Server, authKey: String): Flow<WebsocketResponse>
+    fun connect(server: IServer, authToken: String): Flow<SyncEvent>
 
 }

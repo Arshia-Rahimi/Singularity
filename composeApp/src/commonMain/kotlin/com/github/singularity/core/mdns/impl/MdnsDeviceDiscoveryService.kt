@@ -31,7 +31,7 @@ class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
         .map { it.toList() }
         .distinctUntilChanged()
 
-    override suspend fun discoverServer(syncGroup: JoinedSyncGroup) = withTimeoutOrNull(30000) {
+    override suspend fun discoverServer(syncGroup: JoinedSyncGroup) = withTimeoutOrNull(30_000) {
         discoverServices(MDNS_SERVICE_TYPE).mapNotNull { newServer ->
             when (newServer) {
                 is DiscoveryEvent.Discovered -> {

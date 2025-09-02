@@ -12,7 +12,7 @@ class MainViewModel(
     connectionRepo: ConnectionRepository,
 ) : ViewModel() {
 
-    private val connectionState = connectionRepo.connection
+    private val connectionState = connectionRepo.connectionState
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

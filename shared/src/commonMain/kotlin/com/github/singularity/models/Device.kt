@@ -6,11 +6,13 @@ interface Device {
     val deviceName: String
     val deviceId: String
     val deviceOs: String
+    val ip: String
 }
 
 @Serializable
 class Node(
     override val deviceName: String,
     override val deviceId: String,
-    override val deviceOs: String
+    override val deviceOs: String,
+    override val ip: String,
 ) : Device
