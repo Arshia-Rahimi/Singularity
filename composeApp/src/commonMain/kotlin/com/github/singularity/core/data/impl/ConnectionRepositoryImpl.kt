@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
@@ -42,7 +43,7 @@ class ConnectionRepositoryImpl(
         joinedSyncGroupsDataSource.joinedSyncGroups
             .map { it.firstOrNull { group -> group.isDefault } }
             .flatMapLatest { defaultServer ->
-                if (defaultServer == null) flow { emit(ConnectionState.NoDefaultServer) }
+                if (defaultServer == null) flowOf<ConnectionState>(ConnectionState.NoDefaultServer)
                 else flow {
                     emit(ConnectionState.Searching(defaultServer))
 
@@ -53,30 +54,30 @@ class ConnectionRepositoryImpl(
 
                     if (server == null) {
                         emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
-                        return@flow
-                    }
-
-                    webSocketClient.connect(server, defaultServer.authToken)
-                        .onFirst { emit(ConnectionState.Connected(server)) }
-                        .catch { e ->
-                            when (e) {
-                                is WebsocketConnectionDroppedException ->
-                                    emit(
-                                        ConnectionState.ConnectionFailed(
-                                            server,
-                                            "connection dropped",
+                    } else {
+                        webSocketClient.connect(server, defaultServer.authToken)
+                            .onFirst { emit(ConnectionState.Connected(server)) }
+                            .catch { e ->
+                                when (e) {
+                                    is WebsocketConnectionDroppedException ->
+                                        emit(
+                                            ConnectionState.ConnectionFailed(
+                                                server,
+                                                "connection dropped",
+                                            )
                                         )
-                                    )
 
-                                else ->
-                                    emit(
-                                        ConnectionState.ConnectionFailed(
-                                            server,
-                                            "connection failed",
+                                    else ->
+                                        emit(
+                                            ConnectionState.ConnectionFailed(
+                                                server,
+                                                "connection failed",
+                                            )
                                         )
-                                    )
+                                }
                             }
-                        }.collect { _syncEvents.tryEmit(it) }
+                            .collect { _syncEvents.tryEmit(it) }
+                    }
                 }
             }
     }
