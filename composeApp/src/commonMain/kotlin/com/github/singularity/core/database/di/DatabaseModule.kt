@@ -1,15 +1,18 @@
 package com.github.singularity.core.database.di
 
-import com.github.singularity.core.database.LocalHostedSyncGroupsDataSource
-import com.github.singularity.core.database.LocalJoinedSyncGroupsDataSource
+import com.github.singularity.core.database.HostedSyncGroupDataSource
+import com.github.singularity.core.database.JoinedSyncGroupDataSource
+import com.github.singularity.core.database.impl.LocalHostedSyncGroupsDataSource
+import com.github.singularity.core.database.impl.LocalJoinedSyncGroupsDataSource
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 expect fun Module.driver()
 
 val DatabaseModule = module {
-    singleOf(::LocalHostedSyncGroupsDataSource)
-    singleOf(::LocalJoinedSyncGroupsDataSource)
     driver()
+    singleOf(::LocalHostedSyncGroupsDataSource) bind HostedSyncGroupDataSource::class
+    singleOf(::LocalJoinedSyncGroupsDataSource) bind JoinedSyncGroupDataSource::class
 }

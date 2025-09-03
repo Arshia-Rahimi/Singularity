@@ -3,7 +3,7 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.LocalJoinedSyncGroupsDataSource
+import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.getDeviceName
@@ -20,7 +20,7 @@ import okio.IOException
 
 class DiscoverRepositoryImp(
     discoveryService: DeviceDiscoveryService,
-    private val joinedSyncGroupsRepo: LocalJoinedSyncGroupsDataSource,
+    private val joinedSyncGroupsRepo: JoinedSyncGroupDataSource,
     private val preferencesRepo: PreferencesRepository,
     private val httpClientDataSource: HttpClientDataSource,
 ) : DiscoverRepository {
@@ -31,9 +31,11 @@ class DiscoverRepositoryImp(
         try {
             val response = httpClientDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
             val newGroup = JoinedSyncGroup(
-                joinedSyncGroupId = server.syncGroupId,
-                name = server.syncGroupName,
+                syncGroupId = server.syncGroupId,
+                syncGroupName = server.syncGroupName,
                 authToken = response.authToken ?: "",
+                ip = server.ip,
+                isLocal = true,
             )
             joinedSyncGroupsRepo.insert(newGroup)
             joinedSyncGroupsRepo.setAsDefault(newGroup)
@@ -51,6 +53,7 @@ class DiscoverRepositoryImp(
         deviceName = getDeviceName(),
         deviceOs = os,
         deviceId = preferencesRepo.preferences.first().deviceId,
+        ip = "",
     )
 
 }

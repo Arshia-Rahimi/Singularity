@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
-import com.github.singularity.core.database.LocalHostedSyncGroupsDataSource
+import com.github.singularity.core.database.HostedSyncGroupDataSource
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.shared.util.Success
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.shareIn
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
-    private val hostedSyncGroupsDataSource: LocalHostedSyncGroupsDataSource,
+    private val hostedSyncGroupsDataSource: HostedSyncGroupDataSource,
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
@@ -43,7 +43,7 @@ class BroadcastRepositoryImp(
         broadcastService.broadcastServer(group)
         // todo: run http server and listen for pair requests
 
-        emit(Node("", "", ""))
+        emit(Node("", "", "", ""))
     }
 
     override suspend fun setAsDefault(group: HostedSyncGroup) {

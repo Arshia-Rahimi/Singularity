@@ -1,15 +1,19 @@
-package com.github.singularity.core.database
+package com.github.singularity.core.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
+import com.github.singularity.core.database.JoinedSyncGroupDataSource
+import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.database.entities.JoinedSyncGroup
+import com.github.singularity.core.database.toBoolean
+import com.github.singularity.core.database.toLong
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class LocalJoinedSyncGroupsDataSource(
     private val db: SingularityDatabase,
-) {
+) : JoinedSyncGroupDataSource {
 
-    val joinedSyncGroups = db.joinedSyncGroupsQueries.index()
+    override val joinedSyncGroups = db.joinedSyncGroupsQueries.index()
         .asFlow()
         .map { query ->
             query.executeAsList().map {
@@ -24,7 +28,7 @@ class LocalJoinedSyncGroupsDataSource(
             }
         }
 
-    fun insert(joinedSyncGroup: JoinedSyncGroup) {
+    override fun insert(joinedSyncGroup: JoinedSyncGroup) {
         db.joinedSyncGroupsQueries.insert(
             joined_sync_group_id = joinedSyncGroup.syncGroupId,
             name = joinedSyncGroup.syncGroupName,
@@ -34,11 +38,11 @@ class LocalJoinedSyncGroupsDataSource(
         )
     }
 
-    fun delete(joinedSyncGroup: JoinedSyncGroup) {
+    override fun delete(joinedSyncGroup: JoinedSyncGroup) {
         db.joinedSyncGroupsQueries.delete(joinedSyncGroup.syncGroupId)
     }
 
-    suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup) {
+    override suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup) {
         val groups = joinedSyncGroups.first()
         db.joinedSyncGroupsQueries.transaction {
             groups.forEach { group ->
