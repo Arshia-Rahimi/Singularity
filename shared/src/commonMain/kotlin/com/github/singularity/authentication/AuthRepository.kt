@@ -7,6 +7,4 @@ interface AuthRepository {
 
     fun getNode(token: BearerTokenCredential): Node?
 
-
-
 }
