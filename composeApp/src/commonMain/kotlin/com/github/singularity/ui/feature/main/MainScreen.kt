@@ -64,10 +64,7 @@ private fun MainScreen(
                         targetState = uiState.connectionState,
                         transitionSpec = { slideInVertically() togetherWith slideOutVertically() }
                     ) {
-                        Text(
-                            text = it.message.getString(),
-                            modifier = Modifier
-                        )
+                        Text(it.message.getString())
                     }
                 },
                 actions = {

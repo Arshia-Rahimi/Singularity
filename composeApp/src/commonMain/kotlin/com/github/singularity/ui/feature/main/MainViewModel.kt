@@ -32,8 +32,6 @@ class MainViewModel(
         }
     }
 
-    private fun refreshConnection() {
-        connectionRepo.refresh()
-    }
+    private fun refreshConnection() = connectionRepo.refresh()
 
 }
