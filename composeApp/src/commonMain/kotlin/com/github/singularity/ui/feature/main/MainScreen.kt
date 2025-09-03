@@ -1,5 +1,9 @@
 package com.github.singularity.ui.feature.main
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,7 +59,17 @@ private fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    AnimatedContent(
+                        targetState = uiState.connectionState,
+                        transitionSpec = { slideInVertically() togetherWith slideOutVertically() }
+                    ) {
+                        Text(
+                            text = it.message.getString(),
+                            modifier = Modifier
+                        )
+                    }
+                },
                 actions = {
                     IconButton(
                         onClick = { MainIntent.ToSettingsScreen.execute() },
@@ -65,7 +79,7 @@ private fun MainScreen(
                             contentDescription = Res.string.settings.getString(),
                         )
                     }
-                }
+                },
             )
         },
     ) { ip ->

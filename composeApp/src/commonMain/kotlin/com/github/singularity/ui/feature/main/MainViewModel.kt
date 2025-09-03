@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(
-    connectionRepo: ConnectionRepository,
+    private val connectionRepo: ConnectionRepository,
 ) : ViewModel() {
 
     private val connectionState = connectionRepo.connectionState
@@ -27,8 +27,13 @@ class MainViewModel(
 
     fun execute(intent: MainIntent) {
         when (intent) {
+            is MainIntent.RefreshConnection -> refreshConnection()
             else -> Unit
         }
+    }
+
+    private fun refreshConnection() {
+        connectionRepo.refresh()
     }
 
 }

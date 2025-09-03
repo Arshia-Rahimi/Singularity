@@ -24,4 +24,9 @@
     <string name="edit_group_name">Edit group name</string>
     <string name="approve_pair_request">Approve pair request?</string>
     <string name="send_pair_request">Send pair request to %1$d?</string>
+    <string name="no_default_server">Set a default server</string>
+    <string name="searching">Searching</string>
+    <string name="connection_failed">Connection failed</string>
+    <string name="connected">Connected</string>
+    <string name="server_not_found">Server not found</string>
 </resources>

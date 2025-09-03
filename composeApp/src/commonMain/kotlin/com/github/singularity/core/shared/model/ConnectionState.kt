@@ -2,15 +2,39 @@ package com.github.singularity.core.shared.model
 
 import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.models.IServer
+import org.jetbrains.compose.resources.StringResource
+import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.connected
+import singularity.composeapp.generated.resources.connection_failed
+import singularity.composeapp.generated.resources.no_default_server
+import singularity.composeapp.generated.resources.searching
+import singularity.composeapp.generated.resources.server_not_found
 
 sealed interface ConnectionState {
-    data object NoDefaultServer : ConnectionState
-    data class Searching(val joinedSyncGroup: JoinedSyncGroup) : ConnectionState
-    data class ConnectionFailed(val server: IServer, val message: String) : ConnectionState
-    data class Connected(val server: IServer) : ConnectionState
+
+    val message: StringResource
+
+    data object NoDefaultServer : ConnectionState {
+        override val message = Res.string.no_default_server
+    }
+
+    data class Searching(val joinedSyncGroup: JoinedSyncGroup) : ConnectionState {
+        override val message = Res.string.searching
+    }
+
+    data class ConnectionFailed(val server: IServer, val errorMessage: String) : ConnectionState {
+        override val message = Res.string.connection_failed
+    }
+
+    data class Connected(val server: IServer) : ConnectionState {
+        override val message = Res.string.connected
+    }
 
     data class ServerNotFound(
         val joinedSyncGroup: JoinedSyncGroup,
-        val message: String,
-    ) : ConnectionState
+        val errorMessage: String,
+    ) : ConnectionState {
+        override val message = Res.string.server_not_found
+    }
+
 }

@@ -40,7 +40,7 @@ class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
                 }
                 is DiscoveryEvent.Resolved -> {
                     val server = newServer.service.toServer()
-                    if(server.syncGroupId == syncGroup.joinedSyncGroupId) {
+                    if (server.syncGroupId == syncGroup.syncGroupId) {
                         server
                     } else null
                 }
