@@ -1,6 +1,5 @@
 package com.github.singularity
 
-import com.github.singularity.di.registerDi
 import io.ktor.server.application.Application
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
@@ -14,10 +13,5 @@ fun main() {
     ).start(wait = true)
 }
 
-fun Application.module() {
-    Modules.forEach { module -> module() }
-}
+fun Application.module() = ServerModules.forEach { module -> module() }
 
-val Modules = SharedModules + listOf(
-    Application::registerDi,
-)

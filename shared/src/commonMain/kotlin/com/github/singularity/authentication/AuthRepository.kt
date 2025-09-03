@@ -7,4 +7,6 @@ interface AuthRepository {
 
     fun getNode(token: BearerTokenCredential): Node?
 
+    fun authenticate(node: Node): String
+
 }

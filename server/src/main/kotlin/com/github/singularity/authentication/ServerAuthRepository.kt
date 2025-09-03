@@ -9,4 +9,8 @@ class ServerAuthRepository : AuthRepository {
         TODO("Not yet implemented")
     }
 
+    override fun authenticate(node: Node): String {
+        TODO("Not yet implemented")
+    }
+
 }

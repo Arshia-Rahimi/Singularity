@@ -7,7 +7,7 @@ import io.ktor.server.routing.routing
 fun Application.registerPairingRoute() {
     routing {
         post("/pair") {
-
+            // todo
         }
     }
 }
