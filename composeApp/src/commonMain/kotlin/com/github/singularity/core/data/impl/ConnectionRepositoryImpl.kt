@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.client.WebSocketClientDataSource
-import com.github.singularity.core.client.utils.WebsocketConnectionDroppedException
+import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ConnectionRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.mdns.DeviceDiscoveryService
@@ -59,7 +59,7 @@ class ConnectionRepositoryImpl(
                             .onFirst { emit(ConnectionState.Connected(server)) }
                             .catch { e ->
                                 when (e) {
-                                    is WebsocketConnectionDroppedException ->
+                                    is WebSocketConnectionDroppedException ->
                                         emit(
                                             ConnectionState.ConnectionFailed(
                                                 server,

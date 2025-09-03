@@ -1,8 +1,8 @@
 package com.github.singularity.core.client.impl
 
 import com.github.singularity.core.client.WebSocketClientDataSource
-import com.github.singularity.core.client.utils.WebsocketConnectionDroppedException
-import com.github.singularity.core.client.utils.WebsocketConnectionFailedException
+import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
+import com.github.singularity.core.client.utils.WebSocketConnectionFailedException
 import com.github.singularity.models.IServer
 import com.github.singularity.models.sync.SyncEvent
 import io.ktor.client.HttpClient
@@ -56,8 +56,8 @@ class KtorWebSocketClientDataSource : WebSocketClientDataSource {
         } catch (e: Throwable) {
             when (e) {
                 is CancellationException -> Unit
-                is IOException, is WebSocketException -> throw WebsocketConnectionDroppedException()
-                else -> throw WebsocketConnectionFailedException()
+                is IOException, is WebSocketException -> throw WebSocketConnectionDroppedException()
+                else -> throw WebSocketConnectionFailedException()
             }
         }
     }.catch { throw it }
