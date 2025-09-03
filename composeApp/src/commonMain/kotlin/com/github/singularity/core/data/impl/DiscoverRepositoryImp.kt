@@ -53,7 +53,6 @@ class DiscoverRepositoryImp(
         deviceName = getDeviceName(),
         deviceOs = os,
         deviceId = preferencesRepo.preferences.first().deviceId,
-        ip = "",
     )
 
 }

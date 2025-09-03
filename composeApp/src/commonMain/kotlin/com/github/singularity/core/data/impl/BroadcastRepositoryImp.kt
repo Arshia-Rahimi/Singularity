@@ -43,7 +43,7 @@ class BroadcastRepositoryImp(
         broadcastService.broadcastServer(group)
         // todo: run http server and listen for pair requests
 
-        emit(Node("", "", "", ""))
+        emit(Node("", "", ""))
     }
 
     override suspend fun setAsDefault(group: HostedSyncGroup) {
