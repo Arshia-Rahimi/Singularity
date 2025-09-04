@@ -1,12 +1,12 @@
 package com.github.singularity.core.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.github.singularity.core.database.HostedSyncGroupDataSource
 import com.github.singularity.core.database.SingularityDatabase
-import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.database.entities.HostedSyncGroupNode
 import com.github.singularity.core.database.toBoolean
 import com.github.singularity.core.database.toLong
+import com.github.singularity.data.HostedSyncGroupDataSource
+import com.github.singularity.data.entities.HostedSyncGroup
+import com.github.singularity.data.entities.HostedSyncGroupNode
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

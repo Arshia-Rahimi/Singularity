@@ -1,4 +1,4 @@
-package com.github.singularity.core.database.entities
+package com.github.singularity.data.entities
 
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

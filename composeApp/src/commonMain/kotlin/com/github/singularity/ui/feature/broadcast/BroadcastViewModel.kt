@@ -4,9 +4,9 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.BroadcastRepository
-import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.data.entities.HostedSyncGroup
 import com.github.singularity.models.Node
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow

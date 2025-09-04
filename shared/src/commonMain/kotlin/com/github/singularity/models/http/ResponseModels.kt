@@ -1,4 +1,4 @@
-package com.github.singularity.models
+package com.github.singularity.models.http
 
 import kotlinx.serialization.Serializable
 

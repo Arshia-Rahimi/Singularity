@@ -1,9 +1,9 @@
 package com.github.singularity.core.database.di
 
-import com.github.singularity.core.database.HostedSyncGroupDataSource
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.database.impl.LocalHostedSyncGroupsDataSource
 import com.github.singularity.core.database.impl.LocalJoinedSyncGroupsDataSource
+import com.github.singularity.data.HostedSyncGroupDataSource
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

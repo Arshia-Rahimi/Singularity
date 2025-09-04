@@ -2,7 +2,7 @@ package com.github.singularity.core.client
 
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.models.Node
-import com.github.singularity.models.PairRequestResponse
+import com.github.singularity.models.http.PairRequestResponse
 
 interface HttpClientDataSource {
 

@@ -1,11 +1,11 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
-import com.github.singularity.core.database.HostedSyncGroupDataSource
-import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
+import com.github.singularity.data.HostedSyncGroupDataSource
+import com.github.singularity.data.entities.HostedSyncGroup
 import com.github.singularity.models.Node
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

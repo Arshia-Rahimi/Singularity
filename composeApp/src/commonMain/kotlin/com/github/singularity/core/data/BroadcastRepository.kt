@@ -1,8 +1,8 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.Success
+import com.github.singularity.data.entities.HostedSyncGroup
 import com.github.singularity.models.Node
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
