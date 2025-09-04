@@ -3,8 +3,8 @@ package com.github.singularity.core.client.impl
 import com.github.singularity.core.client.WebSocketClientDataSource
 import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
 import com.github.singularity.core.client.utils.WebSocketConnectionFailedException
-import com.github.singularity.models.IServer
-import com.github.singularity.models.sync.SyncEvent
+import com.github.singularity.core.shared.model.LocalServer
+import com.github.singularity.core.shared.model.websocket.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.websocket.WebSocketException
@@ -40,7 +40,7 @@ class KtorWebSocketClientDataSource : WebSocketClientDataSource {
 
     private val outgoingEvents = Channel<SyncEvent>(Channel.BUFFERED)
 
-    override fun connect(server: IServer, authToken: String) = callbackFlow {
+    override fun connect(server: LocalServer, authToken: String) = callbackFlow {
         try {
             client.webSocket("wss://${server.ip}/sync") {
                 val converter = converter ?: return@webSocket

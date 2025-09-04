@@ -1,7 +1,6 @@
 package com.github.singularity.core.shared.model
 
 import com.github.singularity.core.database.entities.JoinedSyncGroup
-import com.github.singularity.models.IServer
 import org.jetbrains.compose.resources.StringResource
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.connected
@@ -22,11 +21,12 @@ sealed interface ConnectionState {
         override val message = Res.string.searching
     }
 
-    data class ConnectionFailed(val server: IServer, val errorMessage: String) : ConnectionState {
+    data class ConnectionFailed(val server: LocalServer, val errorMessage: String) :
+        ConnectionState {
         override val message = Res.string.connection_failed
     }
 
-    data class Connected(val server: IServer) : ConnectionState {
+    data class Connected(val server: LocalServer) : ConnectionState {
         override val message = Res.string.connected
     }
 

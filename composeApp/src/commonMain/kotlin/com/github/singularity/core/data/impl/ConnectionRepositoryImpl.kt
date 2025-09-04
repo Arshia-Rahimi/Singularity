@@ -6,9 +6,9 @@ import com.github.singularity.core.data.ConnectionRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.model.ConnectionState
+import com.github.singularity.core.shared.model.websocket.SyncEvent
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
-import com.github.singularity.models.sync.SyncEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
@@ -47,10 +47,7 @@ class ConnectionRepositoryImpl(
                 else flow {
                     emit(ConnectionState.Searching(defaultServer))
 
-                    val server = when {
-                        defaultServer.isLocal -> deviceDiscoveryService.discoverServer(defaultServer)
-                        else -> defaultServer.toServer()
-                    }
+                    val server = deviceDiscoveryService.discoverServer(defaultServer)
 
                     if (server == null) {
                         emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))

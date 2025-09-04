@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.models.Node
+import com.github.singularity.core.shared.model.Node
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.broadcast.BroadcastIntent
 import singularity.composeapp.generated.resources.Res

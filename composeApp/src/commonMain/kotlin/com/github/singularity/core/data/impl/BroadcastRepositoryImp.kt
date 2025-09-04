@@ -1,18 +1,19 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
+import com.github.singularity.core.database.HostedSyncGroupDataSource
+import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
+import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
-import com.github.singularity.data.HostedSyncGroupDataSource
-import com.github.singularity.data.entities.HostedSyncGroup
-import com.github.singularity.models.Node
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
 class BroadcastRepositoryImp(
@@ -23,6 +24,8 @@ class BroadcastRepositoryImp(
 
     override val syncGroups = hostedSyncGroupsDataSource.hostedSyncGroups
         .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+
+    override val localSyncGroup = syncGroups.map { it.firstOrNull { group -> group.isDefault } }
 
     override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupsDataSource.insert(group)

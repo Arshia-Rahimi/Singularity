@@ -1,7 +1,7 @@
-package com.github.singularity.core.server
+package com.github.singularity.core.data.impl
 
-import com.github.singularity.authentication.AuthRepository
-import com.github.singularity.models.Node
+import com.github.singularity.core.data.AuthRepository
+import com.github.singularity.core.shared.model.Node
 import io.ktor.server.auth.BearerTokenCredential
 
 class LocalServerAuthRepository : AuthRepository {

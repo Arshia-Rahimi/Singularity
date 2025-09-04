@@ -1,7 +1,7 @@
 package com.github.singularity.ui.feature.broadcast
 
-import com.github.singularity.data.entities.HostedSyncGroup
-import com.github.singularity.models.Node
+import com.github.singularity.core.database.entities.HostedSyncGroup
+import com.github.singularity.core.shared.model.Node
 
 sealed interface BroadcastIntent {
     data class Approve(val node: Node): BroadcastIntent

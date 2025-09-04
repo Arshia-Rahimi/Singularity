@@ -1,12 +1,12 @@
 package com.github.singularity.core.client
 
 import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.models.Node
-import com.github.singularity.models.http.PairRequestResponse
+import com.github.singularity.core.shared.model.Node
+import com.github.singularity.core.shared.model.http.PairResponse
 
 interface HttpClientDataSource {
 
-    suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairRequestResponse
+    suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairResponse
 
     fun release()
     

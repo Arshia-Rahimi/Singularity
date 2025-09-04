@@ -20,7 +20,6 @@ class LocalJoinedSyncGroupsDataSource(
                 JoinedSyncGroup(
                     isDefault = it.is_default.toBoolean(),
                     authToken = it.auth_token,
-                    isLocal = it.is_local.toBoolean(),
                     syncGroupId = it.joined_sync_group_id,
                     syncGroupName = it.name,
                     ip = it.ip,
@@ -33,7 +32,6 @@ class LocalJoinedSyncGroupsDataSource(
             joined_sync_group_id = joinedSyncGroup.syncGroupId,
             name = joinedSyncGroup.syncGroupName,
             auth_token = joinedSyncGroup.authToken,
-            is_local = joinedSyncGroup.isLocal.toLong(),
             ip = joinedSyncGroup.ip,
         )
     }

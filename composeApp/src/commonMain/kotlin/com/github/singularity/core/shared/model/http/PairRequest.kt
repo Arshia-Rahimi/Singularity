@@ -1,6 +1,6 @@
-package com.github.singularity.models.http
+package com.github.singularity.core.shared.model.http
 
-data class PairRequestModel(
+data class PairRequest(
     val deviceName: String?,
     val deviceId: String?,
     val deviceOs: String?,

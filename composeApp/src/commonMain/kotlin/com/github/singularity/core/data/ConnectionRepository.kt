@@ -1,7 +1,7 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.shared.model.ConnectionState
-import com.github.singularity.models.sync.SyncEvent
+import com.github.singularity.core.shared.model.websocket.SyncEvent
 import kotlinx.coroutines.flow.SharedFlow
 
 interface ConnectionRepository {

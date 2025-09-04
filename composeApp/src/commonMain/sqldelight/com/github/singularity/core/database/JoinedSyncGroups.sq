@@ -3,7 +3,6 @@ CREATE TABLE JoinedSyncGroups(
     name TEXT NOT NULL,
     is_default INTEGER NOT NULL CHECK (is_default IN (0, 1)),
     auth_token TEXT NOT NULL,
-    is_local INTEGER NOT NULL CHECK (is_local IN (0, 1)),
     ip TEXT
 );
 
@@ -13,8 +12,8 @@ SELECT *
     ORDER BY name;
     
 insert:
-INSERT INTO JoinedSyncGroups (joined_sync_group_id, name, auth_token, is_local, ip, is_default)
-    VALUES (?, ?, ?, ?, ?, 0);
+INSERT INTO JoinedSyncGroups (joined_sync_group_id, name, auth_token, ip, is_default)
+    VALUES (?, ?, ?, ?, 0);
     
 updateIsDefault:
 UPDATE JoinedSyncGroups 

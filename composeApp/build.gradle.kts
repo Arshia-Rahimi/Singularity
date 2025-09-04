@@ -41,7 +41,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.shared)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
@@ -61,6 +60,14 @@ kotlin {
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.client.auth)
                 implementation(libs.ktor.client.websockets)
+                implementation(libs.ktor.server.cio)
+                implementation(libs.ktor.server.core)
+                implementation(libs.ktor.server.content.negotiation)
+                implementation(libs.ktor.server.auth)
+                implementation(libs.ktor.server.websockets)
+                implementation(libs.ktor.json)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.koin.core)
             }
         }
         val commonTest by getting {

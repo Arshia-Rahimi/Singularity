@@ -1,6 +1,6 @@
 package com.github.singularity.core.mdns
 
-import com.github.singularity.data.entities.HostedSyncGroup
+import com.github.singularity.core.database.entities.HostedSyncGroup
 
 interface DeviceBroadcastService {
 

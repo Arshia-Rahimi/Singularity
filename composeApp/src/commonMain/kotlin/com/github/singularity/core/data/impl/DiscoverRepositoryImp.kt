@@ -8,10 +8,10 @@ import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.LocalServer
+import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
-import com.github.singularity.models.Node
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.first
@@ -35,7 +35,6 @@ class DiscoverRepositoryImp(
                 syncGroupName = server.syncGroupName,
                 authToken = response.authToken ?: "",
                 ip = server.ip,
-                isLocal = true,
             )
             joinedSyncGroupsRepo.insert(newGroup)
             joinedSyncGroupsRepo.setAsDefault(newGroup)
