@@ -8,4 +8,6 @@ interface WebSocketClientDataSource {
 
     fun connect(server: IServer, authToken: String): Flow<SyncEvent>
 
+    suspend fun send(event: SyncEvent)
+
 }

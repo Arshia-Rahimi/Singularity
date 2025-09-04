@@ -13,8 +13,10 @@ import io.ktor.client.plugins.websocket.converter
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
+import io.ktor.serialization.serialize
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
@@ -36,20 +38,29 @@ class KtorWebSocketClientDataSource : WebSocketClientDataSource {
         }
     }
 
+    private val outgoingEvents = Channel<SyncEvent>(Channel.BUFFERED)
+
     override fun connect(server: IServer, authToken: String) = callbackFlow {
         try {
             client.webSocket("wss://${server.ip}/sync") {
                 val converter = converter ?: return@webSocket
 
-                val job = launch {
+                val sender = launch {
+                    outgoingEvents.receiveAsFlow()
+                        .map { converter.serialize<SyncEvent>(it) }
+                        .collect { send(it) }
+                }
+
+                val receiver = launch {
                     incoming.receiveAsFlow()
                         .filterIsInstance<Frame.Text>()
                         .map { converter.deserialize<SyncEvent>(it) }
-                        .collect { trySend(it) }
+                        .collect { send(it) }
                 }
 
                 awaitClose {
-                    job.cancel()
+                    sender.cancel()
+                    receiver.cancel()
                     this@webSocket.cancel()
                 }
             }
@@ -61,5 +72,9 @@ class KtorWebSocketClientDataSource : WebSocketClientDataSource {
             }
         }
     }.catch { throw it }
+
+    override suspend fun send(event: SyncEvent) {
+        outgoingEvents.send(event)
+    }
 
 }

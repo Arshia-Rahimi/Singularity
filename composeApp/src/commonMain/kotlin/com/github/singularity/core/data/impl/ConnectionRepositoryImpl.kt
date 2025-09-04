@@ -26,8 +26,8 @@ import kotlinx.coroutines.flow.shareIn
 class ConnectionRepositoryImpl(
     joinedSyncGroupsDataSource: JoinedSyncGroupDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
-    webSocketClient: WebSocketClientDataSource,
     scope: CoroutineScope,
+    private val webSocketClient: WebSocketClientDataSource,
 ) : ConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
@@ -82,6 +82,10 @@ class ConnectionRepositoryImpl(
             }
     }
         .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+
+    override suspend fun send(event: SyncEvent) {
+        webSocketClient.send(event)
+    }
 
     override fun refresh() {
         refreshState.sendPulse()

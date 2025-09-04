@@ -10,6 +10,8 @@ interface ConnectionRepository {
 
     val connectionState: SharedFlow<ConnectionState>
 
+    suspend fun send(event: SyncEvent)
+
     fun refresh()
 
 }
