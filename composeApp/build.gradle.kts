@@ -98,6 +98,10 @@ kotlin {
             }
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 android {

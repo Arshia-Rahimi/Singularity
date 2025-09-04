@@ -6,16 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.shared.util.Resource
+import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.models.Node
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BroadcastViewModel(
@@ -24,7 +23,7 @@ class BroadcastViewModel(
 
     private val syncGroups = broadcastRepo.syncGroups
         .map { it.sortedWith(compareBy<HostedSyncGroup> { group -> !group.isDefault }.thenBy { group -> group.name }) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateInWhileSubscribed(emptyList())
 
     private val requestedNodes = MutableStateFlow(emptyList<Node>())
 
@@ -41,7 +40,7 @@ class BroadcastViewModel(
             requestedNodes = requestedNodes,
             isBroadcasting = isBroadcasting,
         )
-    }.debounce(10).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BroadcastUiState())
+    }.debounce(10).stateInWhileSubscribed(BroadcastUiState())
 
     fun execute(intent: BroadcastIntent) {
         when (intent) {

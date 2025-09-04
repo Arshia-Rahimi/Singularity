@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.util.next
-import kotlinx.coroutines.flow.SharingStarted
+import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -17,13 +16,13 @@ class SettingsViewModel(
 
     private val appTheme = preferencesRepo.preferences
         .map { it.theme }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppTheme.System)
+        .stateInWhileSubscribed(AppTheme.System)
 
     val uiState = combine(appTheme) {
         SettingsUiState(
             appTheme = it[0],
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsUiState())
+    }.stateInWhileSubscribed(SettingsUiState())
 
     fun execute(intent: SettingsIntent) {
         when(intent) {
