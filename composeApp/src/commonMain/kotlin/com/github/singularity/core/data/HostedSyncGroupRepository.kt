@@ -1,13 +1,12 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.Success
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 
-interface BroadcastRepository {
+interface HostedSyncGroupRepository {
 
     val syncGroups: SharedFlow<List<HostedSyncGroup>>
 
@@ -19,10 +18,4 @@ interface BroadcastRepository {
 
     suspend fun setAsDefault(group: HostedSyncGroup)
 
-    fun broadcastGroup(group: HostedSyncGroup): Flow<Node>
-
-    fun approvePairRequest(node: Node): Flow<Resource<Success>>
-
-    fun stopBroadcast()
-    
 }

@@ -1,12 +1,13 @@
 package com.github.singularity.core.data
 
+import com.github.singularity.core.database.entities.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.Node
 import io.ktor.server.auth.BearerTokenCredential
 
 interface AuthRepository {
 
-    fun getNode(token: BearerTokenCredential): Node?
+    suspend fun getNode(token: BearerTokenCredential): HostedSyncGroupNode?
 
-    fun authenticate(node: Node): String
+    suspend fun authenticate(node: Node): String
 
 }

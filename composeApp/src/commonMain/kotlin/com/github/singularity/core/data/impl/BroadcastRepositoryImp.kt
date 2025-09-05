@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
-import com.github.singularity.core.database.HostedSyncGroupDataSource
+import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.shared.model.Node
@@ -11,46 +11,31 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
-    private val hostedSyncGroupsDataSource: HostedSyncGroupDataSource,
+    private val hostedSyncGroupRepo: HostedSyncGroupRepository,
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
-    override val syncGroups = hostedSyncGroupsDataSource.hostedSyncGroups
-        .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+    override val syncGroups = hostedSyncGroupRepo.syncGroups
 
-    override val localSyncGroup = syncGroups.map { it.firstOrNull { group -> group.isDefault } }
+    override fun create(group: HostedSyncGroup) = hostedSyncGroupRepo.create(group)
 
-    override fun create(group: HostedSyncGroup) = flow {
-        hostedSyncGroupsDataSource.insert(group)
-        emit(Success)
-    }.asResult(Dispatchers.IO)
+    override fun editName(groupName: String, group: HostedSyncGroup) =
+        hostedSyncGroupRepo.editName(groupName, group)
 
-    override fun editName(groupName: String, group: HostedSyncGroup) = flow {
-        hostedSyncGroupsDataSource.updateName(groupName, group.hostedSyncGroupId)
-        emit(Success)
-    }.asResult(Dispatchers.IO)
+    override fun delete(group: HostedSyncGroup) = hostedSyncGroupRepo.delete(group)
 
-    override fun delete(group: HostedSyncGroup) = flow {
-        hostedSyncGroupsDataSource.delete(group)
-        emit(Success)
-    }.asResult(Dispatchers.IO)
+    override suspend fun setAsDefault(group: HostedSyncGroup) =
+        hostedSyncGroupRepo.setAsDefault(group)
 
     override fun broadcastGroup(group: HostedSyncGroup) = flow {
         broadcastService.broadcastServer(group)
         // todo: run http server and listen for pair requests
 
         emit(Node("", "", ""))
-    }
-
-    override suspend fun setAsDefault(group: HostedSyncGroup) {
-        hostedSyncGroupsDataSource.setAsDefault(group)
     }
 
     override fun approvePairRequest(node: Node) = flow {
