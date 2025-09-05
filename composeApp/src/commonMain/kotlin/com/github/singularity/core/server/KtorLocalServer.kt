@@ -8,7 +8,7 @@ import com.github.singularity.core.shared.SERVER_PORT
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.auth.bearer
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
@@ -44,8 +44,8 @@ class KtorLocalServer(
 
     private fun Application.registerAuthentication() {
         install(Authentication) {
-            jwt("auth") {
-                
+            bearer {
+                authenticate { authRepo.getNode(it.token) }
             }
         }
     }

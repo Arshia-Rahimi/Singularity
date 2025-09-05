@@ -64,11 +64,12 @@ kotlin {
                 implementation(libs.ktor.server.core)
                 implementation(libs.ktor.server.content.negotiation)
                 implementation(libs.ktor.server.auth)
-                implementation(libs.ktor.server.auth.jwt)
                 implementation(libs.ktor.server.websockets)
                 implementation(libs.ktor.json)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.koin.core)
+                implementation(libs.jwt.kt)
+                implementation(libs.jwt.kt.hmac)
             }
         }
         val commonTest by getting {
