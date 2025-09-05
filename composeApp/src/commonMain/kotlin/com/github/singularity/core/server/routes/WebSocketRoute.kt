@@ -8,7 +8,7 @@ import io.ktor.server.websocket.webSocket
 fun Route.webSocketRoute(
     broadcastRepo: BroadcastRepository,
 ) {
-    authenticate {
+    authenticate("auth") {
         webSocket("/sync") {
             // todo
         }

@@ -4,9 +4,9 @@ import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
-import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.getDeviceName
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.os
@@ -30,10 +30,14 @@ class DiscoverRepositoryImp(
     override fun sendPairRequest(server: LocalServer) = flow {
         try {
             val response = httpClientDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
+            if (!response.success) {
+                throw Exception(response.message)
+            }
+            
             val newGroup = JoinedSyncGroup(
-                syncGroupId = server.syncGroupId,
-                syncGroupName = server.syncGroupName,
-                authToken = response.authToken ?: "",
+                syncGroupId = response.node?.syncGroupId ?: "",
+                syncGroupName = response.node?.syncGroupName ?: "",
+                authToken = response.node?.authToken ?: "",
                 ip = server.ip,
             )
             joinedSyncGroupsRepo.insert(newGroup)

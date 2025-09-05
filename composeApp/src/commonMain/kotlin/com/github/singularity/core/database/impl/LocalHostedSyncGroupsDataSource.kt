@@ -3,10 +3,10 @@ package com.github.singularity.core.database.impl
 import app.cash.sqldelight.coroutines.asFlow
 import com.github.singularity.core.database.HostedSyncGroupDataSource
 import com.github.singularity.core.database.SingularityDatabase
-import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.database.entities.HostedSyncGroupNode
 import com.github.singularity.core.database.toBoolean
 import com.github.singularity.core.database.toLong
+import com.github.singularity.core.shared.model.HostedSyncGroup
+import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -32,6 +32,9 @@ class LocalHostedSyncGroupsDataSource(
                                 nodeId = node.node_id,
                                 authToken = node.auth_token ?: "",
                                 syncGroupId = id,
+                                syncGroupName = groupData.name,
+                                nodeName = node.name,
+                                nodeOs = node.node_os ?: "",
                             )
                         },
                     )
@@ -54,6 +57,8 @@ class LocalHostedSyncGroupsDataSource(
             node_id = syncGroupNode.nodeId,
             auth_token = syncGroupNode.authToken,
             hosted_sync_group_id = syncGroupNode.syncGroupId,
+            node_name = syncGroupNode.nodeName,
+            node_os = syncGroupNode.nodeOs,
         )
     }
 

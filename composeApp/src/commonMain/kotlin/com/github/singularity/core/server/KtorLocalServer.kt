@@ -8,7 +8,7 @@ import com.github.singularity.core.shared.SERVER_PORT
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.bearer
+import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
@@ -28,7 +28,15 @@ class KtorLocalServer(
             registerAuthentication()
             registerRoutes()
         },
-    ).start(wait = true)
+    )
+
+    fun start() {
+        server.start()
+    }
+
+    fun stop() {
+        server.stop()
+    }
 
     private fun Application.registerWebsockets() {
         install(WebSockets)
@@ -36,10 +44,8 @@ class KtorLocalServer(
 
     private fun Application.registerAuthentication() {
         install(Authentication) {
-            bearer {
-                authenticate { token ->
-                    authRepo.getNode(token)
-                }
+            jwt("auth") {
+                
             }
         }
     }

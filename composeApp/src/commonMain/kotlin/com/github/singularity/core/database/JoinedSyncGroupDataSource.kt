@@ -1,6 +1,6 @@
 package com.github.singularity.core.database
 
-import com.github.singularity.core.database.entities.JoinedSyncGroup
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import kotlinx.coroutines.flow.Flow
 
 interface JoinedSyncGroupDataSource {

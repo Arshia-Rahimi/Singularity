@@ -3,9 +3,9 @@ package com.github.singularity.core.database.impl
 import app.cash.sqldelight.coroutines.asFlow
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.database.SingularityDatabase
-import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.database.toBoolean
 import com.github.singularity.core.database.toLong
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

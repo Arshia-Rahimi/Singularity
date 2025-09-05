@@ -2,15 +2,10 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.database.HostedSyncGroupDataSource
-import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.shared.util.Success
-import com.github.singularity.core.shared.util.asResult
+import com.github.singularity.core.shared.model.HostedSyncGroup
+import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
 class HostedSyncGroupRepositoryImpl(
@@ -21,22 +16,21 @@ class HostedSyncGroupRepositoryImpl(
     override val syncGroups = hostedSyncGroupsDataSource.hostedSyncGroups
         .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
 
-    override val defaultSyncGroup = syncGroups.map { it.firstOrNull { group -> group.isDefault } }
-
-    override fun create(group: HostedSyncGroup) = flow {
+    override suspend fun create(group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.insert(group)
-        emit(Success)
-    }.asResult(Dispatchers.IO)
+    }
 
-    override fun editName(groupName: String, group: HostedSyncGroup) = flow {
+    override suspend fun create(node: HostedSyncGroupNode) {
+        hostedSyncGroupsDataSource.insert(node)
+    }
+
+    override suspend fun editName(groupName: String, group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.updateName(groupName, group.hostedSyncGroupId)
-        emit(Success)
-    }.asResult(Dispatchers.IO)
+    }
 
-    override fun delete(group: HostedSyncGroup) = flow {
+    override suspend fun delete(group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.delete(group)
-        emit(Success)
-    }.asResult(Dispatchers.IO)
+    }
 
     override suspend fun setAsDefault(group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.setAsDefault(group)

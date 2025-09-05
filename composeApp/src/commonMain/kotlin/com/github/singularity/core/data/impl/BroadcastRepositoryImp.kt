@@ -2,8 +2,8 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.database.entities.HostedSyncGroup
 import com.github.singularity.core.mdns.DeviceBroadcastService
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
@@ -21,12 +21,20 @@ class BroadcastRepositoryImp(
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
 
-    override fun create(group: HostedSyncGroup) = hostedSyncGroupRepo.create(group)
+    override fun create(group: HostedSyncGroup) = flow {
+        hostedSyncGroupRepo.create(group)
+        emit(Success)
+    }.asResult(Dispatchers.IO)
 
-    override fun editName(groupName: String, group: HostedSyncGroup) =
+    override fun editName(groupName: String, group: HostedSyncGroup) = flow {
         hostedSyncGroupRepo.editName(groupName, group)
+        emit(Success)
+    }.asResult(Dispatchers.IO)
 
-    override fun delete(group: HostedSyncGroup) = hostedSyncGroupRepo.delete(group)
+    override fun delete(group: HostedSyncGroup) = flow {
+        hostedSyncGroupRepo.delete(group)
+        emit(Success)
+    }.asResult(Dispatchers.IO)
 
     override suspend fun setAsDefault(group: HostedSyncGroup) =
         hostedSyncGroupRepo.setAsDefault(group)

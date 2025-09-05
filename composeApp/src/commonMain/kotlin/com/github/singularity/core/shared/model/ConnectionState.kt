@@ -1,6 +1,5 @@
 package com.github.singularity.core.shared.model
 
-import com.github.singularity.core.database.entities.JoinedSyncGroup
 import org.jetbrains.compose.resources.StringResource
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.connected

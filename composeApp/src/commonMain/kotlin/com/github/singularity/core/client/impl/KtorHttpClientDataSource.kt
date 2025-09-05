@@ -29,9 +29,9 @@ class KtorHttpClientDataSource : HttpClientDataSource {
             contentType(ContentType.Application.Json)
             setBody(
                 PairRequest(
-                    deviceName = currentDevice.deviceName,
-                    deviceId = currentDevice.deviceId,
-                    deviceOs = currentDevice.deviceOs,
+                    nodeName = currentDevice.deviceName,
+                    nodeId = currentDevice.deviceId,
+                    nodeOs = currentDevice.deviceOs,
                     syncGroupName = server.syncGroupName,
                     syncGroupId = server.syncGroupId,
                 )

@@ -2,10 +2,10 @@ package com.github.singularity.core.mdns.impl
 
 import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
-import com.github.singularity.core.database.entities.JoinedSyncGroup
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.mdns.MDNS_SERVICE_TYPE
 import com.github.singularity.core.mdns.toServer
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first

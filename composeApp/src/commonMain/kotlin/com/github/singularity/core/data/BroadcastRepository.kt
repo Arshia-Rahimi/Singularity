@@ -1,6 +1,6 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.database.entities.HostedSyncGroup
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.Success

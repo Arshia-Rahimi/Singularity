@@ -1,4 +1,4 @@
-package com.github.singularity.core.database.entities
+package com.github.singularity.core.shared.model
 
 data class JoinedSyncGroup(
     val authToken: String,

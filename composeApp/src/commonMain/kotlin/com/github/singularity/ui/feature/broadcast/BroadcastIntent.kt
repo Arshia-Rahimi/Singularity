@@ -1,6 +1,6 @@
 package com.github.singularity.ui.feature.broadcast
 
-import com.github.singularity.core.database.entities.HostedSyncGroup
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 
 sealed interface BroadcastIntent {

@@ -1,7 +1,7 @@
 package com.github.singularity.core.database
 
-import com.github.singularity.core.database.entities.HostedSyncGroup
-import com.github.singularity.core.database.entities.HostedSyncGroupNode
+import com.github.singularity.core.shared.model.HostedSyncGroup
+import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import kotlinx.coroutines.flow.Flow
 
 interface HostedSyncGroupDataSource {

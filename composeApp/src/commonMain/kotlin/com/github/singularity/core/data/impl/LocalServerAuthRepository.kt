@@ -2,8 +2,9 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.AuthRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.shared.model.Node
-import io.ktor.server.auth.BearerTokenCredential
+import com.github.singularity.core.data.Token
+import com.github.singularity.core.shared.model.HostedSyncGroupNode
+import com.github.singularity.core.shared.model.http.PairRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -18,12 +19,29 @@ class LocalServerAuthRepository(
         .map { it.firstOrNull { group -> group.isDefault } }
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
 
-    override suspend fun getNode(token: BearerTokenCredential) =
-        defaultSyncGroup.value?.nodes?.firstOrNull { it.authToken == token.token }
+    override suspend fun getNode(token: Token) =
+        defaultSyncGroup.value?.nodes?.firstOrNull { it.authToken == token }
 
+    override suspend fun authenticate(pairRequest: PairRequest): HostedSyncGroupNode? {
+        val defaultGroup = defaultSyncGroup.value ?: return null
+        if (pairRequest.nodeId != defaultGroup.hostedSyncGroupId) return null
 
-    override suspend fun authenticate(node: Node): String {
-        TODO("Not yet implemented")
+        val isApproved = false // todo
+
+        if (!isApproved) return null
+
+        val authToken = "" // todo
+        val node = HostedSyncGroupNode(
+            nodeId = pairRequest.nodeId,
+            nodeOs = pairRequest.nodeOs,
+            nodeName = pairRequest.nodeName,
+            authToken = authToken,
+            syncGroupId = defaultGroup.hostedSyncGroupId,
+            syncGroupName = defaultGroup.name,
+        )
+        hostedSyncGroupRepo.create(node)
+
+        return node
     }
 
 }

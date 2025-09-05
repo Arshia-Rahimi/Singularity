@@ -1,6 +1,6 @@
 package com.github.singularity.core.mdns
 
-import com.github.singularity.core.database.entities.JoinedSyncGroup
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.flow.Flow
 
