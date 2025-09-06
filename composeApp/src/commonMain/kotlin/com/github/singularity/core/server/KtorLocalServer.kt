@@ -13,13 +13,15 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
+import kotlinx.coroutines.CoroutineScope
 
 class KtorLocalServer(
     private val authRepo: AuthRepository,
     private val broadcastRepo: BroadcastRepository,
+    scope: CoroutineScope,
 ) {
 
-    private val server = embeddedServer(
+    private val server = scope.embeddedServer(
         factory = CIO,
         port = SERVER_PORT,
         host = "0.0.0.0",

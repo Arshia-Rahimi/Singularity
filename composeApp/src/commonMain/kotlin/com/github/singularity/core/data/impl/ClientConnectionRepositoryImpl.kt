@@ -24,10 +24,10 @@ import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
+    private val webSocketClient: WebSocketClientDataSource,
     joinedSyncGroupsDataSource: JoinedSyncGroupDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
     scope: CoroutineScope,
-    private val webSocketClient: WebSocketClientDataSource,
 ) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()

@@ -2,11 +2,13 @@ package com.github.singularity.core.shared.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 
 fun Channel<Unit>.sendPulse() = trySend(Unit)
@@ -26,3 +28,6 @@ fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 context(viewModel: ViewModel)
 fun <T> Flow<T>.stateInWhileSubscribed(initialValue: T) =
     stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5000), initialValue)
+
+fun <T> Flow<T>.shareInWhilesubscribed(scope: CoroutineScope, replay: Int = 0) =
+    shareIn(scope, SharingStarted.WhileSubscribed(5000), replay)

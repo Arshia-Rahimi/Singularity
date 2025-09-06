@@ -123,7 +123,7 @@ private fun BroadcastScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Button(
-                    onClick = { BroadcastIntent.ToggleBroadcast.execute() },
+                    onClick = { if (uiState.isBroadcasting) BroadcastIntent.StopBroadcast.execute() else BroadcastIntent.Broadcast.execute() },
                 ) {
                     Text(if (uiState.isBroadcasting) "stop broadcast" else "broadcast")
                 }

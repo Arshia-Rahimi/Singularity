@@ -2,6 +2,7 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
+import com.github.singularity.core.database.HostedSyncGroupNodes
 import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.flow
 
 class BroadcastRepositoryImp(
@@ -20,6 +22,9 @@ class BroadcastRepositoryImp(
 ) : BroadcastRepository {
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
+
+    override val nodesConnected: SharedFlow<List<HostedSyncGroupNodes>>
+        get() = TODO("Not yet implemented")
 
     override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupRepo.create(group)
@@ -36,10 +41,8 @@ class BroadcastRepositoryImp(
         emit(Success)
     }.asResult(Dispatchers.IO)
 
-    override suspend fun setAsDefault(group: HostedSyncGroup) =
-        hostedSyncGroupRepo.setAsDefault(group)
-
     override fun broadcastGroup(group: HostedSyncGroup) = flow {
+        hostedSyncGroupRepo.setAsDefault(group)
         broadcastService.broadcastServer(group)
         // todo: run http server and listen for pair requests
 

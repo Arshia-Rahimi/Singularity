@@ -4,9 +4,9 @@ import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.database.HostedSyncGroupDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
+import com.github.singularity.core.shared.util.shareInWhilesubscribed
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.map
 
 class HostedSyncGroupRepositoryImpl(
     private val hostedSyncGroupsDataSource: HostedSyncGroupDataSource,
@@ -14,7 +14,11 @@ class HostedSyncGroupRepositoryImpl(
 ) : HostedSyncGroupRepository {
 
     override val syncGroups = hostedSyncGroupsDataSource.hostedSyncGroups
-        .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+        .shareInWhilesubscribed(scope)
+
+    override val defaultGroup = syncGroups.map {
+        it.firstOrNull { group -> group.isDefault }
+    }.shareInWhilesubscribed(scope)
 
     override suspend fun create(group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.insert(group)

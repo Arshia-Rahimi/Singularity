@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class BroadcastViewModel(
     private val broadcastRepo: BroadcastRepository,
@@ -44,12 +43,12 @@ class BroadcastViewModel(
 
     fun execute(intent: BroadcastIntent) {
         when (intent) {
-            is BroadcastIntent.ToggleBroadcast -> if (uiState.value.isBroadcasting) stopBroadcast() else broadcast()
+            is BroadcastIntent.Broadcast -> broadcast()
+            is BroadcastIntent.StopBroadcast -> stopBroadcast()
             is BroadcastIntent.Approve -> approve(intent.node)
             is BroadcastIntent.CreateGroup -> create(intent.groupName)
             is BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
             is BroadcastIntent.DeleteGroup -> delete(intent.group)
-            is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.NavBack -> Unit
         }
     }
@@ -91,10 +90,6 @@ class BroadcastViewModel(
 
     private fun delete(group: HostedSyncGroup) {
         broadcastRepo.delete(group).launchIn(viewModelScope)
-    }
-
-    private fun setAsDefault(group: HostedSyncGroup) {
-        viewModelScope.launch { broadcastRepo.setAsDefault(group) }
     }
 
     override fun onCleared() {
