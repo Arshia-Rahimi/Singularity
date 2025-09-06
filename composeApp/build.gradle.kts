@@ -109,7 +109,7 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
+        freeCompilerArgs.set(listOf("-Xwhen-guards", "-Xcontext-parameters"))
     }
 }
 

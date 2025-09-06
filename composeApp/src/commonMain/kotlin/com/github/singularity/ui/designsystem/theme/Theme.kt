@@ -16,9 +16,9 @@ fun SingularityTheme(
     content: @Composable () -> Unit
 ) {
     val theme = when (theme) {
-        AppTheme.Light -> lightColorScheme
         AppTheme.Dark -> darkColorScheme
-        AppTheme.System -> if (isSystemInDarkTheme()) darkColorScheme else lightColorScheme
+        AppTheme.System if isSystemInDarkTheme() -> darkColorScheme
+        else -> lightColorScheme
     }
     
     MaterialTheme(
