@@ -38,16 +38,15 @@ class BroadcastRepositoryImp(
         emit(Success)
     }.asResult(Dispatchers.IO)
 
+    override fun approvePairRequest(node: Node) {
+        // todo
+    }
+
     override suspend fun broadcastGroup(group: HostedSyncGroup) {
         hostedSyncGroupRepo.setAsDefault(group)
         broadcastService.broadcastServer(group)
         httpServer.start()
     }
-
-    override fun approvePairRequest(node: Node) = flow {
-        // todo
-        emit(Success)
-    }.asResult(Dispatchers.IO)
 
     override fun stopBroadcast() {
         httpServer.stop()

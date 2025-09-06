@@ -1,6 +1,6 @@
 package com.github.singularity.core.server.auth
 
-import com.github.singularity.core.data.Token
+typealias Token = String
 
 interface AuthTokenRepository {
 
