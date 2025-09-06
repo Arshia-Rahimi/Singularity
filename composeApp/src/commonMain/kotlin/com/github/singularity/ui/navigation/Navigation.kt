@@ -1,4 +1,4 @@
-package com.github.singularity.app.navigation
+package com.github.singularity.ui.navigation
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally

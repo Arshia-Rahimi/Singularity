@@ -1,6 +1,5 @@
 package com.github.singularity.app.di
 
-import com.github.singularity.app.navigation.NavigationViewModel
 import com.github.singularity.core.client.di.ClientModule
 import com.github.singularity.core.data.di.DataModule
 import com.github.singularity.core.data.di.ServerDataModule
@@ -16,15 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val MainModule = module {
-
     factory { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
-
-    viewModelOf(::NavigationViewModel)
-
 }
 
 val ModulesList: List<Module> = buildList {
