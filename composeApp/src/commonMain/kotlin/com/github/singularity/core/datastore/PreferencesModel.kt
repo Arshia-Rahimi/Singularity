@@ -3,6 +3,7 @@
 package com.github.singularity.core.datastore
 
 import com.github.singularity.core.shared.AppTheme
+import com.github.singularity.core.shared.SyncMode
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.io.encoding.Base64
@@ -16,7 +17,8 @@ data class PreferencesModel(
     val theme: AppTheme = AppTheme.System,
     val deviceId: String = Uuid.random().toString(),
     val appSecret: ByteArray = Random.Default.nextBytes(32)
-        .let { Base64.withPadding(Base64.PaddingOption.ABSENT).encodeToByteArray(it) }
+        .let { Base64.withPadding(Base64.PaddingOption.ABSENT).encodeToByteArray(it) },
+    val syncMode: SyncMode = SyncMode.Client,
 ) 
 
 object DataStoreModelSerializer {

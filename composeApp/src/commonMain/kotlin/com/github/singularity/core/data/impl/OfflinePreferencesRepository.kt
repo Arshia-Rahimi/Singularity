@@ -8,6 +8,7 @@ import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datastore.DataStoreModelSerializer
 import com.github.singularity.core.datastore.PreferencesModel
 import com.github.singularity.core.shared.AppTheme
+import com.github.singularity.core.shared.SyncMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
@@ -32,7 +33,11 @@ class OfflinePreferencesRepository(
     override suspend fun setAppTheme(theme: AppTheme) {
         preferences.first().copy(theme = theme).save()
     }
-    
+
+    override suspend fun setSyncMode(syncMode: SyncMode) {
+        preferences.first().copy(syncMode = syncMode).save()
+    }
+
     private suspend fun PreferencesModel.save() =
         dataStore.edit { prefs ->
             prefs[stringPreferencesKey(DataStoreModelSerializer.KEY)] =

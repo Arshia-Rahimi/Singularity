@@ -1,9 +1,11 @@
 package com.github.singularity.core.data.di
 
 import com.github.singularity.core.data.ClientConnectionRepository
+import com.github.singularity.core.data.ConnectionRepository
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
+import com.github.singularity.core.data.impl.ConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImp
 import com.github.singularity.core.data.impl.OfflinePreferencesRepository
 import org.koin.core.module.dsl.singleOf
@@ -14,4 +16,5 @@ val DataModule = module {
     singleOf(::ClientConnectionRepositoryImpl) bind ClientConnectionRepository::class
     singleOf(::OfflinePreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
+    singleOf(::ConnectionRepositoryImpl) bind ConnectionRepository::class
 }

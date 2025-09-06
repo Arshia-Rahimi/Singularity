@@ -13,3 +13,7 @@ enum class AppTheme(
     Dark(Res.string.dark),
     System(Res.string.follow_system),
 }
+
+enum class SyncMode {
+    Server, Client
+}
