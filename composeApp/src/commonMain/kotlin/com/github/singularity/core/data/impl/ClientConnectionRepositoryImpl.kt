@@ -3,6 +3,7 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.client.WebSocketClientDataSource
 import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ClientConnectionRepository
+import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.model.ConnectionState
@@ -11,10 +12,8 @@ import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -25,19 +24,13 @@ import kotlinx.coroutines.flow.shareIn
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
     private val webSocketClient: WebSocketClientDataSource,
+    syncEventRepo: SyncEventRepository,
     joinedSyncGroupsDataSource: JoinedSyncGroupDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
     scope: CoroutineScope,
 ) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
-
-    private val _syncEvents = MutableSharedFlow<SyncEvent>(
-        replay = 0,
-        extraBufferCapacity = Int.MAX_VALUE,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
-    )
-    override val syncEvents = _syncEvents.asSharedFlow()
 
     override val connectionState = refreshState.flatMapLatest {
         joinedSyncGroupsDataSource.joinedSyncGroups
@@ -73,19 +66,19 @@ class ClientConnectionRepositoryImpl(
                                         )
                                 }
                             }
-                            .collect { _syncEvents.tryEmit(it) }
+                            .collect { syncEventRepo.incomingEventCallback(it) }
                     }
                 }
             }
     }
         .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
 
-    override suspend fun send(event: SyncEvent) {
-        webSocketClient.send(event)
-    }
-
     override fun refresh() {
         refreshState.sendPulse()
+    }
+
+    override suspend fun send(event: SyncEvent) {
+        webSocketClient.send(event)
     }
 
 }
