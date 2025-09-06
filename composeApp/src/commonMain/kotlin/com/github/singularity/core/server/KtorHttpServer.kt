@@ -1,9 +1,7 @@
 package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthRepository
-import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.server.routes.pairingRoute
-import com.github.singularity.core.server.routes.webSocketRoute
 import com.github.singularity.core.shared.SERVER_PORT
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -15,9 +13,8 @@ import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.CoroutineScope
 
-class KtorLocalServer(
+class KtorHttpServer(
     private val authRepo: AuthRepository,
-    private val syncEventRepo: SyncEventRepository,
     scope: CoroutineScope,
 ) {
 
@@ -55,7 +52,6 @@ class KtorLocalServer(
     private fun Application.registerRoutes() {
         routing {
             pairingRoute(authRepo)
-            webSocketRoute(syncEventRepo)
         }
     }
 

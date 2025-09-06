@@ -4,6 +4,7 @@ import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.database.HostedSyncGroupNodes
 import com.github.singularity.core.mdns.DeviceBroadcastService
+import com.github.singularity.core.server.KtorHttpServer
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Success
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.flow
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
+    private val server: KtorHttpServer,
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
@@ -41,12 +43,11 @@ class BroadcastRepositoryImp(
         emit(Success)
     }.asResult(Dispatchers.IO)
 
-    override fun broadcastGroup(group: HostedSyncGroup) = flow {
+    override suspend fun broadcastGroup(group: HostedSyncGroup) {
         hostedSyncGroupRepo.setAsDefault(group)
         broadcastService.broadcastServer(group)
-        // todo: run http server and listen for pair requests
-
-        emit(Node("", "", ""))
+        server.start()
+        // todo: emit requested nodes
     }
 
     override fun approvePairRequest(node: Node) = flow {
@@ -55,6 +56,7 @@ class BroadcastRepositoryImp(
     }.asResult(Dispatchers.IO)
 
     override fun stopBroadcast() {
+        server.stop()
         scope.cancel()
     }
 
