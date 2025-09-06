@@ -9,6 +9,7 @@ import com.github.singularity.core.datastore.di.DataStoreModule
 import com.github.singularity.core.mdns.canHostSyncServer
 import com.github.singularity.core.mdns.di.MdnsModule
 import com.github.singularity.core.server.di.ServerModule
+import com.github.singularity.core.sync.di.PluginModule
 import com.github.singularity.ui.di.ViewmodelModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,7 @@ val ModulesList: List<Module> = buildList {
     add(MdnsModule)
     add(DatabaseModule)
     add(ClientModule)
+    add(PluginModule)
 
     // dependencies that are only for clients that can host local server
     if (canHostSyncServer) {

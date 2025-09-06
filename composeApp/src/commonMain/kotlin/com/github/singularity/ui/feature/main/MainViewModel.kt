@@ -1,13 +1,13 @@
 package com.github.singularity.ui.feature.main
 
 import androidx.lifecycle.ViewModel
-import com.github.singularity.core.data.ConnectionRepository
+import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.flow.combine
 
 class MainViewModel(
-    private val connectionRepo: ConnectionRepository,
+    private val connectionRepo: ClientConnectionRepository,
 ) : ViewModel() {
 
     private val connectionState = connectionRepo.connectionState

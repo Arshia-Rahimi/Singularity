@@ -4,7 +4,7 @@ import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.model.websocket.SyncEvent
 import kotlinx.coroutines.flow.SharedFlow
 
-interface ConnectionRepository {
+interface ClientConnectionRepository {
 
     val syncEvents: SharedFlow<SyncEvent>
 

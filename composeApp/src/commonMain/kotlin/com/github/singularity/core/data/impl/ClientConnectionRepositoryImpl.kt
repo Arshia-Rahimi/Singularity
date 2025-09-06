@@ -2,7 +2,7 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.client.WebSocketClientDataSource
 import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
-import com.github.singularity.core.data.ConnectionRepository
+import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.model.ConnectionState
@@ -23,12 +23,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ConnectionRepositoryImpl(
+class ClientConnectionRepositoryImpl(
     joinedSyncGroupsDataSource: JoinedSyncGroupDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
     scope: CoroutineScope,
     private val webSocketClient: WebSocketClientDataSource,
-) : ConnectionRepository {
+) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
 
