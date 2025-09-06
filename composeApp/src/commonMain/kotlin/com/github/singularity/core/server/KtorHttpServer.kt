@@ -1,16 +1,19 @@
 package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthRepository
-import com.github.singularity.core.server.routes.pairingRoute
 import com.github.singularity.core.shared.SERVER_PORT
+import com.github.singularity.core.shared.model.http.PairRequest
+import com.github.singularity.core.shared.model.http.PairResponse
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.bearer
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.CoroutineScope
 
 class KtorHttpServer(
@@ -23,8 +26,11 @@ class KtorHttpServer(
         port = SERVER_PORT,
         host = "0.0.0.0",
         module = {
-            registerWebsockets()
-            registerAuthentication()
+            install(Authentication) {
+                bearer {
+                    authenticate { authRepo.getNode(it.token) }
+                }
+            }
             registerRoutes()
         },
     )
@@ -37,21 +43,26 @@ class KtorHttpServer(
         server.stop()
     }
 
-    private fun Application.registerWebsockets() {
-        install(WebSockets)
-    }
-
-    private fun Application.registerAuthentication() {
-        install(Authentication) {
-            bearer {
-                authenticate { authRepo.getNode(it.token) }
-            }
-        }
-    }
-
     private fun Application.registerRoutes() {
         routing {
-            pairingRoute(authRepo)
+            post("/pair") {
+                val pairRequest = call.receive<PairRequest>()
+                val node = authRepo.authenticate(pairRequest)
+
+                val response = when (node) {
+                    null -> PairResponse(
+                        success = false,
+                        message = "Denied to join server ${pairRequest.syncGroupName}",
+                    )
+
+                    else -> PairResponse(
+                        success = true,
+                        node = node,
+                    )
+                }
+
+                call.respond(response)
+            }
         }
     }
 

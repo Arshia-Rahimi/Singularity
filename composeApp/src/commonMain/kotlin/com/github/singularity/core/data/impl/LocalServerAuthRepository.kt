@@ -3,12 +3,11 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.data.AuthRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.Token
-import com.github.singularity.core.server.crypto.AuthTokenRepository
+import com.github.singularity.core.server.auth.AuthTokenRepository
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.http.PairRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class LocalServerAuthRepository(
@@ -17,8 +16,7 @@ class LocalServerAuthRepository(
     scope: CoroutineScope,
 ) : AuthRepository {
 
-    private val defaultSyncGroup = hostedSyncGroupRepo.syncGroups
-        .map { it.firstOrNull { group -> group.isDefault } }
+    private val defaultSyncGroup = hostedSyncGroupRepo.defaultGroup
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
 
     override suspend fun getNode(token: Token): HostedSyncGroupNode? {

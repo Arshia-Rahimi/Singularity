@@ -2,17 +2,19 @@ package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthRepository
 import com.github.singularity.core.data.SyncEventRepository
-import com.github.singularity.core.server.routes.pairingRoute
-import com.github.singularity.core.server.routes.webSocketRoute
 import com.github.singularity.core.shared.SERVER_PORT
+import com.github.singularity.core.shared.model.Node
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
+//import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 
 class KtorWebSocketServer(
@@ -21,13 +23,20 @@ class KtorWebSocketServer(
     scope: CoroutineScope,
 ) {
 
+    private val _connectedNodes = mutableListOf<Node>()
+    val connctedNodes = _connectedNodes.toList()
+
     private val server = scope.embeddedServer(
         factory = CIO,
         port = SERVER_PORT,
         host = "0.0.0.0",
         module = {
-            registerWebsockets()
-            registerAuthentication()
+            install(WebSockets)
+            install(Authentication) {
+                bearer {
+                    authenticate { authRepo.getNode(it.token) }
+                }
+            }
             registerRoutes()
         },
     )
@@ -40,22 +49,13 @@ class KtorWebSocketServer(
         server.stop()
     }
 
-    private fun Application.registerWebsockets() {
-        install(WebSockets)
-    }
-
-    private fun Application.registerAuthentication() {
-        install(Authentication) {
-            bearer {
-                authenticate { authRepo.getNode(it.token) }
-            }
-        }
-    }
-
     private fun Application.registerRoutes() {
         routing {
-            pairingRoute(authRepo)
-            webSocketRoute(syncEventRepo)
+            authenticate("auth") {
+                webSocket("/sync") {
+                    // todo
+                }
+            }
         }
     }
 

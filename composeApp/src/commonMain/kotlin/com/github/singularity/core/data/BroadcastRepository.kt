@@ -1,6 +1,5 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.database.HostedSyncGroupNodes
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Resource
@@ -11,8 +10,6 @@ import kotlinx.coroutines.flow.SharedFlow
 interface BroadcastRepository {
 
     val syncGroups: SharedFlow<List<HostedSyncGroup>>
-
-    val nodesConnected: SharedFlow<List<HostedSyncGroupNodes>>
 
     fun create(group: HostedSyncGroup): Flow<Resource<Success>>
 

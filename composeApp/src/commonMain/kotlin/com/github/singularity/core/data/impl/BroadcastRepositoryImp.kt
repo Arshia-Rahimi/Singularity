@@ -2,7 +2,6 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.database.HostedSyncGroupNodes
 import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.server.KtorHttpServer
 import com.github.singularity.core.shared.model.HostedSyncGroup
@@ -13,20 +12,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.flow
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
-    private val server: KtorHttpServer,
+    private val httpServer: KtorHttpServer,
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
-
-    override val nodesConnected: SharedFlow<List<HostedSyncGroupNodes>>
-        get() = TODO("Not yet implemented")
 
     override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupRepo.create(group)
@@ -46,8 +41,7 @@ class BroadcastRepositoryImp(
     override suspend fun broadcastGroup(group: HostedSyncGroup) {
         hostedSyncGroupRepo.setAsDefault(group)
         broadcastService.broadcastServer(group)
-        server.start()
-        // todo: emit requested nodes
+        httpServer.start()
     }
 
     override fun approvePairRequest(node: Node) = flow {
@@ -56,7 +50,7 @@ class BroadcastRepositoryImp(
     }.asResult(Dispatchers.IO)
 
     override fun stopBroadcast() {
-        server.stop()
+        httpServer.stop()
         scope.cancel()
     }
 

@@ -1,4 +1,4 @@
-package com.github.singularity.core.server.crypto
+package com.github.singularity.core.server.auth
 
 import com.appstractive.jwt.JWT
 import com.appstractive.jwt.from
