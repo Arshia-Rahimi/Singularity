@@ -1,7 +1,6 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.shared.model.ConnectionState
-import com.github.singularity.core.shared.model.websocket.SyncEvent
 import kotlinx.coroutines.flow.SharedFlow
 
 interface ClientConnectionRepository {
@@ -9,7 +8,5 @@ interface ClientConnectionRepository {
     val connectionState: SharedFlow<ConnectionState>
 
     fun refresh()
-
-    suspend fun send(event: SyncEvent)
 
 }

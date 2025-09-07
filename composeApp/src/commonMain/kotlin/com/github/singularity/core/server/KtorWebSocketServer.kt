@@ -10,6 +10,8 @@ import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.serialize
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.AuthenticationStrategy
@@ -24,7 +26,9 @@ import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -41,8 +45,11 @@ class KtorWebSocketServer(
     private val defaultSyncGroup = hostedSyncGroupRepo.defaultGroup
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
 
-    private val _connectedNodes = mutableListOf<Node>()
-    val connctedNodes = _connectedNodes.toList()
+    private val _connectedNodes = MutableStateFlow<List<Node>>(emptyList())
+    val connectedNodes = _connectedNodes.asStateFlow()
+
+    private val _isServerRunning = MutableStateFlow(false)
+    val isServerRunning = MutableStateFlow(false)
 
     private val server = scope.embeddedServer(
         factory = CIO,
@@ -69,7 +76,14 @@ class KtorWebSocketServer(
             }
             registerRoutes()
         },
-    )
+    ).apply {
+        monitor.subscribe(ApplicationStarted) {
+            _isServerRunning.value = true
+        }
+        monitor.subscribe(ApplicationStopped) {
+            _isServerRunning.value = false
+        }
+    }
 
     fun start() {
         server.start()
@@ -84,7 +98,7 @@ class KtorWebSocketServer(
             authenticate("auth", strategy = AuthenticationStrategy.Required) {
                 webSocket("/sync") {
                     val converter = converter ?: return@webSocket
-                    _connectedNodes += call.principal<Node>()!!
+                    _connectedNodes.value = _connectedNodes.value + call.principal<Node>()!!
 
                     try {
 
@@ -98,7 +112,7 @@ class KtorWebSocketServer(
                             .collect { send(it) }
 
                     } finally {
-                        _connectedNodes -= call.principal<Node>()!!
+                        _connectedNodes.value = _connectedNodes.value - call.principal<Node>()!!
                     }
                 }
             }

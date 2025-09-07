@@ -13,4 +13,10 @@ data class HostedSyncGroupNode(
     val syncGroupName: String,
     val nodeName: String,
     val nodeOs: String,
-)
+) {
+    fun toNode() = Node(
+        deviceName = nodeName,
+        deviceOs = nodeOs,
+        deviceId = nodeId,
+    )
+}

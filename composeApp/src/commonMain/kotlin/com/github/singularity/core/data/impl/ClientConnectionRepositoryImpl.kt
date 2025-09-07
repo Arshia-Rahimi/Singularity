@@ -7,7 +7,6 @@ import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
 import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.model.ConnectionState
-import com.github.singularity.core.shared.model.websocket.SyncEvent
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +22,7 @@ import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-    private val webSocketClient: WebSocketClientDataSource,
+    webSocketClient: WebSocketClientDataSource,
     syncEventRepo: SyncEventRepository,
     joinedSyncGroupsDataSource: JoinedSyncGroupDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
@@ -75,10 +74,6 @@ class ClientConnectionRepositoryImpl(
 
     override fun refresh() {
         refreshState.sendPulse()
-    }
-
-    override suspend fun send(event: SyncEvent) {
-        webSocketClient.send(event)
     }
 
 }
