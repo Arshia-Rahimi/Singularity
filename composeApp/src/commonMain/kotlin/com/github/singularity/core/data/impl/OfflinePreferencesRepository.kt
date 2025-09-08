@@ -10,6 +10,9 @@ import com.github.singularity.core.datastore.PreferencesModel
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -18,9 +21,10 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 class OfflinePreferencesRepository(
-    scope: CoroutineScope,
     private val dataStore: DataStore<Preferences>,
 ) : PreferencesRepository {
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     
     override val preferences = dataStore.data
         .map { prefs ->

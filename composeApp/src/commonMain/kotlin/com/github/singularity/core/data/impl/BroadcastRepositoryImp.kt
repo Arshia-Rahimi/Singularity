@@ -11,6 +11,7 @@ import com.github.singularity.core.shared.util.asResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
@@ -20,9 +21,10 @@ class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
     private val httpServer: KtorHttpServer,
-    private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+            
     override val isBroadcasting = httpServer.isServerRunning
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups

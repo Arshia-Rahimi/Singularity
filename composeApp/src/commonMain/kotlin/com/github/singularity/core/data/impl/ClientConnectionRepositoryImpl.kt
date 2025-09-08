@@ -10,7 +10,10 @@ import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -26,13 +29,17 @@ class ClientConnectionRepositoryImpl(
     syncEventRepo: SyncEventRepository,
     joinedSyncGroupsDataSource: JoinedSyncGroupDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
-    scope: CoroutineScope,
 ) : ClientConnectionRepository {
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    private var isClientRunning = true
 
     private val refreshState = MutableSharedFlow<Unit>()
 
     override val connectionState = refreshState.flatMapLatest {
-        joinedSyncGroupsDataSource.joinedSyncGroups
+        if (!isClientRunning) flowOf(ConnectionState.Stopped)
+        else joinedSyncGroupsDataSource.joinedSyncGroups
             .map { it.firstOrNull { group -> group.isDefault } }
             .flatMapLatest { defaultServer ->
                 if (defaultServer == null) flowOf<ConnectionState>(ConnectionState.NoDefaultServer)
@@ -74,6 +81,16 @@ class ClientConnectionRepositoryImpl(
 
     override fun refresh() {
         refreshState.sendPulse()
+    }
+
+    override fun startClient() {
+        isClientRunning = true
+        refresh()
+    }
+
+    override fun stopClient() {
+        isClientRunning = false
+        refresh()
     }
 
 }

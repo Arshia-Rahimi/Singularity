@@ -7,6 +7,7 @@ import singularity.composeapp.generated.resources.connection_failed
 import singularity.composeapp.generated.resources.no_default_server
 import singularity.composeapp.generated.resources.searching
 import singularity.composeapp.generated.resources.server_not_found
+import singularity.composeapp.generated.resources.stopped
 
 sealed interface ConnectionState {
 
@@ -14,6 +15,10 @@ sealed interface ConnectionState {
 
     data object NoDefaultServer : ConnectionState {
         override val message = Res.string.no_default_server
+    }
+
+    data object Stopped : ConnectionState {
+        override val message = Res.string.stopped
     }
 
     data class Searching(val joinedSyncGroup: JoinedSyncGroup) : ConnectionState {

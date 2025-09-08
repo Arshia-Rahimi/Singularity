@@ -9,4 +9,8 @@ interface ClientConnectionRepository {
 
     fun refresh()
 
+    fun startClient()
+
+    fun stopClient()
+
 }

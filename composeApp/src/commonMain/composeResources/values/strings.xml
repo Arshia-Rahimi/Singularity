@@ -28,5 +28,6 @@
     <string name="searching">Searching</string>
     <string name="connection_failed">Connection Failed</string>
     <string name="connected">Connected</string>
+    <string name="stopped">Stopped</string>
     <string name="server_not_found">Server Not Found</string>
 </resources>

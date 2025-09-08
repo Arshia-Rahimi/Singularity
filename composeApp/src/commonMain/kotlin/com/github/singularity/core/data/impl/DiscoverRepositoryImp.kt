@@ -19,10 +19,10 @@ import kotlinx.coroutines.flow.flow
 import okio.IOException
 
 class DiscoverRepositoryImp(
-    discoveryService: DeviceDiscoveryService,
     private val joinedSyncGroupsRepo: JoinedSyncGroupDataSource,
     private val preferencesRepo: PreferencesRepository,
     private val httpClientDataSource: HttpClientDataSource,
+    discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
     override val discoveredServers = discoveryService.discoverServers()

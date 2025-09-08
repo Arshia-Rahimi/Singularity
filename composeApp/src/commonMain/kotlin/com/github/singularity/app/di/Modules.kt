@@ -7,20 +7,12 @@ import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.datastore.di.DataStoreModule
 import com.github.singularity.core.mdns.di.MdnsModule
 import com.github.singularity.core.server.di.ServerModule
+import com.github.singularity.core.service.di.ClientServiceModule
+import com.github.singularity.core.service.di.ServerServiceModule
 import com.github.singularity.core.sync.di.PluginModule
 import com.github.singularity.ui.di.ViewmodelModule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
-import org.koin.dsl.module
-
-val MainModule = module {
-    factory { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
-}
 
 val ModulesList = listOf(
-    MainModule,
     ViewmodelModule,
     DataModule,
     DataStoreModule,
@@ -30,7 +22,12 @@ val ModulesList = listOf(
     PluginModule,
 )
 
-val ServerModules = listOf(
+val ServerOnlyModules = listOf(
     ServerDataModule,
     ServerModule,
+    ServerServiceModule,
+)
+
+val ClientOnlyModules = listOf(
+    ClientServiceModule,
 )
