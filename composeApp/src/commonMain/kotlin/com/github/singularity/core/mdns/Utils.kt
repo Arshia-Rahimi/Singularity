@@ -5,8 +5,6 @@ import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.platform
 
-expect val canHostSyncServer: Boolean
-
 val MDNS_SERVICE_NAME = "Singularity-$platform-${getDeviceName()}"
 const val MDNS_SERVICE_TYPE = "_sync_service._tcp"
 

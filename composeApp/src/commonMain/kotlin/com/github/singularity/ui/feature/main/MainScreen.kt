@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.mdns.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import org.koin.compose.viewmodel.koinViewModel
@@ -90,13 +89,6 @@ private fun MainScreen(
                 onClick = { MainIntent.ToDiscoverScreen.execute() },
             ) {
                 Text("discover")
-            }
-            if (canHostSyncServer) {
-                Button(
-                    onClick = { MainIntent.ToBroadcastScreen.execute() },
-                ) {
-                    Text("broadcast")
-                }
             }
         }
     }
