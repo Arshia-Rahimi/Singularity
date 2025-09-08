@@ -38,6 +38,10 @@ class BroadcastRepositoryImp(
         emit(Success)
     }.asResult(Dispatchers.IO)
 
+    override suspend fun setAsDefault(group: HostedSyncGroup) {
+        hostedSyncGroupRepo.setAsDefault(group)
+    }
+
     override fun approvePairRequest(node: Node) {
         // todo
     }

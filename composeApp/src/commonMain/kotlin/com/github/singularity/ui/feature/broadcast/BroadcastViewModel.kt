@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
-import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class BroadcastViewModel(
     private val broadcastRepo: BroadcastRepository,
@@ -49,19 +48,26 @@ class BroadcastViewModel(
             is BroadcastIntent.CreateGroup -> create(intent.groupName)
             is BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
             is BroadcastIntent.DeleteGroup -> delete(intent.group)
+            is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.NavBack -> Unit
         }
     }
 
     private fun broadcast() {
-        broadcastRepo.stopBroadcast()
         val defaultGroup = syncGroups.value.firstOrNull { it.isDefault } ?: return
 
-        requestedNodes.value = emptyList()
-        isBroadcasting.value = true
-        broadcastRepo.broadcastGroup(defaultGroup).onEach {
-            requestedNodes.value = requestedNodes.value + it
-        }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            broadcastRepo.stopBroadcast()
+            requestedNodes.value = emptyList()
+            isBroadcasting.value = true
+            broadcastRepo.broadcastGroup(defaultGroup)
+        }
+    }
+
+    private fun setAsDefault(group: HostedSyncGroup) {
+        viewModelScope.launch {
+            broadcastRepo.setAsDefault(group)
+        }
     }
 
     private fun stopBroadcast() {
@@ -71,13 +77,7 @@ class BroadcastViewModel(
     }
 
     private fun approve(node: Node) {
-        broadcastRepo.approvePairRequest(node).onEach {
-            when (it) {
-                is Resource.Loading -> Unit
-                is Resource.Error -> Unit // todo: show error
-                is Resource.Success -> requestedNodes.value = requestedNodes.value - node
-            }
-        }.launchIn(viewModelScope)
+        broadcastRepo.approvePairRequest(node)
     }
 
     private fun create(groupName: String) {

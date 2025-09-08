@@ -17,6 +17,8 @@ interface BroadcastRepository {
 
     fun delete(group: HostedSyncGroup): Flow<Resource<Success>>
 
+    suspend fun setAsDefault(group: HostedSyncGroup)
+
     fun approvePairRequest(node: Node)
 
     suspend fun broadcastGroup(group: HostedSyncGroup)
