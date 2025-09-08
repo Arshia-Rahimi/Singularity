@@ -8,7 +8,6 @@ import com.appstractive.jwt.signatures.hs256
 import com.appstractive.jwt.subject
 import com.appstractive.jwt.verify
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.data.Token
 import com.github.singularity.core.datastore.PreferencesModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
