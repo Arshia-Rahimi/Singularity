@@ -15,5 +15,5 @@ enum class AppTheme(
 }
 
 enum class SyncMode {
-    Server, Client
+    Server, Client,
 }

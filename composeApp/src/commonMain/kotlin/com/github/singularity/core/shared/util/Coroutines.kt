@@ -29,5 +29,5 @@ context(viewModel: ViewModel)
 fun <T> Flow<T>.stateInWhileSubscribed(initialValue: T) =
     stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5000), initialValue)
 
-fun <T> Flow<T>.shareInWhilesubscribed(scope: CoroutineScope, replay: Int = 0) =
+fun <T> Flow<T>.shareInWhileSubscribed(scope: CoroutineScope, replay: Int = 0) =
     shareIn(scope, SharingStarted.WhileSubscribed(5000), replay)
