@@ -6,6 +6,7 @@ import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 class HostedSyncGroupRepositoryImpl(
@@ -18,7 +19,9 @@ class HostedSyncGroupRepositoryImpl(
 
     override val defaultGroup = syncGroups.map {
         it.firstOrNull { group -> group.isDefault }
-    }.shareInWhileSubscribed(scope)
+    }
+        .distinctUntilChanged()
+        .shareInWhileSubscribed(scope)
 
     override suspend fun create(group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.insert(group)

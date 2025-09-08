@@ -8,9 +8,7 @@ import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -23,22 +21,18 @@ class BroadcastViewModel(
         .map { it.sortedWith(compareBy<HostedSyncGroup> { group -> !group.isDefault }.thenBy { group -> group.name }) }
         .stateInWhileSubscribed(emptyList())
 
-    private val requestedNodes = MutableStateFlow(emptyList<Node>())
-
-    private val isBroadcasting = MutableStateFlow(false)
+    private val isBroadcasting = broadcastRepo.isBroadcasting
 
     @OptIn(FlowPreview::class)
     val uiState = combine(
-        requestedNodes,
         syncGroups,
         isBroadcasting,
-    ) { requestedNodes, syncGroups, isBroadcasting ->
+    ) { syncGroups, isBroadcasting ->
         BroadcastUiState(
             syncGroups = syncGroups.toMutableStateList(),
-            requestedNodes = requestedNodes,
             isBroadcasting = isBroadcasting,
         )
-    }.debounce(10).stateInWhileSubscribed(BroadcastUiState())
+    }.stateInWhileSubscribed(BroadcastUiState())
 
     fun execute(intent: BroadcastIntent) {
         when (intent) {
@@ -54,13 +48,9 @@ class BroadcastViewModel(
     }
 
     private fun broadcast() {
-        val defaultGroup = syncGroups.value.firstOrNull { it.isDefault } ?: return
-
         viewModelScope.launch {
             broadcastRepo.stopBroadcast()
-            requestedNodes.value = emptyList()
-            isBroadcasting.value = true
-            broadcastRepo.broadcastGroup(defaultGroup)
+            broadcastRepo.startBroadcast()
         }
     }
 
@@ -72,8 +62,6 @@ class BroadcastViewModel(
 
     private fun stopBroadcast() {
         broadcastRepo.stopBroadcast()
-        requestedNodes.value = emptyList()
-        isBroadcasting.value = false
     }
 
     private fun approve(node: Node) {

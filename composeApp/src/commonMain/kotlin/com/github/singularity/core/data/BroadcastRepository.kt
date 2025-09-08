@@ -6,8 +6,11 @@ import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.Success
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface BroadcastRepository {
+
+    val isBroadcasting: StateFlow<Boolean>
 
     val syncGroups: SharedFlow<List<HostedSyncGroup>>
 
@@ -21,7 +24,7 @@ interface BroadcastRepository {
 
     fun approvePairRequest(node: Node)
 
-    suspend fun broadcastGroup(group: HostedSyncGroup)
+    suspend fun startBroadcast()
 
     fun stopBroadcast()
     

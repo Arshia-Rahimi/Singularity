@@ -4,11 +4,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.Node
 
 @Immutable
 data class BroadcastUiState(
     val syncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
     val isBroadcasting: Boolean = false,
-    val requestedNodes: List<Node> = emptyList(),
 )

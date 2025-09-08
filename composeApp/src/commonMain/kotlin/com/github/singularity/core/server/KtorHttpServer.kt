@@ -7,6 +7,8 @@ import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.request.receive
@@ -14,6 +16,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
@@ -26,12 +29,22 @@ class KtorHttpServer(
     private val defaultSyncGroup = hostedSyncGroupRepo.defaultGroup
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
 
+    private val _isServerRunning = MutableStateFlow(false)
+    val isServerRunning = MutableStateFlow(false)
+
     private val server = scope.embeddedServer(
         factory = CIO,
         port = SERVER_PORT,
         host = "0.0.0.0",
         module = { registerRoutes() },
-    )
+    ).apply {
+        monitor.subscribe(ApplicationStarted) {
+            _isServerRunning.value = true
+        }
+        monitor.subscribe(ApplicationStopped) {
+            _isServerRunning.value = false
+        }
+    }
 
     fun start() {
         server.start()

@@ -12,7 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
@@ -21,8 +23,13 @@ class BroadcastRepositoryImp(
     private val scope: CoroutineScope,
 ) : BroadcastRepository {
 
+    override val isBroadcasting = httpServer.isServerRunning
+
     override val syncGroups = hostedSyncGroupRepo.syncGroups
 
+    private val defaultSyncGroup = hostedSyncGroupRepo.defaultGroup
+        .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
+    
     override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupRepo.create(group)
         emit(Success)
@@ -40,15 +47,20 @@ class BroadcastRepositoryImp(
 
     override suspend fun setAsDefault(group: HostedSyncGroup) {
         hostedSyncGroupRepo.setAsDefault(group)
+        if (isBroadcasting.value) {
+            stopBroadcast()
+            startBroadcast()
+        }
     }
 
     override fun approvePairRequest(node: Node) {
         // todo
     }
 
-    override suspend fun broadcastGroup(group: HostedSyncGroup) {
-        hostedSyncGroupRepo.setAsDefault(group)
-        broadcastService.broadcastServer(group)
+    override suspend fun startBroadcast() {
+        val defaultGroup = defaultSyncGroup.value ?: return
+        hostedSyncGroupRepo.setAsDefault(defaultGroup)
+        broadcastService.broadcastServer(defaultGroup)
         httpServer.start()
     }
 
