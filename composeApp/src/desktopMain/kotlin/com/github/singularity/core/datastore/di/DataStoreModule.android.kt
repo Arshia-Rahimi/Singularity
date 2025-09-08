@@ -2,6 +2,8 @@ package com.github.singularity.core.datastore.di
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.github.singularity.core.shared.DataStoreFileName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import net.harawata.appdirs.AppDirsFactory
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
@@ -17,7 +19,7 @@ actual val DataStoreModule = module {
         
         PreferenceDataStoreFactory.createWithPath(
             produceFile = { file.absolutePath.toPath() },
-            scope = get(),
+            scope = CoroutineScope(Dispatchers.IO),
         )
     }
 }

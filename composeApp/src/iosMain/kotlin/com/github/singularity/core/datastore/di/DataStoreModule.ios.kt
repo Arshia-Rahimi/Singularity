@@ -3,6 +3,9 @@ package com.github.singularity.core.datastore.di
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.github.singularity.core.shared.DataStoreFileName
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
@@ -24,7 +27,7 @@ actual val DataStoreModule = module {
                 )
                 (requireNotNull(documentDirectory).path + "/$DataStoreFileName").toPath()
             },
-            scope = get(),
+            scope = CoroutineScope(Dispatchers.IO),
         )
     }
 }
