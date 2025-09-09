@@ -114,6 +114,7 @@ class KtorHttpServer(
                     )
                 )
 
+                pairRequestRepo.remove(request.pairRequestId)
                 hostedSyncGroupRepo.create(node)
             }
         }

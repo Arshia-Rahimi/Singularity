@@ -21,16 +21,20 @@ class BroadcastViewModel(
         .map { it.sortedWith(compareBy<HostedSyncGroup> { group -> !group.isDefault }.thenBy { group -> group.name }) }
         .stateInWhileSubscribed(emptyList())
 
+    private val pairRequests = broadcastRepo.pairRequests
+
     private val isBroadcasting = broadcastRepo.isBroadcasting
 
     @OptIn(FlowPreview::class)
     val uiState = combine(
         syncGroups,
         isBroadcasting,
-    ) { syncGroups, isBroadcasting ->
+        pairRequests,
+    ) { syncGroups, isBroadcasting, pairRequests ->
         BroadcastUiState(
             syncGroups = syncGroups.toMutableStateList(),
             isBroadcasting = isBroadcasting,
+            pairRequests = pairRequests,
         )
     }.stateInWhileSubscribed(BroadcastUiState())
 
@@ -39,6 +43,7 @@ class BroadcastViewModel(
             is BroadcastIntent.Broadcast -> broadcast()
             is BroadcastIntent.StopBroadcast -> stopBroadcast()
             is BroadcastIntent.Approve -> approve(intent.node)
+            is BroadcastIntent.Reject -> reject(intent.node)
             is BroadcastIntent.CreateGroup -> create(intent.groupName)
             is BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
             is BroadcastIntent.DeleteGroup -> delete(intent.group)
@@ -54,18 +59,22 @@ class BroadcastViewModel(
         }
     }
 
+    private fun stopBroadcast() {
+        broadcastRepo.stopBroadcast()
+    }
+
     private fun setAsDefault(group: HostedSyncGroup) {
         viewModelScope.launch {
             broadcastRepo.setAsDefault(group)
         }
     }
 
-    private fun stopBroadcast() {
-        broadcastRepo.stopBroadcast()
-    }
-
     private fun approve(node: Node) {
         broadcastRepo.approvePairRequest(node)
+    }
+
+    private fun reject(node: Node) {
+        broadcastRepo.rejectPairRequest(node)
     }
 
     private fun create(groupName: String) {
