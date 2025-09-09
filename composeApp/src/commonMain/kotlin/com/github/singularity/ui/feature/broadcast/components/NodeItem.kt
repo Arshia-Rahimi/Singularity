@@ -15,10 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.Node
-import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
+import com.github.singularity.ui.designsystem.components.dialogs.ApprovalDialog
 import com.github.singularity.ui.feature.broadcast.BroadcastIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.approve_pair_request
+import singularity.composeapp.generated.resources.reject_or_approve
 
 @Composable
 fun NodeItem(
@@ -42,10 +43,12 @@ fun NodeItem(
         )
     }
 
-    ConfirmationDialog(
+    ApprovalDialog(
         visible = showApproveNodeDialog,
-        message = Res.string.approve_pair_request.getString(),
-        onConfirm = { BroadcastIntent.Approve(node).execute() },
+        title = Res.string.approve_pair_request.getString(),
+        message = Res.string.reject_or_approve.getString(),
+        onApprove = { BroadcastIntent.Approve(node).execute() },
+        onReject = { BroadcastIntent.Reject(node).execute() },
         onDismiss = { showApproveNodeDialog = false },
     )
 

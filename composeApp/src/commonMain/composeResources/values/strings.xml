@@ -11,6 +11,8 @@
     <string name="create_new_sync_group">create new sync group</string>
     <string name="create">create</string>
     <string name="cancel">cancel</string>
+    <string name="approve">approve</string>
+    <string name="reject">reject</string>
     <string name="default">default</string>
     <string name="nodes_paired">nodes paired</string>
     <string name="set_group_as_default">Do you want to set group %1$d as default?</string>
@@ -22,7 +24,7 @@
     <string name="edit">edit</string>
     <string name="pair_requests">Pair requests:</string>
     <string name="edit_group_name">Edit group name</string>
-    <string name="approve_pair_request">Approve pair request?</string>
+    <string name="approve_pair_request">Approve pair request</string>
     <string name="send_pair_request">Send pair request to %1$d?</string>
     <string name="no_default_server">No Default Server Defined</string>
     <string name="searching">Searching</string>
@@ -31,4 +33,5 @@
     <string name="stopped">Stopped</string>
     <string name="server_not_found">Server Not Found</string>
     <string name="await_pair_request_approval">Waiting for %1$d server to approve request</string>
+    <string name="reject_or_approve">Reject or Approve node %1$d?</string>
 </resources>

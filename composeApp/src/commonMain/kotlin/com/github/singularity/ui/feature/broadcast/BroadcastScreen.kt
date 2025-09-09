@@ -29,6 +29,7 @@ import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.broadcast.components.BroadcastTopBar
 import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
+import com.github.singularity.ui.feature.broadcast.components.NodeItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.create
@@ -93,12 +94,12 @@ private fun BroadcastScreen(
 
                     }
 
-//                    items(
-//                        items = uiState.requestedNodes,
-//                        key = { it.deviceId },
-//                    ) {
-//                        NodeItem(it, execute)
-//                    }
+                    items(
+                        items = uiState.pairRequests,
+                        key = { it.deviceId },
+                    ) {
+                        NodeItem(it, execute)
+                    }
                 }
 
             } else {
