@@ -4,6 +4,8 @@ import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
+import com.github.singularity.core.shared.model.http.PairCheckRequest
+import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import io.ktor.client.HttpClient
@@ -37,6 +39,25 @@ class KtorHttpClientDataSource : HttpClientDataSource {
                 )
             )
         }.body<PairResponse>()
+
+    override suspend fun pairCheckRequest(
+        server: LocalServer,
+        currentDevice: Node,
+        pairRequestId: Long
+    ) =
+        client.post("${server.ip}:$SERVER_PORT/pairCheck") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                PairCheckRequest(
+                    pairRequestId,
+                    server.syncGroupId,
+                    nodeId = currentDevice.deviceId,
+                    nodeOs = currentDevice.deviceOs,
+                    nodeName = currentDevice.deviceName,
+                )
+            )
+        }.body<PairCheckResponse>()
+
 
     override fun release() {
         client.close()
