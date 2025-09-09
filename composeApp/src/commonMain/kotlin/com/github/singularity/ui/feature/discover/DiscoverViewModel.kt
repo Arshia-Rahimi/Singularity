@@ -36,7 +36,7 @@ class DiscoverViewModel(
         when (intent) {
             is DiscoverIntent.SendPairRequest -> sendPairRequest(intent.server)
             is DiscoverIntent.CancelPairRequest -> cancelPairRequest()
-            else -> Unit
+            is DiscoverIntent.NavBack -> Unit
         }
     }
 
