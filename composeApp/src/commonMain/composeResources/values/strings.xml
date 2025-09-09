@@ -30,4 +30,5 @@
     <string name="connected">Connected</string>
     <string name="stopped">Stopped</string>
     <string name="server_not_found">Server Not Found</string>
+    <string name="await_pair_request_approval">Waiting for %1$d server to approve request</string>
 </resources>
