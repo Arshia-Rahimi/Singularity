@@ -31,29 +31,22 @@ class KtorHttpClientDataSource : HttpClientDataSource {
             contentType(ContentType.Application.Json)
             setBody(
                 PairRequest(
-                    nodeName = currentDevice.deviceName,
-                    nodeId = currentDevice.deviceId,
-                    nodeOs = currentDevice.deviceOs,
+                    deviceName = currentDevice.deviceName,
+                    deviceId = currentDevice.deviceId,
+                    deviceOs = currentDevice.deviceOs,
                     syncGroupName = server.syncGroupName,
                     syncGroupId = server.syncGroupId,
                 )
             )
         }.body<PairResponse>()
 
-    override suspend fun pairCheckRequest(
-        server: LocalServer,
-        currentDevice: Node,
-        pairRequestId: Long
-    ) =
+    override suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Long) =
         client.post("${server.ip}:$SERVER_PORT/pairCheck") {
             contentType(ContentType.Application.Json)
             setBody(
                 PairCheckRequest(
                     pairRequestId,
                     server.syncGroupId,
-                    nodeId = currentDevice.deviceId,
-                    nodeOs = currentDevice.deviceOs,
-                    nodeName = currentDevice.deviceName,
                 )
             )
         }.body<PairCheckResponse>()

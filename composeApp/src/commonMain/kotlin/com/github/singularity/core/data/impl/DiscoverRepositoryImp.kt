@@ -9,11 +9,13 @@ import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
+import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import okio.IOException
@@ -30,19 +32,43 @@ class DiscoverRepositoryImp(
     override fun sendPairRequest(server: LocalServer) = flow {
         try {
             val response = httpClientDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
-            if (!response.success) {
-                throw Exception(response.message)
+            if (!response.success || response.pairRequestId == null) {
+                throw Exception("failed to connect")
             }
-            
-            val newGroup = JoinedSyncGroup(
-                syncGroupId = response.node?.syncGroupId ?: "",
-                syncGroupName = response.node?.syncGroupName ?: "",
-                authToken = response.node?.authToken ?: "",
-                ip = server.ip,
-            )
-            joinedSyncGroupsRepo.insert(newGroup)
-            joinedSyncGroupsRepo.setAsDefault(newGroup)
-            emit(Success)
+
+            var isWaiting = true
+            while (isWaiting) {
+                val response =
+                    httpClientDataSource.sendPairCheckRequest(server, response.pairRequestId)
+
+                if (response.pairStatus == PairStatus.Awaiting) {
+                    delay(5000)
+                    continue
+                }
+                isWaiting = false
+
+                when (response.pairStatus) {
+                    PairStatus.Approved -> {
+                        val newGroup = JoinedSyncGroup(
+                            syncGroupId = response.node?.syncGroupId ?: "",
+                            syncGroupName = response.node?.syncGroupName ?: "",
+                            authToken = response.node?.authToken ?: "",
+                        )
+                        joinedSyncGroupsRepo.insert(newGroup)
+                        joinedSyncGroupsRepo.setAsDefault(newGroup)
+
+                        emit(Success)
+                    }
+
+                    PairStatus.Rejected -> {
+                        throw Exception("server rejected pair request")
+                    }
+
+                    else -> Unit
+                }
+
+            }
+
         } catch (_: IOException) {
             throw Exception("failed to send pair request")
         }

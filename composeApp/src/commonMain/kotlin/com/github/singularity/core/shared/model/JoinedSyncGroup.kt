@@ -5,5 +5,4 @@ data class JoinedSyncGroup(
     val syncGroupName: String,
     val syncGroupId: String,
     val isDefault: Boolean = false,
-    val ip: String? = null,
 )

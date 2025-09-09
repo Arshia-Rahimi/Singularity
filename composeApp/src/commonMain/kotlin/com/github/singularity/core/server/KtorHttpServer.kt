@@ -67,7 +67,7 @@ class KtorHttpServer(
                 val group = defaultSyncGroup.value
                 val pairRequest = call.receive<PairRequest>()
 
-                if (group == null || pairRequest.nodeId != group.hostedSyncGroupId) {
+                if (group == null || pairRequest.deviceId != group.hostedSyncGroupId) {
                     call.respond(PairResponse(false))
                     return@post
                 }
@@ -82,16 +82,16 @@ class KtorHttpServer(
             get("/pairCheck") {
                 val request = call.receive<PairCheckRequest>()
                 val group = defaultSyncGroup.value
+                val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-                if (group == null || group.hostedSyncGroupId != request.groupId) {
-                    call.respond(PairCheckResponse(PairStatus.Error, "wrong groupId"))
+                if (group == null || group.hostedSyncGroupId != request.groupId || pairCheck == null) {
+                    call.respond(PairCheckResponse(PairStatus.Error))
                     return@get
                 }
 
-                val status = pairRequestRepo.getStatus(request.pairRequestId)
 
-                if (status != PairStatus.Approved) {
-                    call.respond(PairCheckResponse(status))
+                if (pairCheck.status != PairStatus.Approved) {
+                    call.respond(PairCheckResponse(pairCheck.status))
                     return@get
                 }
 
@@ -99,9 +99,9 @@ class KtorHttpServer(
                     authTokenRepo.generateAuthToken(request.groupId, group.hostedSyncGroupId)
 
                 val node = HostedSyncGroupNode(
-                    nodeId = request.nodeId,
-                    nodeOs = request.nodeOs,
-                    nodeName = request.nodeName,
+                    nodeId = pairCheck.node.deviceId,
+                    nodeOs = pairCheck.node.deviceOs,
+                    nodeName = pairCheck.node.deviceName,
                     authToken = authToken,
                     syncGroupId = group.hostedSyncGroupId,
                     syncGroupName = group.name,
@@ -109,7 +109,7 @@ class KtorHttpServer(
 
                 call.respond(
                     PairCheckResponse(
-                        pairStatus = status,
+                        pairStatus = pairCheck.status,
                         node = node,
                     )
                 )

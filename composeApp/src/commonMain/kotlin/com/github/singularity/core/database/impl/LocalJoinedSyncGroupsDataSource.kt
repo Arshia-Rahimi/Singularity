@@ -22,7 +22,6 @@ class LocalJoinedSyncGroupsDataSource(
                     authToken = it.auth_token,
                     syncGroupId = it.joined_sync_group_id,
                     syncGroupName = it.name,
-                    ip = it.ip,
                 )
             }
         }
@@ -32,7 +31,6 @@ class LocalJoinedSyncGroupsDataSource(
             joined_sync_group_id = joinedSyncGroup.syncGroupId,
             name = joinedSyncGroup.syncGroupName,
             auth_token = joinedSyncGroup.authToken,
-            ip = joinedSyncGroup.ip,
         )
     }
 

@@ -9,12 +9,8 @@ interface HttpClientDataSource {
 
     suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairResponse
 
-    suspend fun pairCheckRequest(
-        server: LocalServer,
-        currentDevice: Node,
-        pairRequestId: Long
-    ): PairCheckResponse
+    suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Long): PairCheckResponse
 
     fun release()
-    
+
 }
