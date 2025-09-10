@@ -8,8 +8,6 @@ interface HostedSyncGroupRepository {
 
     val syncGroups: SharedFlow<List<HostedSyncGroup>>
 
-    val defaultGroup: SharedFlow<HostedSyncGroup?>
-
     suspend fun create(group: HostedSyncGroup)
 
     suspend fun create(node: HostedSyncGroupNode)

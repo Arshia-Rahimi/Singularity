@@ -1,5 +1,7 @@
 package com.github.singularity.core.shared
 
+expect val canHostSyncServer: Boolean
+
 expect val platform: String
 
 expect val os: String

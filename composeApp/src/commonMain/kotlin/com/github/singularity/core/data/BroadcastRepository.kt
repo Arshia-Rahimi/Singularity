@@ -30,6 +30,6 @@ interface BroadcastRepository {
 
     suspend fun startBroadcast()
 
-    fun stopBroadcast()
+    suspend fun stopBroadcast()
     
 }

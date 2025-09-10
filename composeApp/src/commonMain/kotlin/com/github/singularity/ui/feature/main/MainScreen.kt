@@ -1,9 +1,5 @@
 package com.github.singularity.ui.feature.main
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,10 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import org.koin.compose.viewmodel.koinViewModel
@@ -33,10 +28,10 @@ fun MainScreen(
     toSettingsScreen: () -> Unit,
 ) {
     val viewModel = koinViewModel<MainViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+//    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MainScreen(
-        uiState = uiState,
+//        uiState = uiState,
         execute = {
             when (this) {
                 is MainIntent.ToDiscoverScreen -> toDiscoverScreen()
@@ -51,7 +46,7 @@ fun MainScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(
-    uiState: MainUiState,
+//    uiState: MainUiState,
     execute: MainIntent.() -> Unit,
 ) {
     Scaffold(
@@ -59,12 +54,12 @@ private fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    AnimatedContent(
-                        targetState = uiState.connectionState,
-                        transitionSpec = { slideInVertically() togetherWith slideOutVertically() }
-                    ) {
-                        Text(it.message.getString())
-                    }
+//                    AnimatedContent(
+//                        targetState = uiState.connectionState,
+//                        transitionSpec = { slideInVertically() togetherWith slideOutVertically() }
+//                    ) {
+//                        Text(it.message.getString())
+//                    }
                 },
                 actions = {
                     IconButton(
@@ -89,6 +84,13 @@ private fun MainScreen(
                 onClick = { MainIntent.ToDiscoverScreen.execute() },
             ) {
                 Text("discover")
+            }
+            if (canHostSyncServer) {
+                Button(
+                    onClick = { MainIntent.ToBroadcastScreen.execute() },
+                ) {
+                    Text("broadcast")
+                }
             }
         }
     }

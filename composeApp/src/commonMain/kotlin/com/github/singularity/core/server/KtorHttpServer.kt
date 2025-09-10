@@ -4,6 +4,7 @@ import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PairRequestRepository
 import com.github.singularity.core.server.auth.AuthTokenRepository
 import com.github.singularity.core.shared.SERVER_PORT
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.http.PairCheckRequest
 import com.github.singularity.core.shared.model.http.PairCheckResponse
@@ -20,26 +21,22 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.random.Random
 
 class KtorHttpServer(
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
     private val authTokenRepo: AuthTokenRepository,
     private val pairRequestRepo: PairRequestRepository,
-    scope: CoroutineScope,
 ) {
 
-    private val defaultSyncGroup = hostedSyncGroupRepo.defaultGroup
-        .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
+    private var syncGroup: HostedSyncGroup? = null
 
     private val _isServerRunning = MutableStateFlow(false)
-    val isServerRunning = MutableStateFlow(false)
+    val isServerRunning = _isServerRunning.asStateFlow()
 
-    private val server = scope.embeddedServer(
+    private val server = embeddedServer(
         factory = CIO,
         port = SERVER_PORT,
         host = "0.0.0.0",
@@ -53,18 +50,20 @@ class KtorHttpServer(
         }
     }
 
-    fun start() {
-        server.start()
+    suspend fun start(group: HostedSyncGroup) {
+        syncGroup = group
+        server.startSuspend()
     }
 
-    fun stop() {
-        server.stop()
+    suspend fun stop() {
+        server.stopSuspend()
+        syncGroup = null
     }
 
     private fun Application.registerRoutes() {
         routing {
             post("/pair") {
-                val group = defaultSyncGroup.value
+                val group = syncGroup
                 val pairRequest = call.receive<PairRequest>()
 
                 if (group == null || pairRequest.deviceId != group.hostedSyncGroupId) {
@@ -80,8 +79,8 @@ class KtorHttpServer(
             }
 
             get("/pairCheck") {
+                val group = syncGroup
                 val request = call.receive<PairCheckRequest>()
-                val group = defaultSyncGroup.value
                 val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
                 if (group == null || group.hostedSyncGroupId != request.groupId || pairCheck == null) {

@@ -12,6 +12,6 @@ val ViewmodelModule = module {
     viewModelOf(::NavigationViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::DiscoverViewModel)
-    viewModelOf(::BroadcastViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::BroadcastViewModel)
 }

@@ -10,13 +10,17 @@ import com.appstractive.jwt.verify
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datastore.PreferencesModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
 class JwtAuthTokenRepository(
     preferencesRepo: PreferencesRepository,
-    scope: CoroutineScope,
 ) : AuthTokenRepository {
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private val preferences = preferencesRepo.preferences
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), PreferencesModel())

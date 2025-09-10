@@ -10,7 +10,6 @@ import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class BroadcastViewModel(
@@ -18,7 +17,6 @@ class BroadcastViewModel(
 ) : ViewModel() {
 
     private val syncGroups = broadcastRepo.syncGroups
-        .map { it.sortedWith(compareBy<HostedSyncGroup> { group -> !group.isDefault }.thenBy { group -> group.name }) }
         .stateInWhileSubscribed(emptyList())
 
     private val pairRequests = broadcastRepo.pairRequests
@@ -54,13 +52,15 @@ class BroadcastViewModel(
 
     private fun broadcast() {
         viewModelScope.launch {
-            broadcastRepo.stopBroadcast()
+            if (isBroadcasting.value) broadcastRepo.stopBroadcast()
             broadcastRepo.startBroadcast()
         }
     }
 
     private fun stopBroadcast() {
-        broadcastRepo.stopBroadcast()
+        viewModelScope.launch {
+            broadcastRepo.stopBroadcast()
+        }
     }
 
     private fun setAsDefault(group: HostedSyncGroup) {
@@ -90,8 +90,10 @@ class BroadcastViewModel(
     }
 
     override fun onCleared() {
-        broadcastRepo.stopBroadcast()
-        super.onCleared()
+        viewModelScope.launch {
+            broadcastRepo.stopBroadcast()
+            super.onCleared()
+        }
     }
 
 }

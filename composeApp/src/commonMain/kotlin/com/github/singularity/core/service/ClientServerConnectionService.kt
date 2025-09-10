@@ -1,6 +1,7 @@
 package com.github.singularity.core.service
 
 import com.github.singularity.core.data.ClientConnectionRepository
+import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
@@ -13,6 +14,7 @@ class ClientServerConnectionService(
     serverConnectionRepo: ServerConnectionRepository,
     preferencesRepo: PreferencesRepository,
     clientConnectionRepo: ClientConnectionRepository,
+    hostedSyncGroupRepo: HostedSyncGroupRepository,
     syncEventRepo: SyncEventRepository,
 ) : ClientConnectionService(
     syncEventRepo = syncEventRepo,
@@ -20,11 +22,15 @@ class ClientServerConnectionService(
 
     init {
         preferencesRepo.preferences.map { it.syncMode }
-            .onEach {
-                when (it) {
+            .onEach { mode ->
+                when (mode) {
                     SyncMode.Server -> {
-                        serverConnectionRepo.stopServer()
-                        clientConnectionRepo.startClient()
+                        hostedSyncGroupRepo.syncGroups.collect {
+                            val group =
+                                it.firstOrNull { group -> group.isDefault } ?: return@collect
+                            clientConnectionRepo.stopClient()
+                            serverConnectionRepo.startServer(group)
+                        }
                     }
 
                     SyncMode.Client -> {

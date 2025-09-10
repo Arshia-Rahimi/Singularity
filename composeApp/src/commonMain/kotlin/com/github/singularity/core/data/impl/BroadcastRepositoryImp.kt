@@ -16,6 +16,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -36,9 +37,6 @@ class BroadcastRepositoryImp(
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
-
-    private val defaultSyncGroup = hostedSyncGroupRepo.defaultGroup
-        .stateIn(scope, SharingStarted.WhileSubscribed(5000), null)
     
     override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupRepo.create(group)
@@ -59,7 +57,9 @@ class BroadcastRepositoryImp(
         hostedSyncGroupRepo.setAsDefault(group)
         if (isBroadcasting.value) {
             stopBroadcast()
+            httpServer.stop()
             startBroadcast()
+            httpServer.start(group)
         }
     }
 
@@ -72,13 +72,12 @@ class BroadcastRepositoryImp(
     }
 
     override suspend fun startBroadcast() {
-        val defaultGroup = defaultSyncGroup.value ?: return
-        hostedSyncGroupRepo.setAsDefault(defaultGroup)
+        val defaultGroup = syncGroups.first().firstOrNull { it.isDefault } ?: return
         broadcastService.broadcastServer(defaultGroup)
-        httpServer.start()
+        httpServer.start(defaultGroup)
     }
 
-    override fun stopBroadcast() {
+    override suspend fun stopBroadcast() {
         httpServer.stop()
         scope.cancel()
     }
