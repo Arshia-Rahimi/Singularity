@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,7 @@ fun LazyItemScope.HostedSyncGroupItem(
     Row(
         modifier = modifier.fillMaxWidth()
             .animateItem()
-            .onCondition(hostedSyncGroup.isDefault) { background(MaterialTheme.colorScheme.primaryContainer) }
+            .onCondition(hostedSyncGroup.isDefault) { background(MaterialTheme.colorScheme.secondaryContainer) }
             .clickable(optionsEnabled) { showSetAsDefaultDialog = true }
             .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
@@ -69,11 +70,13 @@ fun LazyItemScope.HostedSyncGroupItem(
             Text(
                 fontSize = 16.sp,
                 text = hostedSyncGroup.name,
+                color = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.onSecondaryContainer else Color.Unspecified,
             )
 
             Text(
                 text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_paired.getString()}",
                 fontSize = 12.sp,
+                color = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.onSecondaryContainer else Color.Unspecified,
             )
         }
 
