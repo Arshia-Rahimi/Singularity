@@ -9,14 +9,13 @@ import com.github.singularity.core.datastore.DataStoreModelSerializer
 import com.github.singularity.core.datastore.PreferencesModel
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -31,8 +30,7 @@ class OfflinePreferencesRepository(
             prefs[stringPreferencesKey(DataStoreModelSerializer.KEY)]?.let {
                 DataStoreModelSerializer.deserialize(it)
             } ?: PreferencesModel()
-        }
-        .shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+        }.shareInWhileSubscribed(1, scope)
 
     override suspend fun setAppTheme(theme: AppTheme) {
         preferences.first().copy(theme = theme).save()
