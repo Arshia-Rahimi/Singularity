@@ -1,5 +1,6 @@
 package com.github.singularity.ui.feature.discover
 
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
@@ -19,7 +20,8 @@ class DiscoverViewModel(
     private val discoverRepo: DiscoverRepository,
 ) : ViewModel() {
 
-    private val servers = discoverRepo.discoveredServers.stateInWhileSubscribed(emptyList())
+    private val servers = discoverRepo.discoveredServers
+        .stateInWhileSubscribed(emptyList())
 
     private val pairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
@@ -27,7 +29,7 @@ class DiscoverViewModel(
 
     val uiState = combine(servers, pairRequestState) { server, pairRequestState ->
         DiscoverUiState(
-            servers = server,
+            servers = server.toMutableStateList(),
             pairRequestState = pairRequestState,
         )
     }.stateInWhileSubscribed(DiscoverUiState())

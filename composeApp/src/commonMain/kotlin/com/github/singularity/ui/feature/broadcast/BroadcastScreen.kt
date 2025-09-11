@@ -84,6 +84,7 @@ private fun BroadcastScreen(
                         HostedSyncGroupItem(
                             hostedSyncGroup = uiState.syncGroups.first(),
                             execute = execute,
+                            optionsEnabled = false,
                         )
 
                         Text(
@@ -113,6 +114,7 @@ private fun BroadcastScreen(
                         HostedSyncGroupItem(
                             hostedSyncGroup = it,
                             execute = execute,
+                            optionsEnabled = !uiState.isBroadcasting,
                         )
                     }
                 }
@@ -124,6 +126,7 @@ private fun BroadcastScreen(
             ) {
                 Button(
                     onClick = { if (uiState.isBroadcasting) BroadcastIntent.StopBroadcast.execute() else BroadcastIntent.Broadcast.execute() },
+                    enabled = uiState.syncGroups.any { it.isDefault },
                 ) {
                     Text(if (uiState.isBroadcasting) "stop broadcast" else "broadcast")
                 }

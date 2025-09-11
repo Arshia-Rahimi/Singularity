@@ -27,7 +27,7 @@ class DiscoverRepositoryImp(
     discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
-    override val discoveredServers = discoveryService.discoverServers()
+    override val discoveredServers = discoveryService.discoveredServers
 
     override fun sendPairRequest(server: LocalServer) = flow {
         try {

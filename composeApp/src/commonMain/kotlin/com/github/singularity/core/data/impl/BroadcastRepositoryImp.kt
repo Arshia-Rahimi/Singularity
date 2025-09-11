@@ -15,11 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
@@ -34,7 +33,6 @@ class BroadcastRepositoryImp(
 
     override val pairRequests = pairRequestRepo.requests
         .map { list -> list.filter { it.status == PairStatus.Awaiting }.map { it.node } }
-        .stateIn(scope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
     
@@ -73,13 +71,15 @@ class BroadcastRepositoryImp(
 
     override suspend fun startBroadcast() {
         val defaultGroup = syncGroups.first().firstOrNull { it.isDefault } ?: return
-        broadcastService.broadcastServer(defaultGroup)
         httpServer.start(defaultGroup)
+        scope.launch {
+            broadcastService.broadcastServer(defaultGroup)
+        }
     }
 
     override suspend fun stopBroadcast() {
-        httpServer.stop()
         scope.cancel()
+        httpServer.stop()
     }
 
 }

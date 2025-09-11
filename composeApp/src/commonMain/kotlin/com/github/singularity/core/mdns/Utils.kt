@@ -9,7 +9,7 @@ val MDNS_SERVICE_NAME = "Singularity-$platform-${getDeviceName()}"
 const val MDNS_SERVICE_TYPE = "_sync_service._tcp"
 
 fun DiscoveredService.toServer() = LocalServer(
-    ip = addresses.first(),
+    ip = addresses.firstOrNull() ?: "",
     deviceName = txt["deviceName"]?.decodeToString() ?: "Unknown Device",
     deviceId = txt["deviceId"]?.decodeToString() ?: "Unknown",
     syncGroupName = txt["syncGroupName"]?.decodeToString() ?: "Unknown",

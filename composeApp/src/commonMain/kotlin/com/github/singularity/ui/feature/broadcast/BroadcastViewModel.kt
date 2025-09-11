@@ -20,6 +20,7 @@ class BroadcastViewModel(
         .stateInWhileSubscribed(emptyList())
 
     private val pairRequests = broadcastRepo.pairRequests
+        .stateInWhileSubscribed(emptyList())
 
     private val isBroadcasting = broadcastRepo.isBroadcasting
 

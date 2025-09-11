@@ -14,7 +14,7 @@ interface BroadcastRepository {
 
     val syncGroups: SharedFlow<List<HostedSyncGroup>>
 
-    val pairRequests: StateFlow<List<Node>>
+    val pairRequests: Flow<List<Node>>
 
     fun create(group: HostedSyncGroup): Flow<Resource<Success>>
 

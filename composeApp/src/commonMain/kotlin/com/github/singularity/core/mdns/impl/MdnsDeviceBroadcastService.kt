@@ -18,6 +18,7 @@ class MdnsDeviceBroadcastService(
 
     override suspend fun broadcastServer(group: HostedSyncGroup) {
         val deviceId = preferencesRepo.preferences.first().deviceId
+        println(group)
 
         publishService(
             type = MDNS_SERVICE_TYPE,
