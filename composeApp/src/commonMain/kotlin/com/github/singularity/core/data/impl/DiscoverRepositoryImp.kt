@@ -69,8 +69,8 @@ class DiscoverRepositoryImp(
 
             }
 
-        } catch (_: IOException) {
-            throw Exception("failed to send pair request")
+        } catch (e: IOException) {
+            throw Exception("failed to send pair request: ${e.message}")
         }
     }.asResult(Dispatchers.IO)
 

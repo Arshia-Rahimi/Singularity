@@ -96,7 +96,6 @@ fun LazyItemScope.HostedSyncGroupItem(
             ) {
                 DropdownMenuItem(
                     text = { Text(Res.string.delete.getString()) },
-                    enabled = !hostedSyncGroup.isDefault,
                     onClick = {
                         showDeletionDialog = true
                         showDropDownMenu = false

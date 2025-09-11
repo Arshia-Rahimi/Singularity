@@ -10,15 +10,11 @@ import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
@@ -26,8 +22,6 @@ class BroadcastRepositoryImp(
     private val pairRequestRepo: PairRequestRepository,
     private val httpServer: KtorHttpServer,
 ) : BroadcastRepository {
-
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
             
     override val isBroadcasting = httpServer.isServerRunning
 
@@ -72,13 +66,11 @@ class BroadcastRepositoryImp(
     override suspend fun startBroadcast() {
         val defaultGroup = syncGroups.first().firstOrNull { it.isDefault } ?: return
         httpServer.start(defaultGroup)
-        scope.launch {
-            broadcastService.broadcastServer(defaultGroup)
-        }
+        broadcastService.startBroadcast(defaultGroup)
     }
 
     override suspend fun stopBroadcast() {
-        scope.cancel()
+        broadcastService.stopBroadcast()
         httpServer.stop()
     }
 

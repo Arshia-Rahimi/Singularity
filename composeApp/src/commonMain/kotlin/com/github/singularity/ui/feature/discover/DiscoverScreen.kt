@@ -90,7 +90,7 @@ private fun DiscoverScreen(
                     ) {
                         when (uiState.pairRequestState) {
                             is PairRequestState.Awaiting -> {
-                                Text(Res.string.await_pair_request_approval.toString())
+                                Text(Res.string.await_pair_request_approval.getString(uiState.pairRequestState.server.syncGroupName))
                                 CircularProgressIndicator()
                             }
 

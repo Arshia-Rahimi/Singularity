@@ -8,7 +8,7 @@ import com.github.singularity.core.shared.model.Node
 
 @Immutable
 data class BroadcastUiState(
-    val syncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
     val isBroadcasting: Boolean = false,
-    val pairRequests: List<Node> = emptyList(),
+    val pairRequests: SnapshotStateList<Node> = mutableStateListOf(),
+    val syncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
 )

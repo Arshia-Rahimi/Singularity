@@ -2,11 +2,14 @@ package com.github.singularity.core.mdns
 
 import com.appstractive.dnssd.DiscoveredService
 import com.github.singularity.core.shared.getDeviceName
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.platform
 
-val MDNS_SERVICE_NAME = "Singularity-$platform-${getDeviceName()}"
-const val MDNS_SERVICE_TYPE = "_sync_service._tcp"
+const val MDNS_SERVICE_TYPE = "_singularity_sync._tcp"
+
+fun getServiceName(group: HostedSyncGroup) =
+    "Singularity-$platform-${getDeviceName()}-${group.hostedSyncGroupId}.${MDNS_SERVICE_TYPE}"
 
 fun DiscoveredService.toServer() = LocalServer(
     ip = addresses.firstOrNull() ?: "",

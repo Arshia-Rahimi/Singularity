@@ -31,9 +31,9 @@ class BroadcastViewModel(
         pairRequests,
     ) { syncGroups, isBroadcasting, pairRequests ->
         BroadcastUiState(
-            syncGroups = syncGroups.toMutableStateList(),
             isBroadcasting = isBroadcasting,
-            pairRequests = pairRequests,
+            pairRequests = pairRequests.toMutableStateList(),
+            syncGroups = syncGroups.toMutableStateList(),
         )
     }.stateInWhileSubscribed(BroadcastUiState())
 

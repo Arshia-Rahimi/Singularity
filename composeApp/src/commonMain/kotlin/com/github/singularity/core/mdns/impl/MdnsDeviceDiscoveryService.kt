@@ -15,19 +15,19 @@ import kotlinx.coroutines.withTimeoutOrNull
 class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
     override val discoveredServers = discoverServices(MDNS_SERVICE_TYPE)
-        .runningFold(mutableListOf<LocalServer>()) { list, newServer ->
-            val newList = list
+        .runningFold(emptyList<LocalServer>()) { list, newServer ->
             when (newServer) {
-                is DiscoveryEvent.Discovered -> newServer.resolve()
-                is DiscoveryEvent.Resolved -> newList += newServer.service.toServer()
-                is DiscoveryEvent.Removed -> {
-                    newList.removeAll { item ->
-                        item.syncGroupId == newServer.service.toServer().syncGroupId
-                    }
+                is DiscoveryEvent.Discovered -> {
+                    newServer.resolve()
+                    list
                 }
-            }
-            newList.distinctBy { it.syncGroupId }
-            newList
+
+                is DiscoveryEvent.Removed -> list.filter {
+                    it.syncGroupId == newServer.service.toServer().syncGroupId
+                }
+
+                is DiscoveryEvent.Resolved -> list + newServer.service.toServer()
+            }.distinctBy { it.syncGroupId }
         }
 
     override suspend fun discoverServer(syncGroup: JoinedSyncGroup) = withTimeoutOrNull(30_000) {
