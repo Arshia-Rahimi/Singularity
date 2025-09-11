@@ -1,4 +1,4 @@
-package com.github.singularity.core.mdns
+package com.github.singularity.core.broadcast
 
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer

@@ -1,9 +1,9 @@
 package com.github.singularity.core.data.impl
 
+import com.github.singularity.core.broadcast.DeviceBroadcastService
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PairRequestRepository
-import com.github.singularity.core.mdns.DeviceBroadcastService
 import com.github.singularity.core.server.KtorHttpServer
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node

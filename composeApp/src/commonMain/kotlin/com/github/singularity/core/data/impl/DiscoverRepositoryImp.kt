@@ -1,10 +1,10 @@
 package com.github.singularity.core.data.impl
 
+import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
-import com.github.singularity.core.mdns.DeviceDiscoveryService
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer

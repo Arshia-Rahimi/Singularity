@@ -1,4 +1,4 @@
-package com.github.singularity.core.mdns
+package com.github.singularity.core.broadcast
 
 import com.appstractive.dnssd.DiscoveredService
 import com.github.singularity.core.shared.getDeviceName

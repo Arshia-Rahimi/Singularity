@@ -1,11 +1,11 @@
 package com.github.singularity.app.di
 
+import com.github.singularity.core.broadcast.di.BroadcastModule
 import com.github.singularity.core.client.di.ClientModule
 import com.github.singularity.core.data.di.DataModule
 import com.github.singularity.core.data.di.ServerDataModule
 import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.datastore.di.DataStoreModule
-import com.github.singularity.core.mdns.di.MdnsModule
 import com.github.singularity.core.server.di.ServerModule
 import com.github.singularity.core.service.di.ClientServiceModule
 import com.github.singularity.core.service.di.ServerServiceModule
@@ -16,7 +16,7 @@ val ModulesList = listOf(
     ViewmodelModule,
     DataModule,
     DataStoreModule,
-    MdnsModule,
+    BroadcastModule,
     DatabaseModule,
     ClientModule,
     PluginModule,
