@@ -52,7 +52,6 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.navigation)
                 implementation(libs.datastore.preferences)
-                implementation(libs.dns.sd)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.client.core)
@@ -103,6 +102,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutinesSwing)
                 implementation(libs.appdirs)
                 implementation(libs.sqldelight.driver.sqlite)
+                implementation(libs.jmdns)
             }
         }
     }

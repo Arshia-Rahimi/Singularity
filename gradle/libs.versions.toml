@@ -19,10 +19,11 @@ serialization-json = "1.9.0"
 koin = "4.1.1"
 datastore = "1.1.7"
 appDirs = "1.4.0"
-dns-sd = "1.0.4"
 desugaring = "2.1.5"
 sqldelight = "2.1.0"
 jwt-kt = "1.2.1"
+jmdns = "3.6.2"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -61,8 +62,6 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 ## appdirs
 appdirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }
-## mdns
-dns-sd = { module = "com.appstractive:dns-sd-kt", version.ref = "dns-sd" }
 ## desugaring
 desugaring = { module = "com.android.tools:desugar_jdk_libs_nio", version.ref = "desugaring" }
 ## sqldelight
@@ -73,6 +72,8 @@ sqldelight-driver-sqlite = { module = "app.cash.sqldelight:sqlite-driver", versi
 ## jwt
 jwt-kt = { module = "com.appstractive:jwt-kt", version.ref = "jwt-kt" }
 jwt-kt-hmac = { module = "com.appstractive:jwt-hmac-kt", version.ref = "jwt-kt" }
+##mdns
+jmdns = { module = "org.jmdns:jmdns", version.ref = "jmdns" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

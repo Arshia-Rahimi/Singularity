@@ -16,10 +16,10 @@ val ModulesList = listOf(
     ViewmodelModule,
     DataModule,
     DataStoreModule,
-    BroadcastModule,
     DatabaseModule,
     ClientModule,
     PluginModule,
+    BroadcastModule,
 )
 
 val ServerOnlyModules = listOf(
