@@ -1,5 +1,6 @@
 package com.github.singularity.core.broadcast
 
+import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.channels.awaitClose
@@ -53,7 +54,7 @@ class JmdnsDeviceDiscoveryService(
         }
 
     override suspend fun discoverServer(syncGroup: JoinedSyncGroup) =
-        withTimeoutOrNull(30_000) {
+        withTimeoutOrNull(DISCOVER_TIMEOUT) {
             servers.filterIsInstance<JmdnsEvent.Resolved>()
                 .map { it.server }
                 .firstOrNull { it.syncGroupId == syncGroup.syncGroupId }
