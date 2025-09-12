@@ -9,7 +9,7 @@ import com.github.singularity.core.shared.platform
 const val MDNS_SERVICE_TYPE = "_singularity_sync._tcp"
 
 fun getServiceName(group: HostedSyncGroup) =
-    "Singularity-$platform-${getDeviceName()}-${group.hostedSyncGroupId}.${MDNS_SERVICE_TYPE}"
+    "Singularity-$platform-${getDeviceName()}-${group.hostedSyncGroupId}"
 
 fun DiscoveredService.toServer() = LocalServer(
     ip = addresses.firstOrNull() ?: "",

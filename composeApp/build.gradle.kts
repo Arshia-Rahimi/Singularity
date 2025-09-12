@@ -17,7 +17,7 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
-    
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -66,7 +66,6 @@ kotlin {
                 implementation(libs.ktor.server.auth)
                 implementation(libs.ktor.server.websockets)
                 implementation(libs.ktor.json)
-                implementation(libs.ktor.network)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.koin.core)
                 implementation(libs.jwt.kt)
@@ -136,7 +135,7 @@ android {
             isDebuggable = false
         }
 
-        debug { 
+        debug {
             isMinifyEnabled = false
             isDebuggable = true
         }

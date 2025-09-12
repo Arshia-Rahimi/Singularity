@@ -16,6 +16,7 @@ class MdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
     override val discoveredServers = discoverServices(MDNS_SERVICE_TYPE)
         .runningFold(emptyList<LocalServer>()) { list, newServer ->
+            println(newServer)
             when (newServer) {
                 is DiscoveryEvent.Discovered -> {
                     newServer.resolve()
