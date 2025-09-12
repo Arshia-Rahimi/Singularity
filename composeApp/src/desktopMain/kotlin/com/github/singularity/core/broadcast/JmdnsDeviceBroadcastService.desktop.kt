@@ -21,6 +21,8 @@ class JmdnsDeviceBroadcastService(
             MDNS_SERVICE_TYPE,
             getServiceName(group),
             SERVER_PORT,
+            0,
+            0,
             mapOf(
                 "deviceName" to getDeviceName(),
                 "deviceId" to deviceId,
@@ -28,7 +30,7 @@ class JmdnsDeviceBroadcastService(
                 "deviceOs" to os,
                 "syncGroupName" to group.name,
                 "syncGroupId" to group.hostedSyncGroupId,
-            ).toString(),
+            ),
         )
 
         jmdns.registerService(serviceInfo)

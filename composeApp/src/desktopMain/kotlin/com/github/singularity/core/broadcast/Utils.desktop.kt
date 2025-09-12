@@ -2,6 +2,7 @@ package com.github.singularity.core.broadcast
 
 import com.github.singularity.core.shared.model.LocalServer
 import java.net.Inet4Address
+import java.net.NetworkInterface
 import javax.jmdns.ServiceInfo
 
 sealed interface JmdnsEvent {
@@ -21,3 +22,9 @@ fun ServiceInfo.toServer() = LocalServer(
     syncGroupName = getPropertyString("syncGroupName"),
     syncGroupId = getPropertyString("syncGroupId"),
 )
+
+fun getUsableAddresses() = buildList {
+    NetworkInterface.getNetworkInterfaces().toList().map {
+        addAll(it.inetAddresses.toList())
+    }
+}.filter { it.isSiteLocalAddress && it is Inet4Address }
