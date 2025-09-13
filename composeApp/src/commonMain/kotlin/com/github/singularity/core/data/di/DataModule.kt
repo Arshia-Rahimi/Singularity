@@ -1,5 +1,6 @@
 package com.github.singularity.core.data.di
 
+import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.DiscoverRepository
@@ -12,6 +13,7 @@ import com.github.singularity.core.data.impl.BroadcastRepositoryImp
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImp
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
+import com.github.singularity.core.data.impl.JwtAuthTokenRepository
 import com.github.singularity.core.data.impl.PairRequestRepositoryImpl
 import com.github.singularity.core.data.impl.SQLPreferencesRepository
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
@@ -32,5 +34,6 @@ val DataModule = module {
         singleOf(::BroadcastRepositoryImp) bind BroadcastRepository::class
         singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
         singleOf(::PairRequestRepositoryImpl) bind PairRequestRepository::class
+        singleOf(::JwtAuthTokenRepository) bind AuthTokenRepository::class
     }
 }

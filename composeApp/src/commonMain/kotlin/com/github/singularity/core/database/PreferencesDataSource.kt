@@ -1,6 +1,6 @@
 package com.github.singularity.core.database
 
-import com.github.singularity.core.datastore.PreferencesModel
+import com.github.singularity.core.shared.model.PreferencesModel
 import kotlinx.coroutines.flow.Flow
 
 interface PreferencesDataSource {

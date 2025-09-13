@@ -15,7 +15,7 @@ actual val BroadcastModule = module {
     singleOf(::JmdnsDeviceBroadcastService) bind DeviceBroadcastService::class
     singleOf(::JmdnsDeviceDiscoveryService) bind DeviceDiscoveryService::class
 
-    single {
+    factory {
         val inetAddresses = buildList {
             NetworkInterface.getNetworkInterfaces().toList().forEach {
                 it.inetAddresses.toList().forEach { address ->

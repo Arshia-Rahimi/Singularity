@@ -1,4 +1,4 @@
-package com.github.singularity.core.server.auth
+package com.github.singularity.core.data
 
 typealias Token = String
 

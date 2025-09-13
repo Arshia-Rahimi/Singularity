@@ -4,9 +4,9 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.github.singularity.core.database.PreferencesDataSource
 import com.github.singularity.core.database.SingularityDatabase
-import com.github.singularity.core.datastore.PreferencesModel
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.model.PreferencesModel
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

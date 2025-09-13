@@ -1,7 +1,7 @@
 package com.github.singularity.core.server
 
+import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.SyncEventRepository
-import com.github.singularity.core.server.auth.AuthTokenRepository
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
