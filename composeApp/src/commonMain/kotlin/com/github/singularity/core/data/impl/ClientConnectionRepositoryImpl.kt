@@ -53,30 +53,30 @@ class ClientConnectionRepositoryImpl(
 
                     if (server == null) {
                         emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
-                    } else {
-                        webSocketClient.connect(server, defaultServer.authToken)
-                            .onFirst { emit(ConnectionState.Connected(server)) }
-                            .catch { e ->
-                                when (e) {
-                                    is WebSocketConnectionDroppedException ->
-                                        emit(
-                                            ConnectionState.ConnectionFailed(
-                                                server,
-                                                "connection dropped",
-                                            )
-                                        )
-
-                                    else ->
-                                        emit(
-                                            ConnectionState.ConnectionFailed(
-                                                server,
-                                                "connection failed",
-                                            )
-                                        )
-                                }
-                            }
-                            .collect { syncEventRepo.incomingEventCallback(it) }
+                        return@flow
                     }
+
+                    webSocketClient.connect(server, defaultServer.authToken)
+                        .onFirst { emit(ConnectionState.Connected(server)) }
+                        .catch { e ->
+                            when (e) {
+                                is WebSocketConnectionDroppedException ->
+                                    emit(
+                                        ConnectionState.ConnectionFailed(
+                                            server,
+                                            "connection dropped",
+                                        )
+                                    )
+
+                                else ->
+                                    emit(
+                                        ConnectionState.ConnectionFailed(
+                                            server,
+                                            "connection failed",
+                                        )
+                                    )
+                            }
+                        }.collect { syncEventRepo.incomingEventCallback(it) }
                 }
             }
     }.shareInWhileSubscribed(1, scope)
