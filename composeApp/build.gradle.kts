@@ -89,11 +89,13 @@ kotlin {
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.junit)
+                implementation(libs.dns.sd)
             }
         }
         val iosMain by getting {
             dependencies {
                 implementation(libs.sqldelight.driver.native)
+                implementation(libs.dns.sd)
             }
         }
         val desktopMain by getting {
