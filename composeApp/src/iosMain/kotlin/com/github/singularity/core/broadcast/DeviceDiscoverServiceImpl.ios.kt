@@ -29,20 +29,17 @@ class DeviceDiscoveryServiceImpl : DeviceDiscoveryService {
         withTimeoutOrNull(DISCOVER_TIMEOUT) {
             discoverServices(MDNS_SERVICE_TYPE).mapNotNull { newServer ->
                 when (newServer) {
-                    is DiscoveryEvent.Discovered -> {
-                        newServer.resolve()
-                        null
-                    }
+                    is DiscoveryEvent.Discovered -> newServer.resolve()
+                    is DiscoveryEvent.Removed -> Unit
 
                     is DiscoveryEvent.Resolved -> {
                         val server = newServer.service.toServer()
                         if (server.syncGroupId == syncGroup.syncGroupId) {
-                            server
-                        } else null
+                            return@mapNotNull server
+                        }
                     }
-
-                    is DiscoveryEvent.Removed -> null
                 }
+                return@mapNotNull null
             }.first()
         }
 
