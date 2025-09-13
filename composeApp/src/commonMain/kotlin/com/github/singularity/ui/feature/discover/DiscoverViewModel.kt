@@ -20,7 +20,7 @@ class DiscoverViewModel(
     private val discoverRepo: DiscoverRepository,
 ) : ViewModel() {
 
-    private val servers = discoverRepo.discoveredServers
+    private val servers = discoverRepo.discoveredServers()
         .stateInWhileSubscribed(emptyList())
 
     private val pairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)

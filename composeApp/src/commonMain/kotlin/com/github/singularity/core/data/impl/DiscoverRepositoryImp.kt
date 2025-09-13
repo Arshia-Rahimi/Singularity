@@ -16,6 +16,7 @@ import com.github.singularity.core.shared.util.asResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import okio.IOException
@@ -24,10 +25,11 @@ class DiscoverRepositoryImp(
     private val joinedSyncGroupsRepo: JoinedSyncGroupDataSource,
     private val preferencesRepo: PreferencesRepository,
     private val httpClientDataSource: HttpClientDataSource,
-    discoveryService: DeviceDiscoveryService,
+    private val discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
-    override val discoveredServers = discoveryService.discoveredServers
+    override fun discoveredServers() = discoveryService.discoveredServers()
+        .catch {}
 
     override fun sendPairRequest(server: LocalServer) = flow {
         try {

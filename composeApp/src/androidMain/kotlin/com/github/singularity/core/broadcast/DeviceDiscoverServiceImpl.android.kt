@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.withTimeoutOrNull
 
-class NSDDeviceDiscoverService : DeviceDiscoveryService {
+class DeviceDiscoverServiceImpl : DeviceDiscoveryService {
 
-    override val discoveredServers = discoverServices(MDNS_SERVICE_TYPE)
+    override fun discoveredServers() = discoverServices(MDNS_SERVICE_TYPE)
         .runningFold(emptyList<LocalServer>()) { list, newServer ->
             when (newServer) {
                 is DiscoveryEvent.Discovered -> {

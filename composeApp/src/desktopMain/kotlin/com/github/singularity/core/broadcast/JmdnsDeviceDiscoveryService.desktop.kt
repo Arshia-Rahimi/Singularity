@@ -44,7 +44,7 @@ class JmdnsDeviceDiscoveryService(
 
     }
 
-    override val discoveredServers = servers
+    override fun discoveredServers() = servers
         .runningFold(emptyList<LocalServer>()) { list, newServer ->
             when (newServer) {
                 is JmdnsEvent.Removed -> list - newServer.server
