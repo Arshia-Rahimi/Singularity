@@ -17,7 +17,7 @@ class HostedSyncGroupRepositoryImpl(
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override val syncGroups = hostedSyncGroupsDataSource.hostedSyncGroups
-        .shareInWhileSubscribed(1, scope)
+        .shareInWhileSubscribed(scope, 1)
 
     override suspend fun create(group: HostedSyncGroup) {
         hostedSyncGroupsDataSource.insert(group)

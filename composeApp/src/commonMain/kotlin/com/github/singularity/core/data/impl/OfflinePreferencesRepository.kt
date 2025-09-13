@@ -30,7 +30,7 @@ class OfflinePreferencesRepository(
             prefs[stringPreferencesKey(DataStoreModelSerializer.KEY)]?.let {
                 DataStoreModelSerializer.deserialize(it)
             } ?: PreferencesModel()
-        }.shareInWhileSubscribed(1, scope)
+        }.shareInWhileSubscribed(scope, 1)
 
     override suspend fun setAppTheme(theme: AppTheme) {
         preferences.first().copy(theme = theme).save()

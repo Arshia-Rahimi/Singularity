@@ -79,7 +79,7 @@ class ClientConnectionRepositoryImpl(
                         }.collect { syncEventRepo.incomingEventCallback(it) }
                 }
             }
-    }.shareInWhileSubscribed(1, scope)
+    }.shareInWhileSubscribed(scope, 1)
 
     override fun refresh() {
         refreshState.sendPulse()
