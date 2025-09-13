@@ -51,7 +51,6 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.navigation)
-                implementation(libs.datastore.preferences)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.client.core)

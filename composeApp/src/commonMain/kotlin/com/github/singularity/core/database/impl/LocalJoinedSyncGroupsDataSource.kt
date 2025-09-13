@@ -10,10 +10,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class LocalJoinedSyncGroupsDataSource(
-    private val db: SingularityDatabase,
+    db: SingularityDatabase,
 ) : JoinedSyncGroupDataSource {
 
-    override val joinedSyncGroups = db.joinedSyncGroupsQueries.index()
+    private val queries = db.joinedSyncGroupsQueries
+
+    override val joinedSyncGroups = queries.index()
         .asFlow()
         .map { query ->
             query.executeAsList().map {
@@ -27,7 +29,7 @@ class LocalJoinedSyncGroupsDataSource(
         }
 
     override fun insert(joinedSyncGroup: JoinedSyncGroup) {
-        db.joinedSyncGroupsQueries.insert(
+        queries.insert(
             joined_sync_group_id = joinedSyncGroup.syncGroupId,
             name = joinedSyncGroup.syncGroupName,
             auth_token = joinedSyncGroup.authToken,
@@ -35,15 +37,15 @@ class LocalJoinedSyncGroupsDataSource(
     }
 
     override fun delete(joinedSyncGroup: JoinedSyncGroup) {
-        db.joinedSyncGroupsQueries.delete(joinedSyncGroup.syncGroupId)
+        queries.delete(joinedSyncGroup.syncGroupId)
     }
 
     override suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup) {
         val groups = joinedSyncGroups.first()
-        db.joinedSyncGroupsQueries.transaction {
+        queries.transaction {
             groups.forEach { group ->
                 val isDefault = group.syncGroupId == joinedSyncGroup.syncGroupId
-                db.joinedSyncGroupsQueries.updateIsDefault(
+                queries.updateIsDefault(
                     joined_sync_group_id = group.syncGroupId,
                     is_default = isDefault.toLong(),
                 )

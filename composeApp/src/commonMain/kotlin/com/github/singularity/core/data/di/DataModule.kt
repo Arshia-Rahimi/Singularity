@@ -12,8 +12,8 @@ import com.github.singularity.core.data.impl.BroadcastRepositoryImp
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImp
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
-import com.github.singularity.core.data.impl.OfflinePreferencesRepository
 import com.github.singularity.core.data.impl.PairRequestRepositoryImpl
+import com.github.singularity.core.data.impl.SQLPreferencesRepository
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.SyncEventRepositoryImpl
 import com.github.singularity.core.shared.canHostSyncServer
@@ -23,7 +23,7 @@ import org.koin.dsl.module
 
 val DataModule = module {
     singleOf(::ClientConnectionRepositoryImpl) bind ClientConnectionRepository::class
-    singleOf(::OfflinePreferencesRepository) bind PreferencesRepository::class
+    singleOf(::SQLPreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
     singleOf(::SyncEventRepositoryImpl) bind SyncEventRepository::class
 

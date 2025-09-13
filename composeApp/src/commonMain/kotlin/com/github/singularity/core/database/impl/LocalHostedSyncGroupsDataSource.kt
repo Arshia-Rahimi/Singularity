@@ -12,10 +12,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class LocalHostedSyncGroupsDataSource(
-    private val db: SingularityDatabase,
+    db: SingularityDatabase,
 ) : HostedSyncGroupDataSource {
 
-    override val hostedSyncGroups = db.hostedSyncGroupsQueries.index()
+    private val queries = db.hostedSyncGroupsQueries
+    private val nodesQueries = db.hostedSyncGroupNodesQueries
+
+    override val hostedSyncGroups = queries.index()
         .asFlow()
         .map { query ->
             query.executeAsList()
@@ -42,18 +45,18 @@ class LocalHostedSyncGroupsDataSource(
         }.distinctUntilChanged()
 
     override fun insert(syncGroup: HostedSyncGroup) {
-        db.hostedSyncGroupsQueries.insert(
+        queries.insert(
             hosted_sync_group_id = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
         )
     }
 
     override fun updateName(groupName: String, groupId: String) {
-        db.hostedSyncGroupsQueries.updateName(groupName, groupId)
+        queries.updateName(groupName, groupId)
     }
 
     override fun insert(syncGroupNode: HostedSyncGroupNode) {
-        db.hostedSyncGroupNodesQueries.insert(
+        nodesQueries.insert(
             node_id = syncGroupNode.nodeId,
             auth_token = syncGroupNode.authToken,
             hosted_sync_group_id = syncGroupNode.syncGroupId,
@@ -63,19 +66,19 @@ class LocalHostedSyncGroupsDataSource(
     }
 
     override fun delete(syncGroupNode: HostedSyncGroupNode) {
-        db.hostedSyncGroupNodesQueries.delete(syncGroupNode.nodeId)
+        queries.delete(syncGroupNode.nodeId)
     }
 
     override fun delete(syncGroup: HostedSyncGroup) {
-        db.hostedSyncGroupsQueries.delete(syncGroup.hostedSyncGroupId)
+        nodesQueries.delete(syncGroup.hostedSyncGroupId)
     }
 
     override suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup) {
         val groups = hostedSyncGroups.first()
-        db.joinedSyncGroupsQueries.transaction {
+        queries.transaction {
             groups.forEach { group ->
                 val isDefault = group.hostedSyncGroupId == hostedSyncGroup.hostedSyncGroupId
-                db.hostedSyncGroupsQueries.updateIsDefault(
+                queries.updateIsDefault(
                     hosted_sync_group_id = group.hostedSyncGroupId,
                     is_default = isDefault.toLong(),
                 )

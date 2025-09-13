@@ -1,0 +1,21 @@
+CREATE TABLE Preferences (
+    id INTEGER PRIMARY KEY NOT NULL,
+    theme INTEGER NOT NULL,
+    deviceId TEXT NOT NULL,
+    appSecret TEXT NOT NULL,
+    syncMode INTEGER NOT NULL
+);
+
+insert:
+INSERT INTO Preferences (id, theme, deviceId, appSecret, syncMode)
+    VALUES (1, ?, ?, ?, ?);
+
+get:
+SELECT * FROM Preferences
+    WHERE id = 1
+    LIMIT 1;
+
+update:
+UPDATE Preferences
+    SET theme = ?, deviceId = ?, appSecret = ?, syncMode = ?
+    WHERE id = 1;
