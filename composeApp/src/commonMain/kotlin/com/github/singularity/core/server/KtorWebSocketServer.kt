@@ -2,7 +2,7 @@ package com.github.singularity.core.server
 
 import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.server.auth.AuthTokenRepository
-import com.github.singularity.core.shared.SERVER_PORT
+import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.websocket.SyncEvent
@@ -47,7 +47,7 @@ class KtorWebSocketServer(
 
     private val server = embeddedServer(
         factory = CIO,
-        port = SERVER_PORT,
+        port = WEBSOCKET_SERVER_PORT,
         host = "0.0.0.0"
     ) {
         install(WebSockets) {

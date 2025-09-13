@@ -3,7 +3,7 @@ package com.github.singularity.core.server
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PairRequestRepository
 import com.github.singularity.core.server.auth.AuthTokenRepository
-import com.github.singularity.core.shared.SERVER_PORT
+import com.github.singularity.core.shared.HTTP_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.http.PairCheckRequest
@@ -38,7 +38,7 @@ class KtorHttpServer(
 
     private val server = embeddedServer(
         factory = CIO,
-        port = SERVER_PORT,
+        port = HTTP_SERVER_PORT,
         host = "0.0.0.0"
     ) {
         registerRoutes()
