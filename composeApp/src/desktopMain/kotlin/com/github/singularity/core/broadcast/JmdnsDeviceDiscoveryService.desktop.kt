@@ -1,6 +1,5 @@
 package com.github.singularity.core.broadcast
 
-import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.channels.awaitClose
@@ -9,13 +8,11 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
-import kotlinx.coroutines.withTimeoutOrNull
-import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
 
 class JmdnsDeviceDiscoveryService(
-    private val jmdns: JmDNS,
+    private val jmdns: MultiJmdnsWrapper,
 ) : DeviceDiscoveryService {
 
     private val servers = callbackFlow {
@@ -49,15 +46,12 @@ class JmdnsDeviceDiscoveryService(
             when (newServer) {
                 is JmdnsEvent.Removed -> list - newServer.server
                 is JmdnsEvent.Resolved -> list + newServer.server
-            }
-            list
+            }.distinctBy { it.syncGroupId }
         }
 
     override suspend fun discoverServer(syncGroup: JoinedSyncGroup) =
-        withTimeoutOrNull(DISCOVER_TIMEOUT) {
-            servers.filterIsInstance<JmdnsEvent.Resolved>()
-                .map { it.server }
-                .firstOrNull { it.syncGroupId == syncGroup.syncGroupId }
-        }
+        servers.filterIsInstance<JmdnsEvent.Resolved>()
+            .map { it.server }
+            .firstOrNull { it.syncGroupId == syncGroup.syncGroupId }
 
 }

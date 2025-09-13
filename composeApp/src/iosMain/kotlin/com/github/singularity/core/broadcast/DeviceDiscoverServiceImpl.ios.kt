@@ -2,13 +2,11 @@ package com.github.singularity.core.broadcast
 
 import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
-import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.runningFold
-import kotlinx.coroutines.withTimeoutOrNull
 
 class DeviceDiscoveryServiceImpl : DeviceDiscoveryService {
 
@@ -26,21 +24,19 @@ class DeviceDiscoveryServiceImpl : DeviceDiscoveryService {
         }
 
     override suspend fun discoverServer(syncGroup: JoinedSyncGroup) =
-        withTimeoutOrNull(DISCOVER_TIMEOUT) {
-            discoverServices(MDNS_SERVICE_TYPE).mapNotNull { newServer ->
-                when (newServer) {
-                    is DiscoveryEvent.Discovered -> newServer.resolve()
-                    is DiscoveryEvent.Removed -> Unit
+        discoverServices(MDNS_SERVICE_TYPE).mapNotNull { newServer ->
+            when (newServer) {
+                is DiscoveryEvent.Discovered -> newServer.resolve()
+                is DiscoveryEvent.Removed -> Unit
 
-                    is DiscoveryEvent.Resolved -> {
-                        val server = newServer.service.toServer()
-                        if (server.syncGroupId == syncGroup.syncGroupId) {
-                            return@mapNotNull server
-                        }
+                is DiscoveryEvent.Resolved -> {
+                    val server = newServer.service.toServer()
+                    if (server.syncGroupId == syncGroup.syncGroupId) {
+                        return@mapNotNull server
                     }
                 }
-                return@mapNotNull null
-            }.first()
-        }
+            }
+            return@mapNotNull null
+        }.first()
 
 }

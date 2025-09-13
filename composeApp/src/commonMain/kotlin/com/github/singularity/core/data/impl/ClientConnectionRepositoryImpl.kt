@@ -6,6 +6,7 @@ import com.github.singularity.core.client.utils.WebSocketConnectionDroppedExcept
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.database.JoinedSyncGroupDataSource
+import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
@@ -45,7 +47,9 @@ class ClientConnectionRepositoryImpl(
                 else flow {
                     emit(ConnectionState.Searching(defaultServer))
 
-                    val server = deviceDiscoveryService.discoverServer(defaultServer)
+                    val server = withTimeoutOrNull(DISCOVER_TIMEOUT) {
+                        deviceDiscoveryService.discoverServer(defaultServer)
+                    }
 
                     if (server == null) {
                         emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
