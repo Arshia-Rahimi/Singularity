@@ -45,4 +45,5 @@ class OfflinePreferencesRepository(
             prefs[stringPreferencesKey(DataStoreModelSerializer.KEY)] =
                 DataStoreModelSerializer.serialize(this)
         }
+
 }
