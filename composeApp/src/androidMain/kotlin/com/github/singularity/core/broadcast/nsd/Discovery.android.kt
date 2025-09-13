@@ -78,21 +78,7 @@ fun discoverServices(type: String): Flow<DiscoveryEvent> = callbackFlow {
                     override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
                         resolveSemaphore.release()
 
-                        val service: DiscoveredService =
-                            when {
-                                VERSION.SDK_INT >= VERSION_CODES.M -> serviceInfo.toCommon()
-                                else -> {
-                                    val resolvedData =
-                                        MDNSDiscover.resolve(
-                                            "${serviceInfo.serviceName}${serviceInfo.serviceType}".localQualified,
-                                            5000,
-                                        )
-
-                                    val txtRecords = resolvedData?.txt?.dict?.toByteMap()
-
-                                    serviceInfo.toCommon(txtRecords)
-                                }
-                            }
+                        val service: DiscoveredService = serviceInfo.toCommon()
 
                         trySend(
                             DiscoveryEvent.Resolved(
