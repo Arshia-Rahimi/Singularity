@@ -1,4 +1,4 @@
-package com.github.singularity.core.service
+package com.github.singularity.core.sync
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-class ClientServerConnectionService(
+class ServerSyncService(
     serverConnectionRepo: ServerConnectionRepository,
     preferencesRepo: PreferencesRepository,
     clientConnectionRepo: ClientConnectionRepository,
     hostedSyncGroupRepo: HostedSyncGroupRepository,
     syncEventRepo: SyncEventRepository,
-) : ClientConnectionService(
+) : SyncService(
     syncEventRepo = syncEventRepo,
 ) {
 

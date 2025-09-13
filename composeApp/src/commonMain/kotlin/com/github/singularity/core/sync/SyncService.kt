@@ -1,4 +1,4 @@
-package com.github.singularity.core.service
+package com.github.singularity.core.sync
 
 import com.github.singularity.core.data.SyncEventRepository
 import kotlinx.coroutines.CoroutineScope
@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 
-open class ClientConnectionService(
+open class SyncService(
     private val syncEventRepo: SyncEventRepository,
 ) {
 
