@@ -7,11 +7,10 @@ import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.platform
 import kotlinx.coroutines.flow.first
-import javax.jmdns.JmDNS
 import javax.jmdns.ServiceInfo
 
 class JmdnsDeviceBroadcastService(
-    private val jmdns: JmDNS,
+    private val jmdns: MultiJmdnsWrapper,
     private val preferencesRepo: PreferencesRepository,
 ) : DeviceBroadcastService {
     
