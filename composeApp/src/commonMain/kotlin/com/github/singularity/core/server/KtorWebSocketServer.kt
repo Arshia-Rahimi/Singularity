@@ -48,29 +48,28 @@ class KtorWebSocketServer(
     private val server = embeddedServer(
         factory = CIO,
         port = SERVER_PORT,
-        host = "0.0.0.0",
-        module = {
-            install(WebSockets) {
-                contentConverter = KotlinxWebsocketSerializationConverter(
-                    Json { ignoreUnknownKeys = true }
-                )
-            }
-            install(Authentication) {
-                bearer {
-                    authenticate { token ->
-                        val group = syncGroup ?: return@authenticate null
-                        group.nodes.firstOrNull {
-                            it.nodeId == authTokenRepo.getNodeId(
-                                token.token,
-                                group.hostedSyncGroupId,
-                            )
-                        }
+        host = "0.0.0.0"
+    ) {
+        install(WebSockets) {
+            contentConverter = KotlinxWebsocketSerializationConverter(
+                Json { ignoreUnknownKeys = true }
+            )
+        }
+        install(Authentication) {
+            bearer {
+                authenticate { token ->
+                    val group = syncGroup ?: return@authenticate null
+                    group.nodes.firstOrNull {
+                        it.nodeId == authTokenRepo.getNodeId(
+                            token.token,
+                            group.hostedSyncGroupId,
+                        )
                     }
                 }
             }
-            registerRoutes()
-        },
-    ).apply {
+        }
+        registerRoutes()
+    }.apply {
         monitor.subscribe(ApplicationStarted) {
             _isServerRunning.value = true
         }

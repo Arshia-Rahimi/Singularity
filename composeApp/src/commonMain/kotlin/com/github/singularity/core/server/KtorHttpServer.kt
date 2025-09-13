@@ -39,9 +39,10 @@ class KtorHttpServer(
     private val server = embeddedServer(
         factory = CIO,
         port = SERVER_PORT,
-        host = "0.0.0.0",
-        module = { registerRoutes() },
-    ).apply {
+        host = "0.0.0.0"
+    ) {
+        registerRoutes()
+    }.apply {
         monitor.subscribe(ApplicationStarted) {
             _isServerRunning.value = true
         }
