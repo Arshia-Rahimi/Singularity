@@ -1,7 +1,7 @@
 package com.github.singularity.core.datastore.di
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.github.singularity.core.shared.DataStoreFileName
+import com.github.singularity.core.shared.DATASTORE_FILENAME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.harawata.appdirs.AppDirsFactory
@@ -14,7 +14,7 @@ actual val DataStoreModule = module {
         val directory = AppDirsFactory.getInstance()
             .getUserDataDir("Singularity", null, null)
 
-        val file = File(directory, DataStoreFileName)
+        val file = File(directory, DATASTORE_FILENAME)
         file.parentFile?.mkdirs()
         
         PreferenceDataStoreFactory.createWithPath(

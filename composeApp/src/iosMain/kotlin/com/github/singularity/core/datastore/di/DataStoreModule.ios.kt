@@ -1,7 +1,7 @@
 package com.github.singularity.core.datastore.di
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.github.singularity.core.shared.DataStoreFileName
+import com.github.singularity.core.shared.DATASTORE_FILENAME
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +25,7 @@ actual val DataStoreModule = module {
                     create = false,
                     error = null,
                 )
-                (requireNotNull(documentDirectory).path + "/$DataStoreFileName").toPath()
+                (requireNotNull(documentDirectory).path + "/$DATASTORE_FILENAME").toPath()
             },
             scope = CoroutineScope(Dispatchers.IO),
         )
