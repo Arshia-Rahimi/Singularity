@@ -15,8 +15,8 @@ import com.github.singularity.core.data.impl.DiscoverRepositoryImp
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
 import com.github.singularity.core.data.impl.JwtAuthTokenRepository
 import com.github.singularity.core.data.impl.PairRequestRepositoryImpl
-import com.github.singularity.core.data.impl.SQLPreferencesRepository
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
+import com.github.singularity.core.data.impl.SqlitePreferencesRepository
 import com.github.singularity.core.data.impl.SyncEventRepositoryImpl
 import com.github.singularity.core.shared.canHostSyncServer
 import org.koin.core.module.dsl.singleOf
@@ -25,7 +25,7 @@ import org.koin.dsl.module
 
 val DataModule = module {
     singleOf(::ClientConnectionRepositoryImpl) bind ClientConnectionRepository::class
-    singleOf(::SQLPreferencesRepository) bind PreferencesRepository::class
+    singleOf(::SqlitePreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
     singleOf(::SyncEventRepositoryImpl) bind SyncEventRepository::class
 

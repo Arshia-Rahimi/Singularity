@@ -1,24 +1,20 @@
-package com.github.singularity.core.database.impl
+package com.github.singularity.core.database
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.github.singularity.core.database.HostedSyncGroupDataSource
-import com.github.singularity.core.database.SingularityDatabase
-import com.github.singularity.core.database.toBoolean
-import com.github.singularity.core.database.toLong
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class LocalHostedSyncGroupsDataSource(
+class SqliteHostedSyncGroupsDataSource(
     db: SingularityDatabase,
-) : HostedSyncGroupDataSource {
+) {
 
     private val queries = db.hostedSyncGroupsQueries
     private val nodesQueries = db.hostedSyncGroupNodesQueries
 
-    override val hostedSyncGroups = queries.index()
+    val hostedSyncGroups = queries.index()
         .asFlow()
         .map { query ->
             query.executeAsList()
@@ -44,18 +40,18 @@ class LocalHostedSyncGroupsDataSource(
                 }
         }.distinctUntilChanged()
 
-    override fun insert(syncGroup: HostedSyncGroup) {
+    fun insert(syncGroup: HostedSyncGroup) {
         queries.insert(
             hosted_sync_group_id = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
         )
     }
 
-    override fun updateName(groupName: String, groupId: String) {
+    fun updateName(groupName: String, groupId: String) {
         queries.updateName(groupName, groupId)
     }
 
-    override fun insert(syncGroupNode: HostedSyncGroupNode) {
+    fun insert(syncGroupNode: HostedSyncGroupNode) {
         nodesQueries.insert(
             node_id = syncGroupNode.nodeId,
             auth_token = syncGroupNode.authToken,
@@ -65,15 +61,15 @@ class LocalHostedSyncGroupsDataSource(
         )
     }
 
-    override fun delete(syncGroupNode: HostedSyncGroupNode) {
+    fun delete(syncGroupNode: HostedSyncGroupNode) {
         queries.delete(syncGroupNode.nodeId)
     }
 
-    override fun delete(syncGroup: HostedSyncGroup) {
+    fun delete(syncGroup: HostedSyncGroup) {
         nodesQueries.delete(syncGroup.hostedSyncGroupId)
     }
 
-    override suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup) {
+    suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup) {
         val groups = hostedSyncGroups.first()
         queries.transaction {
             groups.forEach { group ->

@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.database.HostedSyncGroupDataSource
+import com.github.singularity.core.database.SqliteHostedSyncGroupsDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
@@ -11,7 +11,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 
 class HostedSyncGroupRepositoryImpl(
-    private val hostedSyncGroupsDataSource: HostedSyncGroupDataSource,
+    private val hostedSyncGroupsDataSource: SqliteHostedSyncGroupsDataSource,
 ) : HostedSyncGroupRepository {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

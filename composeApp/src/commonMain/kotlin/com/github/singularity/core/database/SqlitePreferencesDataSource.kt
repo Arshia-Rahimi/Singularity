@@ -1,9 +1,7 @@
-package com.github.singularity.core.database.impl
+package com.github.singularity.core.database
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import com.github.singularity.core.database.PreferencesDataSource
-import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
@@ -12,13 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 
-class LocalPreferencesDataSource(
+class SqlitePreferencesDataSource(
     db: SingularityDatabase
-) : PreferencesDataSource {
+) {
 
     private val queries = db.preferencesQueries
 
-    override val preferences = queries.get()
+    val preferences = queries.get()
         .asFlow()
         .mapToOneOrNull(Dispatchers.IO)
         .map {
@@ -32,7 +30,7 @@ class LocalPreferencesDataSource(
             }
         }
 
-    override suspend fun update(preferences: PreferencesModel) {
+    fun update(preferences: PreferencesModel) {
         queries.update(
             theme = preferences.theme.ordinal.toLong(),
             deviceId = preferences.deviceId,
@@ -41,7 +39,7 @@ class LocalPreferencesDataSource(
         )
     }
 
-    override suspend fun insert(preferences: PreferencesModel) {
+    fun insert(preferences: PreferencesModel) {
         queries.insert(
             theme = preferences.theme.ordinal.toLong(),
             deviceId = preferences.deviceId,

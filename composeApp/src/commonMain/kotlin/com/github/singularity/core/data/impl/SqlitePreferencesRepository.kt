@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.PreferencesDataSource
+import com.github.singularity.core.database.SqlitePreferencesDataSource
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
@@ -18,8 +18,8 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class SQLPreferencesRepository(
-    private val preferencesDataSource: PreferencesDataSource,
+class SqlitePreferencesRepository(
+    private val preferencesDataSource: SqlitePreferencesDataSource,
 ) : PreferencesRepository {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -27,6 +27,7 @@ class SQLPreferencesRepository(
     override val preferences = preferencesDataSource.preferences
         .onFirst {
             if (it != null) return@onFirst
+
             preferencesDataSource.insert(
                 PreferencesModel(
                     deviceId = Uuid.Companion.random().toString(),
@@ -51,4 +52,5 @@ class SQLPreferencesRepository(
             preferences.first().copy(syncMode = syncMode)
         )
     }
+
 }

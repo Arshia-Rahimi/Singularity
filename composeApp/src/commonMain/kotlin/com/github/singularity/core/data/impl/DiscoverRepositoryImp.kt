@@ -4,7 +4,7 @@ import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.JoinedSyncGroupDataSource
+import com.github.singularity.core.database.SqliteJoinedSyncGroupsDataSource
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
@@ -19,10 +19,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import okio.IOException
+import kotlinx.io.IOException
 
 class DiscoverRepositoryImp(
-    private val joinedSyncGroupsRepo: JoinedSyncGroupDataSource,
+    private val joinedSyncGroupsRepo: SqliteJoinedSyncGroupsDataSource,
     private val preferencesRepo: PreferencesRepository,
     private val httpClientDataSource: HttpClientDataSource,
     private val discoveryService: DeviceDiscoveryService,
