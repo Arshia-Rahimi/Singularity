@@ -2,8 +2,6 @@ package com.github.singularity.core.database
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import com.github.singularity.core.shared.AppTheme
-import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +20,10 @@ class SqlitePreferencesDataSource(
         .map {
             it?.let {
                 PreferencesModel(
-                    theme = AppTheme.entries[it.theme.toInt()],
+                    theme = it.theme.toEnum(),
                     deviceId = it.deviceId,
                     appSecret = it.appSecret.toByteArray(),
-                    syncMode = SyncMode.entries[it.theme.toInt()],
+                    syncMode = it.syncMode.toEnum(),
                 )
             }
         }
