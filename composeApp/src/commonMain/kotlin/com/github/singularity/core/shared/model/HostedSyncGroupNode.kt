@@ -7,16 +7,16 @@ import kotlin.uuid.Uuid
 @Serializable
 @OptIn(ExperimentalUuidApi::class)
 data class HostedSyncGroupNode(
-    val nodeId: String = Uuid.random().toString(),
+    val deviceId: String = Uuid.random().toString(),
+    val deviceName: String,
+    val deviceOs: String,
     val authToken: String,
     val syncGroupId: String,
     val syncGroupName: String,
-    val nodeName: String,
-    val nodeOs: String,
 ) {
     fun toNode() = Node(
-        deviceName = nodeName,
-        deviceOs = nodeOs,
-        deviceId = nodeId,
+        deviceName = deviceName,
+        deviceOs = deviceOs,
+        deviceId = deviceId,
     )
 }

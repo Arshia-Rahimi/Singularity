@@ -1,11 +1,9 @@
 package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthTokenRepository
-import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PairRequestRepository
 import com.github.singularity.core.shared.HTTP_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.http.PairCheckRequest
 import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
@@ -31,12 +29,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlin.random.Random
 
 class KtorHttpServer(
-    private val hostedSyncGroupRepo: HostedSyncGroupRepository,
     private val authTokenRepo: AuthTokenRepository,
     private val pairRequestRepo: PairRequestRepository,
 ) {
 
-    private var syncGroup: HostedSyncGroup? = null
+    private var syncGroupId: String? = null
 
     private val _isServerRunning = MutableStateFlow(false)
     val isServerRunning = _isServerRunning.asStateFlow()
@@ -60,23 +57,23 @@ class KtorHttpServer(
     }
 
     suspend fun start(group: HostedSyncGroup) {
-        syncGroup = group
+        syncGroupId = group.hostedSyncGroupId
         server.startSuspend()
     }
 
     suspend fun stop() {
         server.stopSuspend()
-        syncGroup = null
+        syncGroupId = null
     }
 
     private fun Application.registerRoutes() {
         routing {
             contentType(ContentType.Application.Json) {
                 post("/pair") {
-                    val group = syncGroup
+                    val groupId = syncGroupId
                     val pairRequest = call.receive<PairRequest>()
 
-                    if (group == null || pairRequest.syncGroupId != group.hostedSyncGroupId) {
+                    if (groupId == null || pairRequest.syncGroupId != groupId) {
                         call.respond(PairResponse(false))
                         return@post
                     }
@@ -89,11 +86,11 @@ class KtorHttpServer(
                 }
 
                 get("/pairCheck") {
-                    val group = syncGroup
+                    val groupId = syncGroupId
                     val request = call.receive<PairCheckRequest>()
                     val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-                    if (group == null || group.hostedSyncGroupId != request.syncGroupId || pairCheck == null) {
+                    if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
                         call.respond(PairCheckResponse(PairStatus.Error))
                         return@get
                     }
@@ -104,30 +101,22 @@ class KtorHttpServer(
                         return@get
                     }
 
-                    val authToken =
-                        authTokenRepo.generateAuthToken(
-                            request.syncGroupId,
-                            group.hostedSyncGroupId
-                        )
+                    val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
 
-                    val node = HostedSyncGroupNode(
-                        nodeId = pairCheck.node.deviceId,
-                        nodeOs = pairCheck.node.deviceOs,
-                        nodeName = pairCheck.node.deviceName,
-                        authToken = authToken,
-                        syncGroupId = group.hostedSyncGroupId,
-                        syncGroupName = group.name,
-                    )
+                    if (hostedNode == null) {
+                        call.respond(PairCheckResponse(PairStatus.Error))
+                        return@get
+                    }
+
+                    pairRequestRepo.remove(request.pairRequestId)
 
                     call.respond(
                         PairCheckResponse(
                             pairStatus = pairCheck.status,
-                            node = node,
+                            node = hostedNode,
                         )
                     )
 
-                    pairRequestRepo.remove(request.pairRequestId)
-                    hostedSyncGroupRepo.create(node)
                 }
             }
         }

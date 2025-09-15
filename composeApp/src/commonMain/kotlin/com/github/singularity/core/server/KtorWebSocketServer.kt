@@ -4,7 +4,7 @@ import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.Node
+import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.websocket.SyncEvent
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
@@ -39,7 +39,7 @@ class KtorWebSocketServer(
 
     private var syncGroup: HostedSyncGroup? = null
 
-    private val _connectedNodes = MutableStateFlow<List<Node>>(emptyList())
+    private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
     val connectedNodes = _connectedNodes.asStateFlow()
 
     private val _isServerRunning = MutableStateFlow(false)
@@ -57,14 +57,8 @@ class KtorWebSocketServer(
         }
         install(Authentication) {
             bearer {
-                authenticate { token ->
-                    val group = syncGroup ?: return@authenticate null
-                    group.nodes.firstOrNull {
-                        it.nodeId == authTokenRepo.getNodeId(
-                            token.token,
-                            group.hostedSyncGroupId,
-                        )
-                    }
+                authenticate {
+                    authTokenRepo.getNode(it.token)
                 }
             }
         }

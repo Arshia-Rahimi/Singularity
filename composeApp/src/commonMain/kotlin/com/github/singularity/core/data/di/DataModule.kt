@@ -13,8 +13,8 @@ import com.github.singularity.core.data.impl.BroadcastRepositoryImp
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImp
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
-import com.github.singularity.core.data.impl.JwtAuthTokenRepository
 import com.github.singularity.core.data.impl.PairRequestRepositoryImpl
+import com.github.singularity.core.data.impl.RandomTokenAuthRepository
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.SqlitePreferencesRepository
 import com.github.singularity.core.data.impl.SyncEventRepositoryImpl
@@ -34,6 +34,6 @@ val DataModule = module {
         singleOf(::BroadcastRepositoryImp) bind BroadcastRepository::class
         singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
         singleOf(::PairRequestRepositoryImpl) bind PairRequestRepository::class
-        singleOf(::JwtAuthTokenRepository) bind AuthTokenRepository::class
+        singleOf(::RandomTokenAuthRepository) bind AuthTokenRepository::class
     }
 }

@@ -28,12 +28,12 @@ class SqliteHostedSyncGroupsDataSource(
                         nodes = nodes.mapNotNull { node ->
                             if (node.node_id == null) return@mapNotNull null
                             HostedSyncGroupNode(
-                                nodeId = node.node_id,
+                                deviceId = node.node_id,
                                 authToken = node.auth_token ?: "",
                                 syncGroupId = id,
                                 syncGroupName = groupData.name,
-                                nodeName = node.name,
-                                nodeOs = node.node_os ?: "",
+                                deviceName = node.name,
+                                deviceOs = node.node_os ?: "",
                             )
                         },
                     )
@@ -53,16 +53,16 @@ class SqliteHostedSyncGroupsDataSource(
 
     fun insert(syncGroupNode: HostedSyncGroupNode) {
         nodesQueries.insert(
-            node_id = syncGroupNode.nodeId,
+            node_id = syncGroupNode.deviceId,
             auth_token = syncGroupNode.authToken,
             hosted_sync_group_id = syncGroupNode.syncGroupId,
-            node_name = syncGroupNode.nodeName,
-            node_os = syncGroupNode.nodeOs,
+            node_name = syncGroupNode.deviceName,
+            node_os = syncGroupNode.deviceOs,
         )
     }
 
     fun delete(syncGroupNode: HostedSyncGroupNode) {
-        queries.delete(syncGroupNode.nodeId)
+        queries.delete(syncGroupNode.deviceId)
     }
 
     fun delete(syncGroup: HostedSyncGroup) {

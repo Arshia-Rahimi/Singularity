@@ -1,11 +1,14 @@
 package com.github.singularity.core.data
 
+import com.github.singularity.core.shared.model.HostedSyncGroupNode
+import com.github.singularity.core.shared.model.Node
+
 typealias Token = String
 
 interface AuthTokenRepository {
 
-    suspend fun generateAuthToken(nodeId: String, defaultGroupId: String): Token
+    suspend fun generateAuthToken(node: Node): HostedSyncGroupNode?
 
-    suspend fun getNodeId(token: Token, defaultGroupId: String): String?
+    suspend fun getNode(token: Token): HostedSyncGroupNode?
 
 }
