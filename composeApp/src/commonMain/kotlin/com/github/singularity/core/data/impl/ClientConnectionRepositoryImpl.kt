@@ -2,7 +2,7 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.WebSocketClientDataSource
-import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
+import com.github.singularity.core.client.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.database.SqliteJoinedSyncGroupsDataSource

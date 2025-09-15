@@ -5,6 +5,7 @@ import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.SqliteJoinedSyncGroupsDataSource
+import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
@@ -28,8 +29,7 @@ class DiscoverRepositoryImp(
     private val discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
-    override fun discoveredServers() = discoveryService.discoveredServers()
-        .catch {}
+    override fun discoveredServers() = discoveryService.discoveredServers().catch {}
 
     override fun sendPairRequest(server: LocalServer) = flow {
         try {
@@ -40,13 +40,13 @@ class DiscoverRepositoryImp(
 
             var isWaiting = true
             while (isWaiting) {
-                val response =
-                    httpClientDataSource.sendPairCheckRequest(server, response.pairRequestId)
+                delay(PAIR_CHECK_RETRY_DELAY)
 
-                if (response.pairStatus == PairStatus.Awaiting) {
-                    delay(5000)
-                    continue
-                }
+                val response = httpClientDataSource
+                    .sendPairCheckRequest(server, response.pairRequestId)
+
+                if (response.pairStatus == PairStatus.Awaiting) continue
+
                 isWaiting = false
 
                 when (response.pairStatus) {

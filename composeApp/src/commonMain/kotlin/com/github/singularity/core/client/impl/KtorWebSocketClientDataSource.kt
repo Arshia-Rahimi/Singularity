@@ -1,8 +1,8 @@
 package com.github.singularity.core.client.impl
 
 import com.github.singularity.core.client.WebSocketClientDataSource
-import com.github.singularity.core.client.utils.WebSocketConnectionDroppedException
-import com.github.singularity.core.client.utils.WebSocketConnectionFailedException
+import com.github.singularity.core.client.WebSocketConnectionDroppedException
+import com.github.singularity.core.client.WebSocketConnectionFailedException
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.websocket.SyncEvent

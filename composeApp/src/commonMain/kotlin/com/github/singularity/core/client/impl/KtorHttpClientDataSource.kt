@@ -40,7 +40,7 @@ class KtorHttpClientDataSource : HttpClientDataSource {
             )
         }.body<PairResponse>()
 
-    override suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Long) =
+    override suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Int) =
         client.post("http://${server.ip}:$HTTP_SERVER_PORT/pairCheck") {
             contentType(ContentType.Application.Json)
             setBody(

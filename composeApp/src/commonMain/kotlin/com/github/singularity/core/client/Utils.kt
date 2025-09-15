@@ -1,4 +1,4 @@
-package com.github.singularity.core.client.utils
+package com.github.singularity.core.client
 
 class WebSocketConnectionFailedException : Exception()
 
