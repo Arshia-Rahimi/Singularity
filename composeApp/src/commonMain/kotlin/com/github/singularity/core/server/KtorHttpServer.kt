@@ -11,13 +11,18 @@ import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted
 import io.ktor.server.application.ApplicationStopped
+import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.routing.contentType
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
@@ -39,8 +44,11 @@ class KtorHttpServer(
     private val server = embeddedServer(
         factory = CIO,
         port = HTTP_SERVER_PORT,
-        host = "0.0.0.0"
+        host = "0.0.0.0",
     ) {
+        install(ContentNegotiation) {
+            json()
+        }
         registerRoutes()
     }.apply {
         monitor.subscribe(ApplicationStarted) {
@@ -63,59 +71,63 @@ class KtorHttpServer(
 
     private fun Application.registerRoutes() {
         routing {
-            post("/pair") {
-                val group = syncGroup
-                val pairRequest = call.receive<PairRequest>()
+            contentType(ContentType.Application.Json) {
+                post("/pair") {
+                    val group = syncGroup
+                    val pairRequest = call.receive<PairRequest>()
+                    print(pairRequest)
 
-                if (group == null || pairRequest.deviceId != group.hostedSyncGroupId) {
-                    call.respond(PairResponse(false))
-                    return@post
+                    if (group == null || pairRequest.syncGroupId != group.hostedSyncGroupId) {
+                        call.respond(PairResponse(false))
+                        return@post
+                    }
+
+                    val requestId = Random.nextLong()
+                    pairRequestRepo.add(requestId, pairRequest)
+
+                    print(requestId)
+                    call.respond(PairResponse(true, requestId))
+
                 }
 
-                val requestId = Random.nextLong()
-                pairRequestRepo.add(requestId, pairRequest)
+                get("/pairCheck") {
+                    val group = syncGroup
+                    val request = call.receive<PairCheckRequest>()
+                    val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-                call.respond(PairResponse(true, requestId))
-
-            }
-
-            get("/pairCheck") {
-                val group = syncGroup
-                val request = call.receive<PairCheckRequest>()
-                val pairCheck = pairRequestRepo.get(request.pairRequestId)
-
-                if (group == null || group.hostedSyncGroupId != request.groupId || pairCheck == null) {
-                    call.respond(PairCheckResponse(PairStatus.Error))
-                    return@get
-                }
+                    if (group == null || group.hostedSyncGroupId != request.groupId || pairCheck == null) {
+                        call.respond(PairCheckResponse(PairStatus.Error))
+                        return@get
+                    }
 
 
-                if (pairCheck.status != PairStatus.Approved) {
-                    call.respond(PairCheckResponse(pairCheck.status))
-                    return@get
-                }
+                    if (pairCheck.status != PairStatus.Approved) {
+                        call.respond(PairCheckResponse(pairCheck.status))
+                        return@get
+                    }
 
-                val authToken =
-                    authTokenRepo.generateAuthToken(request.groupId, group.hostedSyncGroupId)
+                    val authToken =
+                        authTokenRepo.generateAuthToken(request.groupId, group.hostedSyncGroupId)
 
-                val node = HostedSyncGroupNode(
-                    nodeId = pairCheck.node.deviceId,
-                    nodeOs = pairCheck.node.deviceOs,
-                    nodeName = pairCheck.node.deviceName,
-                    authToken = authToken,
-                    syncGroupId = group.hostedSyncGroupId,
-                    syncGroupName = group.name,
-                )
-
-                call.respond(
-                    PairCheckResponse(
-                        pairStatus = pairCheck.status,
-                        node = node,
+                    val node = HostedSyncGroupNode(
+                        nodeId = pairCheck.node.deviceId,
+                        nodeOs = pairCheck.node.deviceOs,
+                        nodeName = pairCheck.node.deviceName,
+                        authToken = authToken,
+                        syncGroupId = group.hostedSyncGroupId,
+                        syncGroupName = group.name,
                     )
-                )
 
-                pairRequestRepo.remove(request.pairRequestId)
-                hostedSyncGroupRepo.create(node)
+                    call.respond(
+                        PairCheckResponse(
+                            pairStatus = pairCheck.status,
+                            node = node,
+                        )
+                    )
+
+                    pairRequestRepo.remove(request.pairRequestId)
+                    hostedSyncGroupRepo.create(node)
+                }
             }
         }
     }

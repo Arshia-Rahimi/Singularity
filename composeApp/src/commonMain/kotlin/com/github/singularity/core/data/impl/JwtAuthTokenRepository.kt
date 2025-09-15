@@ -7,10 +7,10 @@ import com.appstractive.jwt.sign
 import com.appstractive.jwt.signatures.hs256
 import com.appstractive.jwt.subject
 import com.appstractive.jwt.verify
-import com.github.singularity.core.PreferencesModel
 import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.Token
+import com.github.singularity.core.shared.model.PreferencesModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

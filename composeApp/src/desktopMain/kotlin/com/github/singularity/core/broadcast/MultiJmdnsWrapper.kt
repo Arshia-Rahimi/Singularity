@@ -13,8 +13,8 @@ class MultiJmdnsWrapper(
         JmDNS.create(it)
     }
 
-    fun registerService(serviceInfo: ServiceInfo) {
-        jmdns.forEach { it.registerService(serviceInfo) }
+    fun registerService(serviceInfo: (Int) -> ServiceInfo) {
+        jmdns.forEachIndexed { index, item -> item.registerService(serviceInfo(index)) }
     }
 
     fun unregisterAllServices() {
