@@ -9,14 +9,14 @@ interface PairRequestRepository {
 
     val requests: StateFlow<List<PairCheck>>
 
-    fun add(id: Long, pairRequest: PairRequest)
+    fun add(id: Int, pairRequest: PairRequest)
 
-    fun remove(id: Long)
+    fun remove(id: Int)
 
     fun approve(node: Node)
 
     fun reject(node: Node)
 
-    fun get(id: Long): PairCheck?
+    fun get(id: Int): PairCheck?
 
 }

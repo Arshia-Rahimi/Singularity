@@ -78,7 +78,7 @@ class KtorHttpServer(
                         return@post
                     }
 
-                    val requestId = Random.nextLong(1000000000000000000L, Long.MAX_VALUE)
+                    val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
                     pairRequestRepo.add(requestId, pairRequest)
 
                     call.respond(PairResponse(true, requestId))

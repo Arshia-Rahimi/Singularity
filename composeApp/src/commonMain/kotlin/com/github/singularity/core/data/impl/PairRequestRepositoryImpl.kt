@@ -14,14 +14,14 @@ class PairRequestRepositoryImpl : PairRequestRepository {
     private val _requests = MutableStateFlow<List<PairCheck>>(emptyList())
     override val requests = _requests.asStateFlow()
 
-    override fun add(id: Long, pairRequest: PairRequest) {
+    override fun add(id: Int, pairRequest: PairRequest) {
         _requests.value = _requests.value + PairCheck(
             requestId = id,
             node = pairRequest.toNode(),
         )
     }
 
-    override fun remove(id: Long) {
+    override fun remove(id: Int) {
         _requests.value = _requests.value.filter { it.requestId == id }
     }
 
@@ -39,6 +39,6 @@ class PairRequestRepositoryImpl : PairRequestRepository {
         )
     }
 
-    override fun get(id: Long) = requests.value.firstOrNull { it.requestId == id }
+    override fun get(id: Int) = requests.value.firstOrNull { it.requestId == id }
 
 }

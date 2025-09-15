@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PairResponse(
     val success: Boolean,
-    val pairRequestId: Long? = null,
+    val pairRequestId: Int? = null,
 )
 
 @Serializable
