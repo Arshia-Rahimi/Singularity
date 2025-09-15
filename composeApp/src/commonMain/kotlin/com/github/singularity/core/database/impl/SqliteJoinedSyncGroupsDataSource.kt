@@ -1,17 +1,21 @@
-package com.github.singularity.core.database
+package com.github.singularity.core.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
+import com.github.singularity.core.database.JoinedSyncGroupsDataSource
+import com.github.singularity.core.database.SingularityDatabase
+import com.github.singularity.core.database.toBoolean
+import com.github.singularity.core.database.toLong
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class SqliteJoinedSyncGroupsDataSource(
     db: SingularityDatabase,
-) {
+) : JoinedSyncGroupsDataSource {
 
     private val queries = db.joinedSyncGroupsQueries
 
-    val joinedSyncGroups = queries.index()
+    override val joinedSyncGroups = queries.index()
         .asFlow()
         .map { query ->
             query.executeAsList().map {
@@ -24,7 +28,7 @@ class SqliteJoinedSyncGroupsDataSource(
             }
         }
 
-    fun insert(joinedSyncGroup: JoinedSyncGroup) {
+    override fun insert(joinedSyncGroup: JoinedSyncGroup) {
         queries.insert(
             joined_sync_group_id = joinedSyncGroup.syncGroupId,
             name = joinedSyncGroup.syncGroupName,
@@ -32,11 +36,11 @@ class SqliteJoinedSyncGroupsDataSource(
         )
     }
 
-    fun delete(joinedSyncGroup: JoinedSyncGroup) {
+    override fun delete(joinedSyncGroup: JoinedSyncGroup) {
         queries.delete(joinedSyncGroup.syncGroupId)
     }
 
-    suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup) {
+    override suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup) {
         val groups = joinedSyncGroups.first()
         queries.transaction {
             groups.forEach { group ->

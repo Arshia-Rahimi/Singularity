@@ -4,7 +4,7 @@ import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.HttpClientDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.SqliteJoinedSyncGroupsDataSource
+import com.github.singularity.core.database.JoinedSyncGroupsDataSource
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.io.IOException
 
 class DiscoverRepositoryImp(
-    private val joinedSyncGroupsRepo: SqliteJoinedSyncGroupsDataSource,
+    private val joinedSyncGroupsRepo: JoinedSyncGroupsDataSource,
     private val preferencesRepo: PreferencesRepository,
     private val httpClientDataSource: HttpClientDataSource,
     private val discoveryService: DeviceDiscoveryService,

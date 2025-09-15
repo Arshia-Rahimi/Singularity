@@ -5,7 +5,7 @@ import com.github.singularity.core.client.WebSocketClientDataSource
 import com.github.singularity.core.client.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
-import com.github.singularity.core.database.SqliteJoinedSyncGroupsDataSource
+import com.github.singularity.core.database.JoinedSyncGroupsDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.onFirst
@@ -28,7 +28,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 class ClientConnectionRepositoryImpl(
     webSocketClient: WebSocketClientDataSource,
     syncEventRepo: SyncEventRepository,
-    joinedSyncGroupsDataSource: SqliteJoinedSyncGroupsDataSource,
+    joinedSyncGroupsDataSource: JoinedSyncGroupsDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
 ) : ClientConnectionRepository {
 
