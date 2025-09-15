@@ -28,13 +28,13 @@ class PairRequestRepositoryImpl : PairRequestRepository {
     override fun approve(node: Node) {
         _requests.value = _requests.value.replaceFirstWith(
             newItem = { it.copy(status = PairStatus.Approved) },
-            predicate = { node == it.node }
+            predicate = { node.deviceId == it.node.deviceId }
         )
     }
 
     override fun reject(node: Node) {
         _requests.value = _requests.value.replaceFirstWith(
-            newItem = { it.copy(status = PairStatus.Approved) },
+            newItem = { it.copy(status = PairStatus.Rejected) },
             predicate = { node == it.node }
         )
     }

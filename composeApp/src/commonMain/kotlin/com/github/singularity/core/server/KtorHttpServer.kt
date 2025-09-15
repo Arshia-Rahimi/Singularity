@@ -93,7 +93,7 @@ class KtorHttpServer(
                     val request = call.receive<PairCheckRequest>()
                     val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-                    if (group == null || group.hostedSyncGroupId != request.groupId || pairCheck == null) {
+                    if (group == null || group.hostedSyncGroupId != request.syncGroupId || pairCheck == null) {
                         call.respond(PairCheckResponse(PairStatus.Error))
                         return@get
                     }
@@ -105,7 +105,10 @@ class KtorHttpServer(
                     }
 
                     val authToken =
-                        authTokenRepo.generateAuthToken(request.groupId, group.hostedSyncGroupId)
+                        authTokenRepo.generateAuthToken(
+                            request.syncGroupId,
+                            group.hostedSyncGroupId
+                        )
 
                     val node = HostedSyncGroupNode(
                         nodeId = pairCheck.node.deviceId,

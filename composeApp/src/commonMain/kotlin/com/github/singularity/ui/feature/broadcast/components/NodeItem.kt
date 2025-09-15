@@ -1,9 +1,12 @@
 package com.github.singularity.ui.feature.broadcast.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +25,7 @@ import singularity.composeapp.generated.resources.approve_pair_request
 import singularity.composeapp.generated.resources.reject_or_approve
 
 @Composable
-fun NodeItem(
+fun LazyItemScope.NodeItem(
     node: Node,
     execute: BroadcastIntent.() -> Unit,
 ) {
@@ -30,17 +33,24 @@ fun NodeItem(
 
     Row(
         modifier = Modifier.fillMaxWidth()
+            .animateItem()
+            .clickable { showApproveNodeDialog = true }
             .padding(vertical = 4.dp, horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(
-            text = node.deviceName,
-            fontSize = 16.sp,
-        )
-        Text(
-            text = node.deviceOs,
-            fontSize = 12.sp,
-        )
+        Column(
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(
+                fontSize = 16.sp,
+                text = node.deviceName,
+            )
+
+            Text(
+                text = node.deviceOs,
+                fontSize = 12.sp,
+            )
+        }
     }
 
     ApprovalDialog(

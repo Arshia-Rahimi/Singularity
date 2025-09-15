@@ -21,5 +21,5 @@ data class PairRequest(
 @Serializable
 data class PairCheckRequest(
     val pairRequestId: Long,
-    val groupId: String,
+    val syncGroupId: String,
 )
