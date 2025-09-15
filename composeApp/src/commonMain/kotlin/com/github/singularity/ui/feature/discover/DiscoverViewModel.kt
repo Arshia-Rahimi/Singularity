@@ -25,14 +25,14 @@ class DiscoverViewModel(
 
     private val pairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
-    private var pairRequestJob: Job? = null
-
     val uiState = combine(servers, pairRequestState) { server, pairRequestState ->
         DiscoverUiState(
             servers = server.toMutableStateList(),
             pairRequestState = pairRequestState,
         )
     }.stateInWhileSubscribed(DiscoverUiState())
+
+    private var pairRequestJob: Job? = null
 
     fun execute(intent: DiscoverIntent) {
         when (intent) {
@@ -44,7 +44,7 @@ class DiscoverViewModel(
 
     private fun sendPairRequest(server: LocalServer) {
         pairRequestJob?.cancel()
-        val job = discoverRepo.sendPairRequest(server).onEach {
+        pairRequestJob = discoverRepo.sendPairRequest(server).onEach {
             pairRequestState.value = when (it) {
                 is Resource.Loading -> PairRequestState.Awaiting(server)
                 is Resource.Error -> PairRequestState.Error(it.error?.message ?: "failed")
@@ -54,17 +54,11 @@ class DiscoverViewModel(
             delay(5000)
             pairRequestState.value = PairRequestState.Idle
         }.launchIn(viewModelScope)
-        pairRequestJob = job
     }
 
     private fun cancelPairRequest() {
         pairRequestJob?.cancel()
         pairRequestState.value = PairRequestState.Idle
-    }
-
-    override fun onCleared() {
-        discoverRepo.release()
-        super.onCleared()
     }
 
 }

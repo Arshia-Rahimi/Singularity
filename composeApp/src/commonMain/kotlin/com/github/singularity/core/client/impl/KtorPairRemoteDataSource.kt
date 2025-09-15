@@ -51,9 +51,4 @@ class KtorPairRemoteDataSource : PairRemoteDataSource {
             )
         }.body<PairCheckResponse>()
 
-
-    override fun release() {
-        client.close()
-    }
-
 }

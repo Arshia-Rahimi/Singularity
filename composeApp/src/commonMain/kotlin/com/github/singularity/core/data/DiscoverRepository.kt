@@ -11,6 +11,4 @@ interface DiscoverRepository {
 
     fun sendPairRequest(server: LocalServer): Flow<Resource<Success>>
 
-    fun release()
-    
 }

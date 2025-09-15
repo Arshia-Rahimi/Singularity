@@ -76,10 +76,6 @@ class DiscoverRepositoryImp(
         }
     }.asResult(Dispatchers.IO)
 
-    override fun release() {
-        pairRemoteDataSource.release()
-    }
-
     private suspend fun getCurrentDeviceAsNode() = Node(
         deviceName = getDeviceName(),
         deviceOs = os,

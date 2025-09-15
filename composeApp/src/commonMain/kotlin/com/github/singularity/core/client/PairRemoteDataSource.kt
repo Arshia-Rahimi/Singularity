@@ -11,6 +11,4 @@ interface PairRemoteDataSource {
 
     suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Int): PairCheckResponse
 
-    fun release()
-
 }
