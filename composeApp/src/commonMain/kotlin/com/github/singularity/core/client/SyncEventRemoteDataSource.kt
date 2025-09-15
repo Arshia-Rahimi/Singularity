@@ -4,7 +4,7 @@ import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.websocket.SyncEvent
 import kotlinx.coroutines.flow.Flow
 
-interface WebSocketClientDataSource {
+interface SyncEventRemoteDataSource {
 
     fun connect(server: LocalServer, authToken: String): Flow<SyncEvent>
 

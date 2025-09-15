@@ -1,11 +1,11 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.broadcast.DeviceDiscoveryService
-import com.github.singularity.core.client.WebSocketClientDataSource
+import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.client.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
-import com.github.singularity.core.database.JoinedSyncGroupsDataSource
+import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.onFirst
@@ -26,9 +26,9 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-    webSocketClient: WebSocketClientDataSource,
+    webSocketClient: SyncEventRemoteDataSource,
     syncEventRepo: SyncEventRepository,
-    joinedSyncGroupsDataSource: JoinedSyncGroupsDataSource,
+    joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
 ) : ClientConnectionRepository {
 
@@ -40,7 +40,7 @@ class ClientConnectionRepositoryImpl(
 
     override val connectionState = refreshState.flatMapLatest {
         if (!isClientRunning) flowOf(ConnectionState.Stopped)
-        else joinedSyncGroupsDataSource.joinedSyncGroups
+        else joinedSyncGroupsLocalDataSource.joinedSyncGroups
             .map { it.firstOrNull { group -> group.isDefault } }
             .flatMapLatest { defaultServer ->
                 if (defaultServer == null) flowOf<ConnectionState>(ConnectionState.NoDefaultServer)

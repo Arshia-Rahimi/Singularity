@@ -1,7 +1,7 @@
 package com.github.singularity.core.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.github.singularity.core.database.HostedSyncGroupsDataSource
+import com.github.singularity.core.database.HostedSyncGroupsLocalDataSource
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.database.toBoolean
 import com.github.singularity.core.database.toLong
@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class SqliteHostedSyncGroupsDataSource(
+class SqlDelightHostedSyncGroupsLocalDataSource(
     db: SingularityDatabase,
-) : HostedSyncGroupsDataSource {
+) : HostedSyncGroupsLocalDataSource {
 
     private val queries = db.hostedSyncGroupsQueries
     private val nodesQueries = db.hostedSyncGroupNodesQueries

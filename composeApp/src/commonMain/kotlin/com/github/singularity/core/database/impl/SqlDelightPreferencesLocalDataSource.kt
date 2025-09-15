@@ -2,7 +2,7 @@ package com.github.singularity.core.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import com.github.singularity.core.database.PreferencesDataSource
+import com.github.singularity.core.database.PreferencesLocalDataSource
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.database.toEnum
 import com.github.singularity.core.shared.model.PreferencesModel
@@ -11,9 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 
-class SqlitePreferencesDataSource(
+class SqlDelightPreferencesLocalDataSource(
     db: SingularityDatabase
-) : PreferencesDataSource {
+) : PreferencesLocalDataSource {
 
     private val queries = db.preferencesQueries
 

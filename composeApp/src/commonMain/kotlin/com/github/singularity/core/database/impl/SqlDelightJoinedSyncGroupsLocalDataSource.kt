@@ -1,7 +1,7 @@
 package com.github.singularity.core.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.github.singularity.core.database.JoinedSyncGroupsDataSource
+import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.database.toBoolean
 import com.github.singularity.core.database.toLong
@@ -9,9 +9,9 @@ import com.github.singularity.core.shared.model.JoinedSyncGroup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class SqliteJoinedSyncGroupsDataSource(
+class SqlDelightJoinedSyncGroupsLocalDataSource(
     db: SingularityDatabase,
-) : JoinedSyncGroupsDataSource {
+) : JoinedSyncGroupsLocalDataSource {
 
     private val queries = db.joinedSyncGroupsQueries
 

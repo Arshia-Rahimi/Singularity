@@ -1,6 +1,6 @@
 package com.github.singularity.core.client.impl
 
-import com.github.singularity.core.client.HttpClientDataSource
+import com.github.singularity.core.client.PairRemoteDataSource
 import com.github.singularity.core.shared.HTTP_SERVER_PORT
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
@@ -18,7 +18,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 
-class KtorHttpClientDataSource : HttpClientDataSource {
+class KtorPairRemoteDataSource : PairRemoteDataSource {
 
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {

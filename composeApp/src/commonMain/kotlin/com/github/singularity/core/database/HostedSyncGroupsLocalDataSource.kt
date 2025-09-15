@@ -4,7 +4,7 @@ import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import kotlinx.coroutines.flow.Flow
 
-interface HostedSyncGroupsDataSource {
+interface HostedSyncGroupsLocalDataSource {
 
     val hostedSyncGroups: Flow<List<HostedSyncGroup>>
 

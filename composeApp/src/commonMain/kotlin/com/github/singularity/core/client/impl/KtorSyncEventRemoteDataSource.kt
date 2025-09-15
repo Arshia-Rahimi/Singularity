@@ -1,6 +1,6 @@
 package com.github.singularity.core.client.impl
 
-import com.github.singularity.core.client.WebSocketClientDataSource
+import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.client.WebSocketConnectionDroppedException
 import com.github.singularity.core.client.WebSocketConnectionFailedException
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
@@ -29,7 +29,7 @@ import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
 
-class KtorWebSocketClientDataSource : WebSocketClientDataSource {
+class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
 
     private val client = HttpClient(CIO) {
         install(WebSockets) {

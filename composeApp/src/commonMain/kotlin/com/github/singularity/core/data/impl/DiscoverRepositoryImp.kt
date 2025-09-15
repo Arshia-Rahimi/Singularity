@@ -1,10 +1,10 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.broadcast.DeviceDiscoveryService
-import com.github.singularity.core.client.HttpClientDataSource
+import com.github.singularity.core.client.PairRemoteDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.JoinedSyncGroupsDataSource
+import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.getDeviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
@@ -23,9 +23,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.io.IOException
 
 class DiscoverRepositoryImp(
-    private val joinedSyncGroupsRepo: JoinedSyncGroupsDataSource,
+    private val joinedSyncGroupsRepo: JoinedSyncGroupsLocalDataSource,
     private val preferencesRepo: PreferencesRepository,
-    private val httpClientDataSource: HttpClientDataSource,
+    private val pairRemoteDataSource: PairRemoteDataSource,
     private val discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
@@ -33,7 +33,7 @@ class DiscoverRepositoryImp(
 
     override fun sendPairRequest(server: LocalServer) = flow {
         try {
-            val response = httpClientDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
+            val response = pairRemoteDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
             if (!response.success || response.pairRequestId == null) {
                 throw Exception("failed to connect")
             }
@@ -42,7 +42,7 @@ class DiscoverRepositoryImp(
             while (isWaiting) {
                 delay(PAIR_CHECK_RETRY_DELAY)
 
-                val response = httpClientDataSource
+                val response = pairRemoteDataSource
                     .sendPairCheckRequest(server, response.pairRequestId)
 
                 if (response.pairStatus == PairStatus.Awaiting) continue
@@ -77,7 +77,7 @@ class DiscoverRepositoryImp(
     }.asResult(Dispatchers.IO)
 
     override fun release() {
-        httpClientDataSource.release()
+        pairRemoteDataSource.release()
     }
 
     private suspend fun getCurrentDeviceAsNode() = Node(

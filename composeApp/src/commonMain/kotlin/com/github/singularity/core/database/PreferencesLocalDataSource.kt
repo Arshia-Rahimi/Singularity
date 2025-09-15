@@ -3,7 +3,7 @@ package com.github.singularity.core.database
 import com.github.singularity.core.shared.model.PreferencesModel
 import kotlinx.coroutines.flow.Flow
 
-interface PreferencesDataSource {
+interface PreferencesLocalDataSource {
 
     val preferences: Flow<PreferencesModel?>
 

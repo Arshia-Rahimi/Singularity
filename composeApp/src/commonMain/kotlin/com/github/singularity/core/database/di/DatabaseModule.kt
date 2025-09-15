@@ -1,11 +1,11 @@
 package com.github.singularity.core.database.di
 
-import com.github.singularity.core.database.HostedSyncGroupsDataSource
-import com.github.singularity.core.database.JoinedSyncGroupsDataSource
-import com.github.singularity.core.database.PreferencesDataSource
-import com.github.singularity.core.database.impl.SqliteHostedSyncGroupsDataSource
-import com.github.singularity.core.database.impl.SqliteJoinedSyncGroupsDataSource
-import com.github.singularity.core.database.impl.SqlitePreferencesDataSource
+import com.github.singularity.core.database.HostedSyncGroupsLocalDataSource
+import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
+import com.github.singularity.core.database.PreferencesLocalDataSource
+import com.github.singularity.core.database.impl.SqlDelightHostedSyncGroupsLocalDataSource
+import com.github.singularity.core.database.impl.SqlDelightJoinedSyncGroupsLocalDataSource
+import com.github.singularity.core.database.impl.SqlDelightPreferencesLocalDataSource
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
@@ -15,7 +15,7 @@ expect fun Module.driver()
 
 val DatabaseModule = module {
     driver()
-    factoryOf(::SqliteHostedSyncGroupsDataSource) bind HostedSyncGroupsDataSource::class
-    factoryOf(::SqliteJoinedSyncGroupsDataSource) bind JoinedSyncGroupsDataSource::class
-    factoryOf(::SqlitePreferencesDataSource) bind PreferencesDataSource::class
+    factoryOf(::SqlDelightHostedSyncGroupsLocalDataSource) bind HostedSyncGroupsLocalDataSource::class
+    factoryOf(::SqlDelightJoinedSyncGroupsLocalDataSource) bind JoinedSyncGroupsLocalDataSource::class
+    factoryOf(::SqlDelightPreferencesLocalDataSource) bind PreferencesLocalDataSource::class
 }

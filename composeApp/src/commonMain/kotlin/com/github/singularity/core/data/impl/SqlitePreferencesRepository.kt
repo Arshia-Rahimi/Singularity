@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.PreferencesDataSource
+import com.github.singularity.core.database.PreferencesLocalDataSource
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
@@ -19,16 +19,16 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class SqlitePreferencesRepository(
-    private val preferencesDataSource: PreferencesDataSource,
+    private val preferencesLocalDataSource: PreferencesLocalDataSource,
 ) : PreferencesRepository {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    override val preferences = preferencesDataSource.preferences
+    override val preferences = preferencesLocalDataSource.preferences
         .onFirst {
             if (it != null) return@onFirst
 
-            preferencesDataSource.insert(
+            preferencesLocalDataSource.insert(
                 PreferencesModel(
                     deviceId = Uuid.Companion.random().toString(),
                     appSecret = Random.Default.nextBytes(32).let { secret ->
@@ -42,13 +42,13 @@ class SqlitePreferencesRepository(
         .shareInWhileSubscribed(scope, 1)
 
     override suspend fun setAppTheme(theme: AppTheme) {
-        preferencesDataSource.update(
+        preferencesLocalDataSource.update(
             preferences.first().copy(theme = theme)
         )
     }
 
     override suspend fun setSyncMode(syncMode: SyncMode) {
-        preferencesDataSource.update(
+        preferencesLocalDataSource.update(
             preferences.first().copy(syncMode = syncMode)
         )
     }

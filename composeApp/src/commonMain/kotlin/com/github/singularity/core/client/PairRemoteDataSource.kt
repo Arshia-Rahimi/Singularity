@@ -5,7 +5,7 @@ import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairResponse
 
-interface HttpClientDataSource {
+interface PairRemoteDataSource {
 
     suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairResponse
 

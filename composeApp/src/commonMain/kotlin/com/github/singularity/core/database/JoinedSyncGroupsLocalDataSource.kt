@@ -3,7 +3,7 @@ package com.github.singularity.core.database
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import kotlinx.coroutines.flow.Flow
 
-interface JoinedSyncGroupsDataSource {
+interface JoinedSyncGroupsLocalDataSource {
 
     val joinedSyncGroups: Flow<List<JoinedSyncGroup>>
 
