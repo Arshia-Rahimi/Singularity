@@ -17,7 +17,6 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.AuthenticationStrategy
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
-import io.ktor.server.auth.principal
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
@@ -30,6 +29,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class KtorWebSocketServer(
@@ -93,22 +93,26 @@ class KtorWebSocketServer(
             authenticate("auth", strategy = AuthenticationStrategy.Required) {
                 webSocket("/sync") {
                     val converter = converter ?: return@webSocket
-                    _connectedNodes.value = _connectedNodes.value + call.principal<Node>()!!
 
-                    try {
+                    _connectedNodes.value = _connectedNodes.value + node()
 
+                    val receiver = launch {
                         incoming.receiveAsFlow()
                             .filterIsInstance<Frame.Text>()
                             .map { converter.deserialize<SyncEvent>(it) }
                             .collect { syncEventRepo.incomingEventCallback(it) }
+                    }
 
+                    val sender = launch {
                         syncEventRepo.outgoingSyncEvents
                             .map { converter.serialize<SyncEvent>(it) }
                             .collect { send(it) }
-
-                    } finally {
-                        _connectedNodes.value = _connectedNodes.value - call.principal<Node>()!!
                     }
+
+                    receiver.join()
+                    sender.join()
+
+                    _connectedNodes.value = _connectedNodes.value - node()
                 }
             }
         }
