@@ -18,27 +18,32 @@ class ServerSyncService(
     syncEventRepo: SyncEventRepository,
 ) : SyncService(
     syncEventRepo = syncEventRepo,
+    clientConnectionRepo = clientConnectionRepo,
 ) {
 
     init {
-        preferencesRepo.preferences.map { it.syncMode }
-            .onEach { mode ->
-                when (mode) {
-                    SyncMode.Server -> {
-                        hostedSyncGroupRepo.syncGroups.collect {
-                            val group =
-                                it.firstOrNull { group -> group.isDefault } ?: return@collect
-                            clientConnectionRepo.stopClient()
-                            serverConnectionRepo.startServer(group)
-                        }
+        preferencesRepo.preferences.map { it.syncMode }.onEach { mode ->
+            when (mode) {
+                SyncMode.Server -> hostedSyncGroupRepo.syncGroups.collect {
+                    val group = it.firstOrNull { group -> group.isDefault }
+
+                    if (group == null) {
+                        clientConnectionRepo.stopClient()
+                        serverConnectionRepo.stopServer()
+                        return@collect
                     }
 
-                    SyncMode.Client -> {
-                        serverConnectionRepo.stopServer()
-                        clientConnectionRepo.startClient()
-                    }
+                    clientConnectionRepo.stopClient()
+                    serverConnectionRepo.startServer(group)
                 }
-            }.launchIn(scope)
+
+
+                SyncMode.Client -> {
+                    serverConnectionRepo.stopServer()
+                    clientConnectionRepo.startClient()
+                }
+            }
+        }.launchIn(scope)
     }
 
 }
