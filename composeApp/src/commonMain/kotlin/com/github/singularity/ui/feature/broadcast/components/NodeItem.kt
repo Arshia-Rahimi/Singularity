@@ -46,7 +46,7 @@ fun NodeItem(
     ApprovalDialog(
         visible = showApproveNodeDialog,
         title = Res.string.approve_pair_request.getString(),
-        message = Res.string.reject_or_approve.getString(),
+        message = Res.string.reject_or_approve.getString(node.deviceName),
         onApprove = { BroadcastIntent.Approve(node).execute() },
         onReject = { BroadcastIntent.Reject(node).execute() },
         onDismiss = { showApproveNodeDialog = false },

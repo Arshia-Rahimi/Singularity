@@ -75,17 +75,15 @@ class KtorHttpServer(
                 post("/pair") {
                     val group = syncGroup
                     val pairRequest = call.receive<PairRequest>()
-                    print(pairRequest)
 
                     if (group == null || pairRequest.syncGroupId != group.hostedSyncGroupId) {
                         call.respond(PairResponse(false))
                         return@post
                     }
 
-                    val requestId = Random.nextLong()
+                    val requestId = Random.nextLong(1000000000000000000L, Long.MAX_VALUE)
                     pairRequestRepo.add(requestId, pairRequest)
 
-                    print(requestId)
                     call.respond(PairResponse(true, requestId))
 
                 }

@@ -22,27 +22,21 @@ class PairRequestRepositoryImpl : PairRequestRepository {
     }
 
     override fun remove(id: Long) {
-        val list = _requests.value.toMutableList()
-        list.removeAll { it.requestId == id }
-        _requests.value = list
+        _requests.value = _requests.value.filter { it.requestId == id }
     }
 
     override fun approve(node: Node) {
-        val list = _requests.value.toMutableList()
-        list.replaceFirstWith(
+        _requests.value = _requests.value.replaceFirstWith(
             newItem = { it.copy(status = PairStatus.Approved) },
             predicate = { node == it.node }
         )
-        _requests.value = list
     }
 
     override fun reject(node: Node) {
-        val list = _requests.value.toMutableList()
-        list.replaceFirstWith(
+        _requests.value = _requests.value.replaceFirstWith(
             newItem = { it.copy(status = PairStatus.Approved) },
             predicate = { node == it.node }
         )
-        _requests.value = list
     }
 
     override fun get(id: Long) = requests.value.firstOrNull { it.requestId == id }

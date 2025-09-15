@@ -1,6 +1,8 @@
 package com.github.singularity.core.shared.util
 
-fun <T> MutableList<T>.replaceFirstWith(newItem: (T) -> T, predicate: (T) -> Boolean) {
+fun <T> List<T>.replaceFirstWith(newItem: (T) -> T, predicate: (T) -> Boolean): List<T> {
+    val list = this.toMutableList()
     val index = indexOfFirst(predicate)
-    if (index != -1) this[index] = newItem(this[index])
+    if (index != -1) list[index] = newItem(list[index])
+    return list.toList()
 }
