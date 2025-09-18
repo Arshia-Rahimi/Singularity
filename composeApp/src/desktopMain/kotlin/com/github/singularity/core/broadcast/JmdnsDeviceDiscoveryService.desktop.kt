@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
+import java.net.Inet4Address
+import java.net.NetworkInterface
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
 
-class JmdnsDeviceDiscoveryService(
-    private val jmdns: MultiJmdnsWrapper,
-) : DeviceDiscoveryService {
+class JmdnsDeviceDiscoveryService : DeviceDiscoveryService {
+
+    private val serviceType = MDNS_SERVICE_TYPE + "local."
 
     private val servers = callbackFlow {
         val listener = object : ServiceListener {
@@ -34,11 +36,12 @@ class JmdnsDeviceDiscoveryService(
             }
         }
 
-        jmdns.addServiceListener(MDNS_SERVICE_TYPE, listener)
+        val jmdns = getJmdns()
+        jmdns.addServiceListener(serviceType, listener)
+        
         awaitClose {
-            jmdns.removeServiceListener(MDNS_SERVICE_TYPE, listener)
+            jmdns.removeServiceListener(serviceType, listener)
         }
-
     }
 
     override fun discoveredServers() = servers
@@ -54,4 +57,17 @@ class JmdnsDeviceDiscoveryService(
             .map { it.server }
             .firstOrNull { it.syncGroupId == syncGroup.syncGroupId }
 
+    private fun getJmdns(): MultiJmdnsWrapper {
+        val inetAddresses = buildList {
+            NetworkInterface.getNetworkInterfaces().toList().forEach {
+                it.inetAddresses.toList().forEach { address ->
+                    if (address.isSiteLocalAddress && address is Inet4Address)
+                        add(address)
+                }
+            }
+        }
+
+        return MultiJmdnsWrapper(*inetAddresses.toTypedArray())
+    }
+    
 }
