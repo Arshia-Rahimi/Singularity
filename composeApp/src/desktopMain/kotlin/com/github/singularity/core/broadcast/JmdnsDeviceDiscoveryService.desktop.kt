@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
-import java.net.Inet4Address
-import java.net.NetworkInterface
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
 
@@ -57,17 +55,5 @@ class JmdnsDeviceDiscoveryService : DeviceDiscoveryService {
             .map { it.server }
             .firstOrNull { it.syncGroupId == syncGroup.syncGroupId }
 
-    private fun getJmdns(): MultiJmdnsWrapper {
-        val inetAddresses = buildList {
-            NetworkInterface.getNetworkInterfaces().toList().forEach {
-                it.inetAddresses.toList().forEach { address ->
-                    if (address.isSiteLocalAddress && address is Inet4Address)
-                        add(address)
-                }
-            }
-        }
-
-        return MultiJmdnsWrapper(*inetAddresses.toTypedArray())
-    }
     
 }

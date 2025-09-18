@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.first
 import javax.jmdns.ServiceInfo
 
 class JmdnsDeviceBroadcastService(
-    private val jmdns: MultiJmdnsWrapper,
     private val preferencesRepo: PreferencesRepository,
 ) : DeviceBroadcastService {
+
+    private val jmdns = getJmdns()
 
     override suspend fun startBroadcast(group: HostedSyncGroup) {
         val deviceId = preferencesRepo.preferences.first().deviceId
