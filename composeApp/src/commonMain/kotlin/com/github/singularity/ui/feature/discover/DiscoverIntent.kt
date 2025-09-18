@@ -5,5 +5,6 @@ import com.github.singularity.core.shared.model.LocalServer
 sealed interface DiscoverIntent {
     data class SendPairRequest(val server: LocalServer) : DiscoverIntent
     data object CancelPairRequest : DiscoverIntent
+    data object RefreshDiscovery : DiscoverIntent
     data object NavBack : DiscoverIntent
 }

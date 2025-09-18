@@ -8,12 +8,13 @@
     <string name="broadcast">Broadcast</string>
     <string name="settings">Settings</string>
     <string name="back">back</string>
-    <string name="create_new_sync_group">create new sync group</string>
+    <string name="create_new_sync_group">Create new sync group</string>
     <string name="create">create</string>
     <string name="cancel">cancel</string>
     <string name="approve">approve</string>
     <string name="reject">reject</string>
     <string name="default">default</string>
+    <string name="refresh">Refresh</string>
     <string name="nodes_paired">nodes paired</string>
     <string name="set_group_as_default">Do you want to set group %1$d as default?</string>
     <string name="delete_group">Do you want to delete group %1$d?</string>
