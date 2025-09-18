@@ -40,14 +40,14 @@ fun Navigation() {
             },
             exitTransition = {
                 slideOutHorizontally(
-                    animationSpec = tween(500),
                     targetOffsetX = { -it },
+                    animationSpec = tween(500),
                 )
             },
             popExitTransition = {
                 slideOutHorizontally(
-                    animationSpec = tween(500),
                     targetOffsetX = { it },
+                    animationSpec = tween(500),
                 )
             },
             navController = navController,
