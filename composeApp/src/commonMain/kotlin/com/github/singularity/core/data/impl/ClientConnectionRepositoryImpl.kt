@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,51 +39,53 @@ class ClientConnectionRepositoryImpl(
 
     private val refreshState = MutableSharedFlow<Unit>()
 
-    override val connectionState = refreshState.flatMapLatest {
-        if (!isClientRunning) flowOf(ConnectionState.Stopped)
-        else joinedSyncGroupsLocalDataSource.joinedSyncGroups
-            .map { it.firstOrNull { group -> group.isDefault } }
-            .flatMapLatest { defaultServer ->
-                if (defaultServer == null) flowOf<ConnectionState>(ConnectionState.NoDefaultServer)
-                else flow {
-                    emit(ConnectionState.Searching(defaultServer))
+    override val connectionState = refreshState
+        .onStart { emit(Unit) }
+        .flatMapLatest {
+            if (!isClientRunning) flowOf(ConnectionState.Stopped)
+            else joinedSyncGroupsLocalDataSource.joinedSyncGroups
+                .map { it.firstOrNull { group -> group.isDefault } }
+                .flatMapLatest { defaultServer ->
+                    if (defaultServer == null) flowOf<ConnectionState>(ConnectionState.NoDefaultServer)
+                    else flow {
+                        emit(ConnectionState.Searching(defaultServer))
 
-                    val server = withTimeoutOrNull(DISCOVER_TIMEOUT) {
-                        deviceDiscoveryService.discoverServer(defaultServer)
-                    }
+                        val server = withTimeoutOrNull(DISCOVER_TIMEOUT) {
+                            deviceDiscoveryService.discoverServer(defaultServer)
+                        }
 
-                    if (server == null) {
-                        emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
-                        return@flow
-                    }
+                        if (server == null) {
+                            emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
+                            return@flow
+                        }
 
-                    webSocketClient.connect(server, defaultServer.authToken)
-                        .onFirst { emit(ConnectionState.Connected(server)) }
-                        .catch { e ->
-                            when (e) {
-                                is WebSocketConnectionDroppedException ->
-                                    emit(
-                                        ConnectionState.ConnectionFailed(
-                                            server,
-                                            "connection dropped",
+                        webSocketClient.connect(server, defaultServer.authToken)
+                            .onFirst { emit(ConnectionState.Connected(server)) }
+                            .catch { e ->
+                                when (e) {
+                                    is WebSocketConnectionDroppedException ->
+                                        emit(
+                                            ConnectionState.ConnectionFailed(
+                                                server,
+                                                "connection dropped",
+                                            )
                                         )
-                                    )
 
-                                else ->
-                                    emit(
-                                        ConnectionState.ConnectionFailed(
-                                            server,
-                                            "connection failed",
+                                    else ->
+                                        emit(
+                                            ConnectionState.ConnectionFailed(
+                                                server,
+                                                "connection failed",
+                                            )
                                         )
-                                    )
-                            }
-                        }.collect { syncEventRepo.incomingEventCallback(it) }
+                                }
+                            }.collect { syncEventRepo.incomingEventCallback(it) }
+                    }
                 }
-            }
-    }.shareInWhileSubscribed(scope, 1)
+        }.shareInWhileSubscribed(scope, 1)
 
     override fun refresh() {
-        refreshState.sendPulse()
+        refreshState.sendPulse(scope)
     }
 
     override fun startClient() {

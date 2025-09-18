@@ -14,14 +14,22 @@ import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
+import com.github.singularity.core.shared.util.sendPulse
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.io.IOException
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DiscoverRepositoryImp(
     private val joinedSyncGroupsRepo: JoinedSyncGroupsLocalDataSource,
     private val preferencesRepo: PreferencesRepository,
@@ -29,7 +37,20 @@ class DiscoverRepositoryImp(
     private val discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
-    override fun discoveredServers() = discoveryService.discoveredServers().catch {}
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val refreshState = MutableSharedFlow<Unit>()
+
+    override val discoveredServers = refreshState
+        .onStart { emit(Unit) }
+        .flatMapLatest {
+            discoveryService.discoveredServers()
+                .onStart { emit(emptyList()) }
+                .catch {}
+        }
+
+    override fun refreshDiscovery() {
+        refreshState.sendPulse(scope)
+    }
 
     override fun sendPairRequest(server: LocalServer) = flow {
         try {

@@ -6,30 +6,22 @@ import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
-import com.github.singularity.core.shared.util.sendPulse
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.ui.feature.discover.components.PairRequestState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class DiscoverViewModel(
     private val discoverRepo: DiscoverRepository,
 ) : ViewModel() {
 
-    private val refreshState = MutableSharedFlow<Unit>()
-
-    private val servers = refreshState.flatMapLatest {
-        discoverRepo.discoveredServers()
-    }.stateInWhileSubscribed(emptyList())
+    private val servers = discoverRepo.discoveredServers
+        .stateInWhileSubscribed(emptyList())
 
     private val pairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
@@ -47,7 +39,7 @@ class DiscoverViewModel(
             is DiscoverIntent.SendPairRequest -> sendPairRequest(intent.server)
             is DiscoverIntent.CancelPairRequest -> cancelPairRequest()
             is DiscoverIntent.NavBack -> Unit
-            is DiscoverIntent.RefreshDiscovery -> refreshDiscovery()
+            is DiscoverIntent.RefreshDiscovery -> discoverRepo.refreshDiscovery()
         }
     }
 
@@ -68,10 +60,6 @@ class DiscoverViewModel(
     private fun cancelPairRequest() {
         pairRequestJob?.cancel()
         pairRequestState.value = PairRequestState.Idle
-    }
-
-    private fun refreshDiscovery() {
-        refreshState.sendPulse()
     }
 
 }

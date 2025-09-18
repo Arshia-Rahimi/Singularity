@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface DiscoverRepository {
 
-    fun discoveredServers(): Flow<List<LocalServer>>
+    val discoveredServers: Flow<List<LocalServer>>
+
+    fun refreshDiscovery()
 
     fun sendPairRequest(server: LocalServer): Flow<Resource<Success>>
 
