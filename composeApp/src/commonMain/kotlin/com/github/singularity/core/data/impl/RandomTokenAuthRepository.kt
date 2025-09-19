@@ -13,8 +13,7 @@ class RandomTokenAuthRepository(
 ) : AuthTokenRepository {
 
     override suspend fun generateAuthToken(node: Node): HostedSyncGroupNode? {
-        val defaultGroup = hostedSyncGroupRepo.syncGroups.first()
-            .firstOrNull { it.isDefault } ?: return null
+        val defaultGroup = hostedSyncGroupRepo.defaultSyncGroup.first() ?: return null
 
         val token = Random.nextLong(1000000000000000000L, Long.MAX_VALUE).toString()
         val hostedNode = HostedSyncGroupNode(
@@ -31,8 +30,7 @@ class RandomTokenAuthRepository(
     }
 
     override suspend fun getNode(token: Token): HostedSyncGroupNode? {
-        val defaultGroup = hostedSyncGroupRepo.syncGroups.first()
-            .firstOrNull { it.isDefault } ?: return null
+        val defaultGroup = hostedSyncGroupRepo.defaultSyncGroup.first() ?: return null
         return defaultGroup.nodes.firstOrNull { it.authToken == token }
     }
 

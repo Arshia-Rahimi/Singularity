@@ -1,16 +1,12 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.model.ConnectionState
-import kotlinx.coroutines.flow.SharedFlow
+import com.github.singularity.core.shared.model.ClientConnectionState
+import kotlinx.coroutines.flow.Flow
 
 interface ClientConnectionRepository {
 
-    val connectionState: SharedFlow<ConnectionState>
+    val connectionState: Flow<ClientConnectionState>
 
     fun refresh()
-
-    fun startClient()
-
-    fun stopClient()
 
 }

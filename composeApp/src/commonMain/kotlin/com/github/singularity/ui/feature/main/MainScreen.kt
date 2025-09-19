@@ -53,14 +53,7 @@ private fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = {
-//                    AnimatedContent(
-//                        targetState = uiState.connectionState,
-//                        transitionSpec = { slideInVertically() togetherWith slideOutVertically() }
-//                    ) {
-//                        Text(it.message.getString())
-//                    }
-                },
+                title = {},
                 actions = {
                     IconButton(
                         onClick = { MainIntent.ToSettingsScreen.execute() },

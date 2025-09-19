@@ -64,7 +64,7 @@ class BroadcastRepositoryImp(
     }
 
     override suspend fun startBroadcast() {
-        val defaultGroup = syncGroups.first().firstOrNull { it.isDefault } ?: return
+        val defaultGroup = hostedSyncGroupRepo.defaultSyncGroup.first() ?: return
         httpServer.start(defaultGroup)
         broadcastService.startBroadcast(defaultGroup)
     }

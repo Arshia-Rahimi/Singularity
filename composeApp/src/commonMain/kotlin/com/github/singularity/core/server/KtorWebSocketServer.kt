@@ -10,8 +10,6 @@ import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.serialize
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationStarted
-import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.AuthenticationStrategy
@@ -42,9 +40,6 @@ class KtorWebSocketServer(
     private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
     val connectedNodes = _connectedNodes.asStateFlow()
 
-    private val _isServerRunning = MutableStateFlow(false)
-    val isServerRunning = _isServerRunning.asStateFlow()
-
     private val server = embeddedServer(
         factory = CIO,
         port = WEBSOCKET_SERVER_PORT,
@@ -63,13 +58,6 @@ class KtorWebSocketServer(
             }
         }
         registerRoutes()
-    }.apply {
-        monitor.subscribe(ApplicationStarted) {
-            _isServerRunning.value = true
-        }
-        monitor.subscribe(ApplicationStopped) {
-            _isServerRunning.value = false
-        }
     }
 
     suspend fun start(group: HostedSyncGroup) {

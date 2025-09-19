@@ -1,49 +1,50 @@
 package com.github.singularity.core.sync
 
 import com.github.singularity.core.data.ClientConnectionRepository
-import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.shared.SyncMode
-import kotlinx.coroutines.flow.launchIn
+import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ConnectionState
+import com.github.singularity.core.shared.util.next
+import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ServerSyncService(
+    private val preferencesRepo: PreferencesRepository,
     serverConnectionRepo: ServerConnectionRepository,
-    preferencesRepo: PreferencesRepository,
     clientConnectionRepo: ClientConnectionRepository,
-    hostedSyncGroupRepo: HostedSyncGroupRepository,
     syncEventRepo: SyncEventRepository,
 ) : SyncService(
     syncEventRepo = syncEventRepo,
     clientConnectionRepo = clientConnectionRepo,
 ) {
 
-    init {
-        preferencesRepo.preferences.map { it.syncMode }.onEach { mode ->
-            when (mode) {
-                SyncMode.Server -> hostedSyncGroupRepo.syncGroups.collect {
-                    val group = it.firstOrNull { group -> group.isDefault }
+    override val syncMode = preferencesRepo.preferences.map { it.syncMode }
+        .stateInWhileSubscribed(SyncMode.Client, scope)
 
-                    if (group == null) {
-                        clientConnectionRepo.stopClient()
-                        serverConnectionRepo.stopServer()
-                        return@collect
-                    }
+    override val connectionState: StateFlow<ConnectionState> = syncMode.flatMapLatest {
+        if (it == SyncMode.Client) clientConnectionRepo.connectionState
+        else serverConnectionRepo.runServer()
+    }.stateInWhileSubscribed(ClientConnectionState.NoDefaultServer, scope)
 
-                    clientConnectionRepo.stopClient()
-                    serverConnectionRepo.startServer(group)
-                }
+    override fun toggleSyncMode() {
+        scope.launch {
+            preferencesRepo.setSyncMode(syncMode.first().next())
+        }
+    }
 
-
-                SyncMode.Client -> {
-                    serverConnectionRepo.stopServer()
-                    clientConnectionRepo.startClient()
-                }
-            }
-        }.launchIn(scope)
+    override fun refreshClient() {
+        scope.launch {
+            if (syncMode.first() == SyncMode.Client) super.refreshClient()
+        }
     }
 
 }

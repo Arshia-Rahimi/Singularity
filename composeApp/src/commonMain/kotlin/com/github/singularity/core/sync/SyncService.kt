@@ -2,22 +2,34 @@ package com.github.singularity.core.sync
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
+import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ConnectionState
+import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 open class SyncService(
     private val syncEventRepo: SyncEventRepository,
-    clientConnectionRepo: ClientConnectionRepository,
+    private val clientConnectionRepo: ClientConnectionRepository,
 ) {
 
     protected val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    init {
-        clientConnectionRepo.startClient()
-    }
+    open val syncMode = MutableStateFlow(SyncMode.Client).asStateFlow()
 
-    // todo handle plugins and pass the events to them
+    open val connectionState: StateFlow<ConnectionState> = clientConnectionRepo.connectionState
+        .stateInWhileSubscribed(ClientConnectionState.NoDefaultServer, scope)
+
+    open fun toggleSyncMode() = Unit
+
+    open fun refreshClient() {
+        clientConnectionRepo.refresh()
+    }
 
 }

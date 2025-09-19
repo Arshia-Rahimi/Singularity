@@ -1,11 +1,10 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.model.HostedSyncGroup
+import com.github.singularity.core.shared.model.ServerConnectionState
+import kotlinx.coroutines.flow.Flow
 
 interface ServerConnectionRepository {
 
-    suspend fun startServer(group: HostedSyncGroup)
-
-    suspend fun stopServer()
+    fun runServer(): Flow<ServerConnectionState>
 
 }

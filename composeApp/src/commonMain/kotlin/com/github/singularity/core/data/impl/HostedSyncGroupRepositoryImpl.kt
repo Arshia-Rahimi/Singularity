@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.map
 
 class HostedSyncGroupRepositoryImpl(
     private val hostedSyncGroupsLocalDataSource: HostedSyncGroupsLocalDataSource,
@@ -17,6 +18,9 @@ class HostedSyncGroupRepositoryImpl(
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override val syncGroups = hostedSyncGroupsLocalDataSource.hostedSyncGroups
+        .shareInWhileSubscribed(scope, 1)
+
+    override val defaultSyncGroup = syncGroups.map { it.firstOrNull { group -> group.isDefault } }
         .shareInWhileSubscribed(scope, 1)
 
     override suspend fun create(group: HostedSyncGroup) {

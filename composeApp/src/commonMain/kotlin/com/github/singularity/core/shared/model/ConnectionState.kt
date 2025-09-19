@@ -7,38 +7,46 @@ import singularity.composeapp.generated.resources.connection_failed
 import singularity.composeapp.generated.resources.no_default_server
 import singularity.composeapp.generated.resources.searching
 import singularity.composeapp.generated.resources.server_not_found
-import singularity.composeapp.generated.resources.stopped
 
-sealed interface ConnectionState {
+sealed interface ConnectionState
+
+sealed interface ClientConnectionState : ConnectionState {
 
     val message: StringResource
 
-    data object NoDefaultServer : ConnectionState {
+    data object NoDefaultServer : ClientConnectionState {
         override val message = Res.string.no_default_server
     }
 
-    data object Stopped : ConnectionState {
-        override val message = Res.string.stopped
-    }
-
-    data class Searching(val joinedSyncGroup: JoinedSyncGroup) : ConnectionState {
+    data class Searching(val joinedSyncGroup: JoinedSyncGroup) : ClientConnectionState {
         override val message = Res.string.searching
     }
 
     data class ConnectionFailed(val server: LocalServer, val errorMessage: String) :
-        ConnectionState {
+        ClientConnectionState {
         override val message = Res.string.connection_failed
     }
 
-    data class Connected(val server: LocalServer) : ConnectionState {
+    data class Connected(val server: LocalServer) : ClientConnectionState {
         override val message = Res.string.connected
     }
 
     data class ServerNotFound(
         val joinedSyncGroup: JoinedSyncGroup,
         val errorMessage: String,
-    ) : ConnectionState {
+    ) : ClientConnectionState {
         override val message = Res.string.server_not_found
     }
+
+}
+
+sealed interface ServerConnectionState : ConnectionState {
+
+    data object NoDefaultServer : ServerConnectionState
+
+    data class Running(
+        val group: HostedSyncGroup,
+        val connectedNodes: List<HostedSyncGroupNode>,
+    ) : ServerConnectionState
 
 }

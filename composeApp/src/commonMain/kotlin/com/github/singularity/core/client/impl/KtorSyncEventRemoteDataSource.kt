@@ -43,7 +43,7 @@ class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
 
     override fun connect(server: LocalServer, authToken: String) = callbackFlow {
         try {
-            client.webSocket("wss://${server.ip}:$WEBSOCKET_SERVER_PORT/sync") {
+            client.webSocket("ws://${server.ip}:$WEBSOCKET_SERVER_PORT/sync") {
                 val converter = converter ?: return@webSocket
 
                 val sender = launch {

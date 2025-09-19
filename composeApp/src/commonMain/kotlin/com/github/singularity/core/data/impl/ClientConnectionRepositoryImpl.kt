@@ -7,10 +7,9 @@ import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
-import com.github.singularity.core.shared.model.ConnectionState
+import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
-import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +26,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-    webSocketClient: SyncEventRemoteDataSource,
+    syncEventRemoteDataSource: SyncEventRemoteDataSource,
     syncEventRepo: SyncEventRepository,
     joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
@@ -35,37 +34,34 @@ class ClientConnectionRepositoryImpl(
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private var isClientRunning = true
-
     private val refreshState = MutableSharedFlow<Unit>()
 
     override val connectionState = refreshState
         .onStart { emit(Unit) }
         .flatMapLatest {
-            if (!isClientRunning) flowOf(ConnectionState.Stopped)
-            else joinedSyncGroupsLocalDataSource.joinedSyncGroups
+            joinedSyncGroupsLocalDataSource.joinedSyncGroups
                 .map { it.firstOrNull { group -> group.isDefault } }
                 .flatMapLatest { defaultServer ->
-                    if (defaultServer == null) flowOf<ConnectionState>(ConnectionState.NoDefaultServer)
+                    if (defaultServer == null) flowOf<ClientConnectionState>(ClientConnectionState.NoDefaultServer)
                     else flow {
-                        emit(ConnectionState.Searching(defaultServer))
+                        emit(ClientConnectionState.Searching(defaultServer))
 
                         val server = withTimeoutOrNull(DISCOVER_TIMEOUT) {
                             deviceDiscoveryService.discoverServer(defaultServer)
                         }
 
                         if (server == null) {
-                            emit(ConnectionState.ServerNotFound(defaultServer, "timeout"))
+                            emit(ClientConnectionState.ServerNotFound(defaultServer, "timeout"))
                             return@flow
                         }
 
-                        webSocketClient.connect(server, defaultServer.authToken)
-                            .onFirst { emit(ConnectionState.Connected(server)) }
+                        syncEventRemoteDataSource.connect(server, defaultServer.authToken)
+                            .onFirst { emit(ClientConnectionState.Connected(server)) }
                             .catch { e ->
                                 when (e) {
                                     is WebSocketConnectionDroppedException ->
                                         emit(
-                                            ConnectionState.ConnectionFailed(
+                                            ClientConnectionState.ConnectionFailed(
                                                 server,
                                                 "connection dropped",
                                             )
@@ -73,7 +69,7 @@ class ClientConnectionRepositoryImpl(
 
                                     else ->
                                         emit(
-                                            ConnectionState.ConnectionFailed(
+                                            ClientConnectionState.ConnectionFailed(
                                                 server,
                                                 "connection failed",
                                             )
@@ -82,20 +78,10 @@ class ClientConnectionRepositoryImpl(
                             }.collect { syncEventRepo.incomingEventCallback(it) }
                     }
                 }
-        }.shareInWhileSubscribed(scope, 1)
+        }
 
     override fun refresh() {
         refreshState.sendPulse(scope)
-    }
-
-    override fun startClient() {
-        isClientRunning = true
-        refresh()
-    }
-
-    override fun stopClient() {
-        isClientRunning = false
-        refresh()
     }
 
 }

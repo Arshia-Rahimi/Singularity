@@ -1,7 +1,6 @@
 package com.github.singularity.ui.navigation
 
 import androidx.lifecycle.ViewModel
-
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.util.stateInWhileSubscribed

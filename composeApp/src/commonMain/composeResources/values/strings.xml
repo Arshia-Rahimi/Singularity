@@ -10,6 +10,7 @@
     <string name="back">back</string>
     <string name="create_new_sync_group">Create new sync group</string>
     <string name="create">create</string>
+    <string name="disabled">disabled</string>
     <string name="cancel">cancel</string>
     <string name="approve">approve</string>
     <string name="reject">reject</string>
