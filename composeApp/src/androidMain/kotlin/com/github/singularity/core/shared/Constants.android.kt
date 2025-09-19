@@ -2,7 +2,7 @@ package com.github.singularity.core.shared
 
 import android.os.Build
 
-actual val canHostSyncServer = true
+actual val canHostSyncServer = false
 
 actual val platform = "Android"
 

@@ -12,6 +12,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -27,7 +28,7 @@ class KtorPairRemoteDataSource : PairRemoteDataSource {
     }
 
     override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node) =
-        client.post("http://${server.ip}:${HTTP_SERVER_PORT}/pair") {
+        client.post("http://${server.ip}:$HTTP_SERVER_PORT/pair") {
             contentType(ContentType.Application.Json)
             setBody(
                 PairRequest(
@@ -41,12 +42,12 @@ class KtorPairRemoteDataSource : PairRemoteDataSource {
         }.body<PairResponse>()
 
     override suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Int) =
-        client.post("http://${server.ip}:$HTTP_SERVER_PORT/pairCheck") {
+        client.get("http://${server.ip}:$HTTP_SERVER_PORT/pairCheck") {
             contentType(ContentType.Application.Json)
             setBody(
                 PairCheckRequest(
-                    pairRequestId,
-                    server.syncGroupId,
+                    pairRequestId = pairRequestId,
+                    syncGroupId = server.syncGroupId,
                 )
             )
         }.body<PairCheckResponse>()

@@ -98,7 +98,7 @@ private fun DiscoverScreen(
                                 CircularProgressIndicator()
                             }
 
-                            is PairRequestState.Success -> Text(Res.string.await_pair_request_approval.toString())
+                            is PairRequestState.Success -> Text(Res.string.await_pair_request_approval.getString())
                             is PairRequestState.Error -> Text(uiState.pairRequestState.message)
                             is PairRequestState.Idle -> Unit
                         }

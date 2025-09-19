@@ -9,5 +9,5 @@ fun DiscoveredService.toServer() = LocalServer(
     deviceId = txt["deviceId"]?.decodeToString() ?: "Unknown",
     syncGroupName = txt["syncGroupName"]?.decodeToString() ?: "Unknown",
     deviceOs = txt["deviceOs"]?.decodeToString() ?: "Unknown",
-    syncGroupId = txt["SyncGroupId"]?.decodeToString() ?: "Unknown",
+    syncGroupId = txt["syncGroupId"]?.decodeToString() ?: "Unknown",
 )
