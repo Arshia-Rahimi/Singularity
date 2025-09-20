@@ -51,7 +51,7 @@ class KtorWebSocketServer(
             )
         }
         install(Authentication) {
-            bearer {
+            bearer("auth") {
                 authenticate {
                     authTokenRepo.getNode(it.token)
                 }

@@ -6,4 +6,5 @@ sealed interface MainIntent {
     data object ToBroadcastScreen : MainIntent
     data object ToSettingsScreen : MainIntent
     data object RefreshConnection : MainIntent
+    data object ToggleSyncMode : MainIntent
 }

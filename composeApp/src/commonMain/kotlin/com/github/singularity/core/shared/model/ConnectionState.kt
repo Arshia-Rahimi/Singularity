@@ -1,52 +1,66 @@
 package com.github.singularity.core.shared.model
 
-import org.jetbrains.compose.resources.StringResource
+import androidx.compose.runtime.Composable
+import com.github.singularity.core.shared.compose.getString
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.connected
 import singularity.composeapp.generated.resources.connection_failed
 import singularity.composeapp.generated.resources.no_default_server
 import singularity.composeapp.generated.resources.searching
 import singularity.composeapp.generated.resources.server_not_found
+import singularity.composeapp.generated.resources.server_running
 
-sealed interface ConnectionState
+sealed interface ConnectionState {
+    val message: String
+        @Composable get
+}
 
 sealed interface ClientConnectionState : ConnectionState {
 
-    val message: StringResource
-
     data object NoDefaultServer : ClientConnectionState {
-        override val message = Res.string.no_default_server
+        override val message: String
+            @Composable get() = Res.string.no_default_server.getString()
     }
 
     data class Searching(val joinedSyncGroup: JoinedSyncGroup) : ClientConnectionState {
-        override val message = Res.string.searching
+        override val message: String
+            @Composable get() = Res.string.searching.getString(joinedSyncGroup.syncGroupName)
     }
 
     data class ConnectionFailed(val server: LocalServer, val errorMessage: String) :
         ClientConnectionState {
-        override val message = Res.string.connection_failed
+        override val message: String
+            @Composable get() = Res.string.connection_failed.getString(server.syncGroupName)
     }
 
     data class Connected(val server: LocalServer) : ClientConnectionState {
-        override val message = Res.string.connected
+        override val message: String
+            @Composable get() = Res.string.connected.getString(server.syncGroupName)
     }
 
     data class ServerNotFound(
         val joinedSyncGroup: JoinedSyncGroup,
         val errorMessage: String,
     ) : ClientConnectionState {
-        override val message = Res.string.server_not_found
+        override val message: String
+            @Composable get() = Res.string.server_not_found.getString(joinedSyncGroup.syncGroupName)
     }
 
 }
 
 sealed interface ServerConnectionState : ConnectionState {
 
-    data object NoDefaultServer : ServerConnectionState
+    data object NoDefaultServer : ServerConnectionState {
+        override val message: String
+            @Composable get() = Res.string.no_default_server.getString()
+    }
 
     data class Running(
         val group: HostedSyncGroup,
         val connectedNodes: List<HostedSyncGroupNode>,
-    ) : ServerConnectionState
+    ) : ServerConnectionState {
+        override val message: String
+            @Composable get() = Res.string.server_running.getString(connectedNodes.size, group.name)
+    }
 
 }

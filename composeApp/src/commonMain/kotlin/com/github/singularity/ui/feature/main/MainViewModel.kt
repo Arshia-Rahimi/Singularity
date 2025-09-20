@@ -17,16 +17,21 @@ class MainViewModel(
 
     val uiState = combine(
         connectionState,
-    ) { connectionState ->
+        syncService.syncMode,
+    ) { connectionState, syncMode ->
         MainUiState(
-            connectionState = connectionState[0],
+            connectionState = connectionState,
+            syncMode = syncMode,
         )
     }.stateInWhileSubscribed(MainUiState())
 
     fun execute(intent: MainIntent) {
         when (intent) {
             is MainIntent.RefreshConnection -> refreshConnection()
-            else -> Unit
+            is MainIntent.ToggleSyncMode -> toggleSyncMode()
+            is MainIntent.ToDiscoverScreen -> Unit
+            is MainIntent.ToSettingsScreen -> Unit
+            is MainIntent.ToBroadcastScreen -> Unit
         }
     }
 
