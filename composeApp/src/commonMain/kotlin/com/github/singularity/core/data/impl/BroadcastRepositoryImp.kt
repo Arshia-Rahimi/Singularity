@@ -31,7 +31,7 @@ class BroadcastRepositoryImp(
     override val syncGroups = hostedSyncGroupRepo.syncGroups
     
     override fun create(group: HostedSyncGroup) = flow {
-        hostedSyncGroupRepo.create(group)
+        hostedSyncGroupRepo.insert(group)
         emit(Success)
     }.asResult(Dispatchers.IO)
 

@@ -24,7 +24,7 @@ class RandomTokenAuthRepository(
             syncGroupName = defaultGroup.name,
             authToken = token,
         )
-        hostedSyncGroupRepo.create(hostedNode)
+        hostedSyncGroupRepo.upsert(hostedNode)
 
         return hostedNode
     }

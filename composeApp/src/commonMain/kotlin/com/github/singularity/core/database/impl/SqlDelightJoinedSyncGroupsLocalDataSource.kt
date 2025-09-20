@@ -28,12 +28,20 @@ class SqlDelightJoinedSyncGroupsLocalDataSource(
             }
         }
 
-    override fun insert(joinedSyncGroup: JoinedSyncGroup) {
-        queries.insert(
-            joined_sync_group_id = joinedSyncGroup.syncGroupId,
-            name = joinedSyncGroup.syncGroupName,
-            auth_token = joinedSyncGroup.authToken,
-        )
+    override fun upsert(joinedSyncGroup: JoinedSyncGroup) {
+        if (
+            queries.update(
+                joined_sync_group_id = joinedSyncGroup.syncGroupId,
+                name = joinedSyncGroup.syncGroupName,
+                auth_token = joinedSyncGroup.authToken,
+            ).value == 0L
+        ) {
+            queries.insert(
+                joined_sync_group_id = joinedSyncGroup.syncGroupId,
+                name = joinedSyncGroup.syncGroupName,
+                auth_token = joinedSyncGroup.authToken,
+            )
+        }
     }
 
     override fun delete(joinedSyncGroup: JoinedSyncGroup) {

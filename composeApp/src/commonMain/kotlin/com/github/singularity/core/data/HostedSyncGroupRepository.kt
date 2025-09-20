@@ -10,9 +10,9 @@ interface HostedSyncGroupRepository {
 
     val defaultSyncGroup: SharedFlow<HostedSyncGroup?>
 
-    suspend fun create(group: HostedSyncGroup)
+    suspend fun insert(group: HostedSyncGroup)
 
-    suspend fun create(node: HostedSyncGroupNode)
+    suspend fun upsert(node: HostedSyncGroupNode)
 
     suspend fun editName(groupName: String, group: HostedSyncGroup)
 

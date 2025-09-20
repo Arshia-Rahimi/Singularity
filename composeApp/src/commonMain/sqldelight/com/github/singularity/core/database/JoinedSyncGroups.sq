@@ -1,5 +1,5 @@
 CREATE TABLE JoinedSyncGroups(
-    joined_sync_group_id TEXT PRIMARY KEY NOT NULL,
+    joined_sync_group_id TEXT PRIMARY KEY NOT NULL UNIQUE,
     name TEXT NOT NULL,
     is_default INTEGER NOT NULL CHECK (is_default IN (0, 1)),
     auth_token TEXT NOT NULL
@@ -12,8 +12,13 @@ SELECT *
     
 insert:
 INSERT INTO JoinedSyncGroups (joined_sync_group_id, name, auth_token, is_default)
-    VALUES (?, ?, ?, 0);
-    
+    VALUES (?, ?, ?, 1);
+
+update:
+UPDATE JoinedSyncGroups
+    SET name = ?, auth_token = ?, is_default = 1
+    WHERE joined_sync_group_id == ?;
+
 updateIsDefault:
 UPDATE JoinedSyncGroups 
     SET is_default = ?

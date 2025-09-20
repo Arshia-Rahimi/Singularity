@@ -19,19 +19,18 @@ class HostedSyncGroupRepositoryImpl(
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override val syncGroups = hostedSyncGroupsLocalDataSource.hostedSyncGroups
-        .distinctUntilChanged()
         .shareInWhileSubscribed(scope, 1)
 
     override val defaultSyncGroup = syncGroups.map { it.firstOrNull { group -> group.isDefault } }
         .distinctUntilChanged()
         .shareInWhileSubscribed(scope, 1)
 
-    override suspend fun create(group: HostedSyncGroup) {
+    override suspend fun insert(group: HostedSyncGroup) {
         hostedSyncGroupsLocalDataSource.insert(group)
     }
 
-    override suspend fun create(node: HostedSyncGroupNode) {
-        hostedSyncGroupsLocalDataSource.insert(node)
+    override suspend fun upsert(node: HostedSyncGroupNode) {
+        hostedSyncGroupsLocalDataSource.upsert(node)
     }
 
     override suspend fun editName(groupName: String, group: HostedSyncGroup) {

@@ -7,7 +7,7 @@ interface JoinedSyncGroupsLocalDataSource {
 
     val joinedSyncGroups: Flow<List<JoinedSyncGroup>>
 
-    fun insert(joinedSyncGroup: JoinedSyncGroup)
+    fun upsert(joinedSyncGroup: JoinedSyncGroup)
 
     fun delete(joinedSyncGroup: JoinedSyncGroup)
 

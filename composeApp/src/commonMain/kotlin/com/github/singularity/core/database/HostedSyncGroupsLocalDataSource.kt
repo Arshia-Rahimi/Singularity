@@ -12,7 +12,7 @@ interface HostedSyncGroupsLocalDataSource {
 
     fun updateName(groupName: String, groupId: String)
 
-    fun insert(syncGroupNode: HostedSyncGroupNode)
+    fun upsert(syncGroupNode: HostedSyncGroupNode)
 
     fun delete(syncGroupNode: HostedSyncGroupNode)
 

@@ -55,14 +55,24 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
         queries.updateName(groupName, groupId)
     }
 
-    override fun insert(syncGroupNode: HostedSyncGroupNode) {
-        nodesQueries.insert(
-            node_id = syncGroupNode.deviceId,
-            auth_token = syncGroupNode.authToken,
-            hosted_sync_group_id = syncGroupNode.syncGroupId,
-            node_name = syncGroupNode.deviceName,
-            node_os = syncGroupNode.deviceOs,
-        )
+    override fun upsert(syncGroupNode: HostedSyncGroupNode) {
+        if (
+            nodesQueries.update(
+                auth_token = syncGroupNode.authToken,
+                hosted_sync_group_id = syncGroupNode.syncGroupId,
+                node_name = syncGroupNode.deviceName,
+                node_os = syncGroupNode.deviceOs,
+                node_id = syncGroupNode.deviceId,
+            ).value == 0L
+        ) {
+            nodesQueries.insert(
+                auth_token = syncGroupNode.authToken,
+                hosted_sync_group_id = syncGroupNode.syncGroupId,
+                node_name = syncGroupNode.deviceName,
+                node_os = syncGroupNode.deviceOs,
+                node_id = syncGroupNode.deviceId,
+            )
+        }
     }
 
     override fun delete(syncGroupNode: HostedSyncGroupNode) {

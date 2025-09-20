@@ -77,7 +77,7 @@ class DiscoverRepositoryImp(
                             syncGroupName = response.node?.syncGroupName ?: "",
                             authToken = response.node?.authToken ?: "",
                         )
-                        joinedSyncGroupsRepo.insert(newGroup)
+                        joinedSyncGroupsRepo.upsert(newGroup)
                         joinedSyncGroupsRepo.setAsDefault(newGroup)
 
                         emit(Success)
