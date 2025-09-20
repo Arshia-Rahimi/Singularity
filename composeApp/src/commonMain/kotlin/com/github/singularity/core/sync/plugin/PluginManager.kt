@@ -11,7 +11,7 @@ open class PluginManager(
     private val syncEventRepo: SyncEventRepository,
 ) {
 
-    val plugins = PluginsList.map { plugin ->
+    val plugins: List<Plugin> = PluginsList.map { plugin ->
         plugin { event ->
             scope.launch { syncEventRepo.send(event) }
         }
