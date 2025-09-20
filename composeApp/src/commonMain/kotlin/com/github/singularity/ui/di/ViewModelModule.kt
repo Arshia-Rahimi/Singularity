@@ -1,5 +1,6 @@
 package com.github.singularity.ui.di
 
+import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.ui.feature.broadcast.BroadcastViewModel
 import com.github.singularity.ui.feature.discover.DiscoverViewModel
 import com.github.singularity.ui.feature.main.MainViewModel
@@ -13,5 +14,8 @@ val ViewmodelModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::DiscoverViewModel)
     viewModelOf(::SettingsViewModel)
-    viewModelOf(::BroadcastViewModel)
+
+    if (canHostSyncServer) {
+        viewModelOf(::BroadcastViewModel)
+    }
 }
