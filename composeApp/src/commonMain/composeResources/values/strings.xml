@@ -34,7 +34,8 @@
     <string name="connected">Connected to %1$d</string>
     <string name="stopped">Stopped</string>
     <string name="server_not_found">Server %1$d Not Found</string>
-    <string name="await_pair_request_approval">Waiting for %1$d server to approve request</string>
+    <string name="await_pair_request_approval">Waiting for %1$d to approve request</string>
+    <string name="approved_to_join">Approved to join %1$d</string>
     <string name="reject_or_approve">Reject or Approve node %1$d?</string>
     <string name="server_running">%1$d nodes connected to %2$d</string>
 </resources>

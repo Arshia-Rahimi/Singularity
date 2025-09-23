@@ -3,6 +3,7 @@ package com.github.singularity.ui.feature.main
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -106,7 +107,7 @@ private fun MainScreen(
                     checked = uiState.syncMode == SyncMode.Server,
                     onCheckedChange = { MainIntent.ToggleSyncMode.execute() },
                 )
-            }
+            } else Spacer(Modifier)
         }
     }
 }

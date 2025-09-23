@@ -49,7 +49,7 @@ class DiscoverViewModel(
             pairRequestState.value = when (it) {
                 is Resource.Loading -> PairRequestState.Awaiting(server)
                 is Resource.Error -> PairRequestState.Error(it.error?.message ?: "failed")
-                is Resource.Success -> PairRequestState.Success
+                is Resource.Success -> PairRequestState.Success(server)
             }
         }.onCompletion {
             delay(5000)

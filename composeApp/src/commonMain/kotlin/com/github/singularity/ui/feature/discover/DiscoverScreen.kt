@@ -30,6 +30,7 @@ import com.github.singularity.ui.feature.discover.components.ServerItem
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.approved_to_join
 import singularity.composeapp.generated.resources.arrow_back
 import singularity.composeapp.generated.resources.await_pair_request_approval
 import singularity.composeapp.generated.resources.back
@@ -89,7 +90,7 @@ private fun DiscoverScreen(
                 if (it !is PairRequestState.Idle) {
                     Row(
                         modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 16.dp),
                         horizontalArrangement = Arrangement.Center,
                     ) {
                         when (uiState.pairRequestState) {
@@ -98,7 +99,11 @@ private fun DiscoverScreen(
                                 CircularProgressIndicator()
                             }
 
-                            is PairRequestState.Success -> Text(Res.string.await_pair_request_approval.getString())
+                            is PairRequestState.Success -> Text(
+                                Res.string.approved_to_join.getString(
+                                    uiState.pairRequestState.server
+                                )
+                            )
                             is PairRequestState.Error -> Text(uiState.pairRequestState.message)
                             is PairRequestState.Idle -> Unit
                         }
