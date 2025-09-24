@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,9 +26,13 @@ import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.settings
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 fun MainScreen(
@@ -37,6 +43,8 @@ fun MainScreen(
     val viewModel = koinViewModel<MainViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val testEvent by viewModel.events.collectAsStateWithLifecycle()
+
     MainScreen(
         uiState = uiState,
         execute = {
@@ -46,15 +54,19 @@ fun MainScreen(
                 is MainIntent.ToBroadcastScreen -> if (canHostSyncServer) toBroadcastScreen()
                 else -> viewModel.execute(this)
             }
-        }
+        },
+        sendEvent = viewModel::sendEvent,
+        events = testEvent,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 private fun MainScreen(
     uiState: MainUiState,
     execute: MainIntent.() -> Unit,
+    sendEvent: () -> Unit,
+    events: List<TestEvent>,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -83,6 +95,23 @@ private fun MainScreen(
             AnimatedContent(uiState.connectionState.message) {
                 Text(it)
             }
+
+            // test
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                items(events) {
+                    val time = Instant.fromEpochMilliseconds(it.time)
+                        .toLocalDateTime(TimeZone.currentSystemDefault()).time
+                    Text("${time.hour}:${time.minute}:${time.second}")
+                }
+                item {
+                    Button(onClick = sendEvent) {
+                        Text("send")
+                    }
+                }
+            }
+            // test end
 
             Column(
                 modifier = Modifier.fillMaxWidth(),

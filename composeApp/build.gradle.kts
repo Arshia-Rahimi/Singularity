@@ -67,6 +67,7 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.jwt.kt)
                 implementation(libs.jwt.kt.hmac)
+                implementation(libs.datetime)
                 api(libs.dns.sd)
             }
         }
