@@ -18,23 +18,23 @@ class JmdnsDeviceBroadcastService(
     override suspend fun startBroadcast(group: HostedSyncGroup) {
         val deviceId = preferencesRepo.preferences.first().deviceId
 
-        jmdns.registerService { weight ->
-            ServiceInfo.create(
-                MDNS_SERVICE_TYPE,
-                getServiceName(group),
-                HTTP_SERVER_PORT,
-                weight,
-                0,
-                mapOf(
-                    "deviceName" to getDeviceName(),
-                    "deviceId" to deviceId,
-                    "devicePlatform" to platform,
-                    "deviceOs" to os,
-                    "syncGroupName" to group.name,
-                    "syncGroupId" to group.hostedSyncGroupId,
-                ),
-            )
-        }
+        val service = ServiceInfo.create(
+            MDNS_SERVICE_TYPE,
+            getServiceName(group),
+            HTTP_SERVER_PORT,
+            0,
+            0,
+            mapOf(
+                "deviceName" to getDeviceName(),
+                "deviceId" to deviceId,
+                "devicePlatform" to platform,
+                "deviceOs" to os,
+                "syncGroupName" to group.name,
+                "syncGroupId" to group.hostedSyncGroupId,
+            ),
+        )
+
+        jmdns.registerService(service)
     }
 
     override suspend fun stopBroadcast() {

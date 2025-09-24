@@ -3,6 +3,7 @@ package com.github.singularity.core.broadcast
 import com.github.singularity.core.shared.model.LocalServer
 import java.net.Inet4Address
 import java.net.NetworkInterface
+import javax.jmdns.JmDNS
 import javax.jmdns.ServiceInfo
 
 sealed interface JmdnsEvent {
@@ -11,6 +12,7 @@ sealed interface JmdnsEvent {
     data class Resolved(override val server: LocalServer) : JmdnsEvent
     data class Removed(override val server: LocalServer) : JmdnsEvent
 }
+
 
 fun ServiceInfo.toServer() = LocalServer(
     ip = inetAddresses.firstOrNull {
@@ -23,15 +25,29 @@ fun ServiceInfo.toServer() = LocalServer(
     syncGroupId = getPropertyString("syncGroupId"),
 )
 
-fun getJmdns(): MultiJmdnsWrapper {
-    val inetAddresses = buildList {
-        NetworkInterface.getNetworkInterfaces().toList().forEach {
-            it.inetAddresses.toList().forEach { address ->
-                if (address.isSiteLocalAddress && address is Inet4Address)
-                    add(address)
-            }
-        }
-    }
+fun getJmdns(): JmDNS {
+    val wifiKeywords = listOf("wi-fi", "wlan", "wireless", "airport", "en0")
+    val ethernetKeywords = listOf("ethernet", "eth", "enp", "en1")
 
-    return MultiJmdnsWrapper(*inetAddresses.toTypedArray())
+    fun findByKeywords(keywords: List<String>) =
+        NetworkInterface.getNetworkInterfaces().asSequence()
+            .filter { it.isUp && !it.isLoopback && !it.isVirtual }
+            .filter { networkInterface ->
+                keywords.any { keyword ->
+                    networkInterface.displayName.contains(keyword, true) ||
+                            networkInterface.name.contains(keyword, true)
+                }
+            }
+            .flatMap { it.inetAddresses.toList().filterIsInstance<Inet4Address>() }
+            .firstOrNull()
+
+    val address = findByKeywords(wifiKeywords) ?: findByKeywords(ethernetKeywords)
+    ?: NetworkInterface.getNetworkInterfaces().asSequence()
+        .filter { it.isUp && !it.isLoopback && !it.isVirtual }
+        .flatMap { it.inetAddresses.asSequence() }
+        .filterIsInstance<Inet4Address>()
+        .firstOrNull()
+
+    return JmDNS.create(address)
 }
+

@@ -37,6 +37,10 @@ fun ServerItem(
             fontSize = 16.sp,
         )
         Text(
+            text = server.ip,
+            fontSize = 12.sp,
+        )
+        Text(
             text = "${server.deviceName} ${server.deviceOs}",
             fontSize = 12.sp,
         )
