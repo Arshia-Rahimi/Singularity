@@ -4,7 +4,7 @@ import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.client.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ClientConnectionRepository
-import com.github.singularity.core.data.SyncEventRepository
+import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
     syncEventRemoteDataSource: SyncEventRemoteDataSource,
-    syncEventRepo: SyncEventRepository,
+    syncEventBridge: SyncEventBridge,
     joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
 ) : ClientConnectionRepository {
@@ -74,7 +74,7 @@ class ClientConnectionRepositoryImpl(
                                             )
                                         )
                                 }
-                            }.collect { syncEventRepo.incomingEventCallback(it) }
+                            }.collect { syncEventBridge.incomingEventCallback(it) }
                     }
                 }
         }

@@ -9,12 +9,6 @@ sealed interface Route {
     object Main : Route
 
     @Serializable
-    object Discover : Route
-
-    @Serializable
-    object Broadcast : Route
-
-    @Serializable
     object Settings : Route
 
 }

@@ -9,10 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
-import com.github.singularity.ui.feature.broadcast.BroadcastScreen
-import com.github.singularity.ui.feature.discover.DiscoverScreen
 import com.github.singularity.ui.feature.main.MainScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import org.koin.compose.koinInject
@@ -55,27 +52,13 @@ fun Navigation() {
         ) {
             composable<Route.Main> {
                 MainScreen(
-                    toDiscoverScreen = { navController.navigate(Route.Discover) },
-                    toBroadcastScreen = { navController.navigate(Route.Broadcast) },
                     toSettingsScreen = { navController.navigate(Route.Settings) },
-                )
-            }
-            composable<Route.Discover> {
-                DiscoverScreen(
-                    navBack = navController::popBackStack,
                 )
             }
             composable<Route.Settings> {
                 SettingsScreen(
                     navBack = navController::popBackStack,
                 )
-            }
-            if (canHostSyncServer) {
-                composable<Route.Broadcast> {
-                    BroadcastScreen(
-                        navBack = navController::popBackStack,
-                    )
-                }
             }
         }
     }

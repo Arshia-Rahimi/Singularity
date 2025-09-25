@@ -39,4 +39,6 @@
     <string name="approved_to_join">Approved to join %1$d</string>
     <string name="reject_or_approve">Reject or Approve node %1$d?</string>
     <string name="server_running">%1$d nodes connected to %2$d</string>
+    <string name="switch_to_server">Switch to server mode?</string>
+    <string name="switch_to_client">Switch to client mode?</string>
 </resources>

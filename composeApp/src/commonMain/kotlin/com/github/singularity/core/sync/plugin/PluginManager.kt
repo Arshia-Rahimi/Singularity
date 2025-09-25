@@ -1,6 +1,6 @@
 package com.github.singularity.core.sync.plugin
 
-import com.github.singularity.core.data.SyncEventRepository
+import com.github.singularity.core.data.SyncEventBridge
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 open class PluginManager(
     private val scope: CoroutineScope,
-    private val syncEventRepo: SyncEventRepository,
+    private val syncEventRepo: SyncEventBridge,
 ) {
 
     val plugins: List<Plugin> = PluginsList.map { plugin ->

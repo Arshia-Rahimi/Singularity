@@ -1,7 +1,7 @@
 package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthTokenRepository
-import com.github.singularity.core.data.SyncEventRepository
+import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class KtorWebSocketServer(
-    private val syncEventRepo: SyncEventRepository,
+    private val syncEventBridge: SyncEventBridge,
     private val authTokenRepo: AuthTokenRepository,
 ) {
 
@@ -82,11 +82,11 @@ class KtorWebSocketServer(
                         incoming.receiveAsFlow()
                             .filterIsInstance<Frame.Text>()
                             .map { converter.deserialize<SyncEvent>(it) }
-                            .collect { syncEventRepo.incomingEventCallback(it) }
+                            .collect { syncEventBridge.incomingEventCallback(it) }
                     }
 
                     val sender = launch {
-                        syncEventRepo.outgoingSyncEvents
+                        syncEventBridge.outgoingSyncEvents
                             .map { converter.serialize<SyncEvent>(it) }
                             .collect { send(it) }
                     }

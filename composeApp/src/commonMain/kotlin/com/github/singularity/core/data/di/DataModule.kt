@@ -8,7 +8,7 @@ import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.PairRequestRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.data.SyncEventRepository
+import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.data.impl.BroadcastRepositoryImp
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImp
@@ -17,7 +17,7 @@ import com.github.singularity.core.data.impl.PairRequestRepositoryImpl
 import com.github.singularity.core.data.impl.RandomTokenAuthRepository
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.SqlitePreferencesRepository
-import com.github.singularity.core.data.impl.SyncEventRepositoryImpl
+import com.github.singularity.core.data.impl.SyncEventBridgeImpl
 import com.github.singularity.core.shared.canHostSyncServer
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -27,7 +27,7 @@ val DataModule = module {
     singleOf(::ClientConnectionRepositoryImpl) bind ClientConnectionRepository::class
     singleOf(::SqlitePreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
-    singleOf(::SyncEventRepositoryImpl) bind SyncEventRepository::class
+    singleOf(::SyncEventBridgeImpl) bind SyncEventBridge::class
 
     if (canHostSyncServer) {
         singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
