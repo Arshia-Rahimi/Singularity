@@ -71,6 +71,8 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+                implementation(libs.junit)
+                implementation(libs.kotlin.test.junit)
             }
         }
         val androidInstrumentedTest by getting {
@@ -86,7 +88,6 @@ kotlin {
                 implementation(libs.koin.android.startup)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
-                implementation(libs.junit)
             }
         }
         val iosMain by getting {
@@ -112,12 +113,12 @@ kotlin {
 
 android {
     namespace = "com.github.singularity"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.github.singularity"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk = 24
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
