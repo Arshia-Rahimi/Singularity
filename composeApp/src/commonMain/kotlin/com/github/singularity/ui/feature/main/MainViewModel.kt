@@ -12,7 +12,7 @@ import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.websocket.SyncEvent
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.sync.ClientSyncService
+import com.github.singularity.core.sync.SyncService
 import com.github.singularity.ui.feature.main.components.discover.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -39,7 +39,7 @@ data class TestEvent(
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
 class MainViewModel(
-    private val syncService: ClientSyncService,
+    private val syncService: SyncService,
     private val broadcastRepo: BroadcastRepository,
     private val discoverRepo: DiscoverRepository,
     // test
@@ -126,27 +126,12 @@ class MainViewModel(
 
     fun executeBroadcast(intent: MainIntent.BroadcastIntent) {
         when (intent) {
-            is MainIntent.BroadcastIntent.Broadcast -> broadcast()
-            is MainIntent.BroadcastIntent.StopBroadcast -> stopBroadcast()
             is MainIntent.BroadcastIntent.Approve -> approve(intent.node)
             is MainIntent.BroadcastIntent.Reject -> reject(intent.node)
             is MainIntent.BroadcastIntent.CreateGroup -> create(intent.groupName)
             is MainIntent.BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
             is MainIntent.BroadcastIntent.DeleteGroup -> delete(intent.group)
             is MainIntent.BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
-        }
-    }
-
-    private fun broadcast() {
-        viewModelScope.launch {
-            broadcastRepo.stopBroadcast()
-            broadcastRepo.startBroadcast()
-        }
-    }
-
-    private fun stopBroadcast() {
-        viewModelScope.launch {
-            broadcastRepo.stopBroadcast()
         }
     }
 

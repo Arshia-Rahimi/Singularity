@@ -1,7 +1,6 @@
 package com.github.singularity.ui.feature.main.components.broadcast
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +45,6 @@ import singularity.composeapp.generated.resources.set_group_as_default
 @Composable
 fun LazyItemScope.HostedSyncGroupItem(
     hostedSyncGroup: HostedSyncGroup,
-    optionsEnabled: Boolean,
     modifier: Modifier = Modifier,
     execute: MainIntent.BroadcastIntent.() -> Unit,
 ) {
@@ -61,7 +59,6 @@ fun LazyItemScope.HostedSyncGroupItem(
         modifier = modifier.fillMaxWidth()
             .animateItem()
             .onCondition(hostedSyncGroup.isDefault) { background(MaterialTheme.colorScheme.secondaryContainer) }
-            .clickable(optionsEnabled) { showSetAsDefaultDialog = true }
             .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         Column(
@@ -83,7 +80,6 @@ fun LazyItemScope.HostedSyncGroupItem(
         Box {
             IconButton(
                 onClick = { showDropDownMenu = true },
-                enabled = optionsEnabled,
             ) {
                 Icon(
                     painter = Res.drawable.options.getPainter(),

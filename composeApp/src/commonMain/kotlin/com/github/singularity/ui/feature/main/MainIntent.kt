@@ -15,13 +15,12 @@ sealed interface MainIntent {
         data class Approve(val node: Node) : BroadcastIntent
         data class Reject(val node: Node) : BroadcastIntent
         data class CreateGroup(val groupName: String) : BroadcastIntent
-        data class EditGroupName(val groupName: String, val group: HostedSyncGroup) :
-            BroadcastIntent
-
         data class DeleteGroup(val group: HostedSyncGroup) : BroadcastIntent
         data class SetAsDefault(val group: HostedSyncGroup) : BroadcastIntent
-        data object Broadcast : BroadcastIntent
-        data object StopBroadcast : BroadcastIntent
+        data class EditGroupName(
+            val groupName: String,
+            val group: HostedSyncGroup,
+        ) : BroadcastIntent
     }
 
     sealed interface DiscoverIntent : MainIntent {
@@ -29,5 +28,5 @@ sealed interface MainIntent {
         data object CancelPairRequest : DiscoverIntent
         data object RefreshDiscovery : DiscoverIntent
     }
-    
+
 }

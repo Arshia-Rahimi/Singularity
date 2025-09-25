@@ -7,6 +7,7 @@ import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.plugin.PluginManager
+import com.github.singularity.core.sync.plugin.PluginManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -15,14 +16,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-open class ClientSyncService(
+class ClientSyncService(
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
     private val clientConnectionRepo: ClientConnectionRepository,
     syncEventBridge: SyncEventBridge,
-) : SyncService {
-
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    private val pluginManager = PluginManager(scope, syncEventBridge)
+) : SyncService,
+    PluginManager by PluginManagerImpl(
+        scope = scope,
+        syncEventBridge = syncEventBridge,
+    ) {
 
     override val syncMode = MutableStateFlow(SyncMode.Client).asStateFlow()
 

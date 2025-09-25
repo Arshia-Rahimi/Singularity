@@ -6,19 +6,21 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-open class PluginManager(
+interface PluginManager
+
+class PluginManagerImpl(
     private val scope: CoroutineScope,
-    private val syncEventRepo: SyncEventBridge,
-) {
+    private val syncEventBridge: SyncEventBridge,
+) : PluginManager {
 
     val plugins: List<Plugin> = PluginsList.map { plugin ->
         plugin { event ->
-            scope.launch { syncEventRepo.send(event) }
+            scope.launch { syncEventBridge.send(event) }
         }
     }
 
     init {
-        syncEventRepo.incomingSyncEvents.onEach { event ->
+        syncEventBridge.incomingSyncEvents.onEach { event ->
             plugins.firstOrNull { plugin ->
                 plugin.pluginName == event.plugin
             }?.handleEvent(event)

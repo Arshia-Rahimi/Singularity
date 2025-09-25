@@ -10,6 +10,7 @@ import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.plugin.PluginManager
+import com.github.singularity.core.sync.plugin.PluginManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,15 +24,16 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerSyncService(
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
     private val preferencesRepo: PreferencesRepository,
     private val clientConnectionRepo: ClientConnectionRepository,
     serverConnectionRepo: ServerConnectionRepository,
     syncEventBridge: SyncEventBridge,
-) : SyncService {
-
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    private val pluginManager = PluginManager(scope, syncEventBridge)
+) : SyncService,
+    PluginManager by PluginManagerImpl(
+        scope = scope,
+        syncEventBridge = syncEventBridge,
+    ) {
 
     override val syncMode = preferencesRepo.preferences.map { it.syncMode }
         .stateInWhileSubscribed(SyncMode.Client, scope)
