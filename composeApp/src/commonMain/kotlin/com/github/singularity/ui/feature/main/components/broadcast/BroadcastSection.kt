@@ -1,8 +1,11 @@
 package com.github.singularity.ui.feature.main.components.broadcast
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,6 +31,8 @@ import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.main.BroadcastUiState
 import com.github.singularity.ui.feature.main.MainIntent
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.arrow_back
+import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.create
 import singularity.composeapp.generated.resources.create_new_sync_group
 import singularity.composeapp.generated.resources.pair_requests
@@ -80,13 +85,27 @@ fun ColumnScope.BroadcastSection(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 item {
-                    IconButton(
-                        onClick = { showCreateGroupDialog = true },
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Icon(
-                            painter = Res.drawable.plus.getPainter(),
-                            contentDescription = Res.string.create_new_sync_group.getString(),
-                        )
+                        IconButton(
+                            onClick = { showHostedSyncGroupsDialog = false },
+                        ) {
+                            Icon(
+                                painter = Res.drawable.arrow_back.getPainter(),
+                                contentDescription = Res.string.back.getString(),
+                            )
+                        }
+                        IconButton(
+                            onClick = { showCreateGroupDialog = true },
+                        ) {
+                            Icon(
+                                painter = Res.drawable.plus.getPainter(),
+                                contentDescription = Res.string.create_new_sync_group.getString(),
+                            )
+                        }
                     }
                 }
 
