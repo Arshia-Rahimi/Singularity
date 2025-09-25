@@ -1,6 +1,7 @@
 package com.github.singularity.ui.feature.main.components.broadcast
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -9,11 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -31,8 +36,8 @@ import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.main.BroadcastUiState
 import com.github.singularity.ui.feature.main.MainIntent
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.arrow_back
 import singularity.composeapp.generated.resources.back
+import singularity.composeapp.generated.resources.close
 import singularity.composeapp.generated.resources.create
 import singularity.composeapp.generated.resources.create_new_sync_group
 import singularity.composeapp.generated.resources.pair_requests
@@ -54,8 +59,15 @@ fun ColumnScope.BroadcastSection(
             .weight(1f),
     ) {
         item {
+            Button(
+                onClick = { showHostedSyncGroupsDialog = true },
+            ) {
+                Text("hostedSyncGroups")
+            }
+        }
+        item {
             HostedSyncGroupItem(
-                hostedSyncGroup = uiState.hostedSyncGroups.first(),
+                hostedSyncGroup = uiState.hostedSyncGroups.first { it.isDefault },
                 execute = execute,
             )
 
@@ -79,7 +91,9 @@ fun ColumnScope.BroadcastSection(
         BasicAlertDialog(
             onDismissRequest = { showHostedSyncGroupsDialog = false },
             modifier = Modifier.padding(vertical = 24.dp, horizontal = 12.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+                .clip(RoundedCornerShape(40.dp)),
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -94,7 +108,7 @@ fun ColumnScope.BroadcastSection(
                             onClick = { showHostedSyncGroupsDialog = false },
                         ) {
                             Icon(
-                                painter = Res.drawable.arrow_back.getPainter(),
+                                painter = Res.drawable.close.getPainter(),
                                 contentDescription = Res.string.back.getString(),
                             )
                         }

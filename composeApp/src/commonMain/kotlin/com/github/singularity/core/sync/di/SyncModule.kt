@@ -8,8 +8,8 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val SyncModule = module {
-    single(createdAtStart = true) {
-        if (canHostSyncServer) ServerSyncService(get(), get(), get(), get())
-        else ClientSyncService(get(), get())
+    single<SyncService>(createdAtStart = true) {
+        if (canHostSyncServer) ServerSyncService(get(), get(), get(), get(), get())
+        else ClientSyncService(get(), get(), get())
     } bind SyncService::class
 }

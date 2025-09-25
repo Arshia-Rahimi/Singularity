@@ -7,6 +7,11 @@ import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.server.di.ServerModule
 import com.github.singularity.core.sync.di.SyncModule
 import com.github.singularity.ui.di.ViewmodelModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import org.koin.dsl.module
 
 val ModulesList = listOf(
     ViewmodelModule,
@@ -16,4 +21,7 @@ val ModulesList = listOf(
     SyncModule,
     BroadcastModule,
     ServerModule,
+    module {
+        single { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
+    },
 ) 

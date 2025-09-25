@@ -12,10 +12,7 @@ import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.plugin.PluginManager
 import com.github.singularity.core.sync.plugin.PluginManagerImpl
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerSyncService(
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+    private val scope: CoroutineScope,
     private val preferencesRepo: PreferencesRepository,
     private val clientConnectionRepo: ClientConnectionRepository,
     serverConnectionRepo: ServerConnectionRepository,

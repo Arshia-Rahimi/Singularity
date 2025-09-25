@@ -1,6 +1,7 @@
 package com.github.singularity.ui.feature.main.components.broadcast
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,7 +59,12 @@ fun LazyItemScope.HostedSyncGroupItem(
     Row(
         modifier = modifier.fillMaxWidth()
             .animateItem()
-            .onCondition(hostedSyncGroup.isDefault) { background(MaterialTheme.colorScheme.secondaryContainer) }
+            .onCondition(hostedSyncGroup.isDefault) {
+                background(MaterialTheme.colorScheme.secondaryContainer)
+            }
+            .onCondition(!hostedSyncGroup.isDefault) {
+                clickable { showSetAsDefaultDialog = true }
+            }
             .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         Column(
