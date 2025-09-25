@@ -31,6 +31,7 @@
     <string name="no_default_server">No Default Server Defined</string>
     <string name="searching">Searching for %1$d</string>
     <string name="connection_failed">Failed to connect to %1$d</string>
+    <string name="connection_dropped">Connection to %1$d was dropped</string>
     <string name="connected">Connected to %1$d</string>
     <string name="stopped">Stopped</string>
     <string name="server_not_found">Server %1$d Not Found</string>

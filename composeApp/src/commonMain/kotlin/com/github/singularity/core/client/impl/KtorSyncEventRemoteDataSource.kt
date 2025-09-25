@@ -8,10 +8,12 @@ import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.websocket.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.websocket.WebSocketException
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.converter
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.serialize
@@ -31,7 +33,18 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
 
+    private var authToken: String? = null
+
+    val authPlugin = createClientPlugin("AuthPlugin") {
+        onRequest { request, _ ->
+            authToken?.let {
+                request.headers[HttpHeaders.Authorization] = "Bearer $it"
+            }
+        }
+    }
+
     private val client = HttpClient(CIO) {
+        install(authPlugin)
         install(WebSockets) {
             contentConverter = KotlinxWebsocketSerializationConverter(
                 Json { ignoreUnknownKeys = true }
@@ -41,7 +54,8 @@ class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
 
     private val outgoingEvents = Channel<SyncEvent>(Channel.BUFFERED)
 
-    override fun connect(server: LocalServer, authToken: String) = callbackFlow {
+    override fun connect(server: LocalServer, token: String) = callbackFlow {
+        authToken = token
         try {
             client.webSocket("ws://${server.ip}:$WEBSOCKET_SERVER_PORT/sync") {
                 val converter = converter ?: return@webSocket

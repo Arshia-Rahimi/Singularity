@@ -8,7 +8,6 @@ import com.github.singularity.core.data.SyncEventRepository
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
-import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +55,7 @@ class ClientConnectionRepositoryImpl(
                         }
 
                         syncEventRemoteDataSource.connect(server, defaultServer.authToken)
-                            .onFirst { emit(ClientConnectionState.Connected(server)) }
+                            .onStart { emit(ClientConnectionState.Connected(server)) }
                             .catch { e ->
                                 when (e) {
                                     is WebSocketConnectionDroppedException ->
@@ -69,7 +68,7 @@ class ClientConnectionRepositoryImpl(
 
                                     else ->
                                         emit(
-                                            ClientConnectionState.ConnectionFailed(
+                                            ClientConnectionState.ConnectionDropped(
                                                 server,
                                                 "connection failed",
                                             )

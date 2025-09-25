@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.canHostSyncServer
@@ -94,6 +95,13 @@ private fun MainScreen(
         ) {
             AnimatedContent(uiState.connectionState.message) {
                 Text(it)
+
+                Button(
+                    modifier = Modifier.padding(4.dp),
+                    onClick = { MainIntent.RefreshConnection.execute() },
+                ) {
+                    Text("refresh")
+                }
             }
 
             // test
