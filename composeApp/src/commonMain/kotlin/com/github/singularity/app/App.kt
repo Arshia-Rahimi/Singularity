@@ -9,14 +9,9 @@ import com.github.singularity.core.server.di.ServerModule
 import com.github.singularity.core.sync.di.SyncModule
 import com.github.singularity.ui.di.ViewmodelModule
 import com.github.singularity.ui.navigation.Navigation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
 import org.koin.compose.KoinMultiplatformApplication
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.KoinConfiguration
-import org.koin.dsl.module
 
 private val config = KoinConfiguration {
     modules(
@@ -27,9 +22,6 @@ private val config = KoinConfiguration {
         SyncModule,
         BroadcastModule,
         ServerModule,
-        module {
-            single { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
-        },
     )
 }
 
