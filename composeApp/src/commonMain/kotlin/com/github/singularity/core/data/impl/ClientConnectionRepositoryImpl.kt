@@ -2,12 +2,12 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.SyncEventRemoteDataSource
-import com.github.singularity.core.client.WebSocketConnectionDroppedException
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.websocket.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,11 +21,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-    syncEventRemoteDataSource: SyncEventRemoteDataSource,
+    private val syncEventRemoteDataSource: SyncEventRemoteDataSource,
     syncEventBridge: SyncEventBridge,
     joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
@@ -38,6 +39,7 @@ class ClientConnectionRepositoryImpl(
     override val connectionState = refreshState
         .onStart { emit(Unit) }
         .flatMapLatest {
+            syncEventRemoteDataSource.disconnect()
             joinedSyncGroupsLocalDataSource.joinedSyncGroups
                 .map { it.firstOrNull { group -> group.isDefault } }
                 .flatMapLatest { defaultServer ->
@@ -54,26 +56,19 @@ class ClientConnectionRepositoryImpl(
                             return@flow
                         }
 
-                        syncEventRemoteDataSource.connect(server, defaultServer.authToken)
+                        try {
+                            syncEventRemoteDataSource.connect(server, defaultServer.authToken)
+                        } catch (_: Exception) {
+                            emit(ClientConnectionState.ConnectionFailed(server))
+                            return@flow
+                        }
+
+                        syncEventRemoteDataSource.incomingEventsFlow()
                             .onStart { emit(ClientConnectionState.Connected(server)) }
                             .catch { e ->
-                                when (e) {
-                                    is WebSocketConnectionDroppedException ->
-                                        emit(
-                                            ClientConnectionState.ConnectionFailed(
-                                                server,
-                                                "connection dropped",
-                                            )
-                                        )
-
-                                    else ->
-                                        emit(
-                                            ClientConnectionState.ConnectionDropped(
-                                                server,
-                                                "connection failed",
-                                            )
-                                        )
-                                }
+                                emit(
+                                    ClientConnectionState.ConnectionDropped(server)
+                                )
                             }.collect { syncEventBridge.incomingEventCallback(it) }
                     }
                 }
@@ -81,6 +76,12 @@ class ClientConnectionRepositoryImpl(
 
     override fun refresh() {
         refreshState.sendPulse(scope)
+    }
+
+    override fun send(event: SyncEvent) {
+        scope.launch {
+            syncEventRemoteDataSource.send(event)
+        }
     }
 
 }

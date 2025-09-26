@@ -92,8 +92,8 @@ fun ColumnScope.BroadcastSection(
             onDismissRequest = { showHostedSyncGroupsDialog = false },
             modifier = Modifier.padding(vertical = 24.dp, horizontal = 12.dp)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .clip(RoundedCornerShape(40.dp)),
+                .clip(RoundedCornerShape(32.dp))
+                .background(MaterialTheme.colorScheme.surface),
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

@@ -25,11 +25,11 @@ class ServerConnectionRepositoryImpl(
             broadcastRepo.startBroadcast()
             webSocketServer.connectedNodes.map { nodes ->
                 ServerConnectionState.Running(group, nodes)
-            }.onCompletion {
-                webSocketServer.stop()
-                broadcastRepo.stopBroadcast()
             }
         }
+    }.onCompletion {
+        broadcastRepo.stopBroadcast()
+        webSocketServer.stop()
     }
 
 }

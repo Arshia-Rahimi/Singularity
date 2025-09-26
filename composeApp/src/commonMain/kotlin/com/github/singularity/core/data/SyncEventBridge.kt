@@ -1,13 +1,13 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.shared.model.websocket.SyncEvent
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.Flow
 
 interface SyncEventBridge {
 
-    val incomingSyncEvents: SharedFlow<SyncEvent>
+    val incomingSyncEvents: Flow<SyncEvent>
 
-    val outgoingSyncEvents: SharedFlow<SyncEvent>
+    val outgoingSyncEvents: Flow<SyncEvent>
 
     suspend fun incomingEventCallback(event: SyncEvent)
 

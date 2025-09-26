@@ -22,10 +22,12 @@ import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -60,13 +62,14 @@ class KtorWebSocketServer(
         registerRoutes()
     }
 
-    suspend fun start(group: HostedSyncGroup) {
+    fun start(group: HostedSyncGroup) {
         syncGroup = group
-        server.startSuspend()
+        server.start()
     }
 
-    suspend fun stop() {
-        server.stopSuspend()
+    fun stop() {
+        server.stop()
+        _connectedNodes.value = emptyList()
         syncGroup = null
     }
 
@@ -74,27 +77,48 @@ class KtorWebSocketServer(
         routing {
             authenticate("auth", strategy = AuthenticationStrategy.Required) {
                 webSocket("/sync") {
-                    val converter = converter ?: return@webSocket
+                    try {
+                        val converter = converter ?: return@webSocket
 
-                    _connectedNodes.value = _connectedNodes.value + node()
+                        _connectedNodes.value = _connectedNodes.value + node()
 
-                    val receiver = launch {
-                        incoming.receiveAsFlow()
-                            .filterIsInstance<Frame.Text>()
-                            .map { converter.deserialize<SyncEvent>(it) }
-                            .collect { syncEventBridge.incomingEventCallback(it) }
+                        coroutineScope {
+                            launch {
+                                try {
+                                    incoming.receiveAsFlow()
+                                        .filterIsInstance<Frame.Text>()
+                                        .map { converter.deserialize<SyncEvent>(it) }
+                                        .onEach { println("received $it") }
+                                        .collect { syncEventBridge.incomingEventCallback(it) }
+                                } catch (e: Exception) {
+                                    println(e.message)
+                                    e.printStackTrace()
+                                }
+                            }
+
+                            launch {
+                                try {
+                                    syncEventBridge.outgoingSyncEvents
+                                        .onEach { println("sent $it") }
+                                        .map { converter.serialize<SyncEvent>(it) }
+                                        .collect {
+                                            try {
+                                                send(it)
+                                            } catch (e: Exception) {
+                                                println(e.message)
+                                                e.printStackTrace()
+                                            }
+                                        }
+                                } catch (e: Exception) {
+                                    println(e.message)
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+
+                    } finally {
+                        _connectedNodes.value = _connectedNodes.value - node()
                     }
-
-                    val sender = launch {
-                        syncEventBridge.outgoingSyncEvents
-                            .map { converter.serialize<SyncEvent>(it) }
-                            .collect { send(it) }
-                    }
-
-                    receiver.join()
-                    sender.join()
-
-                    _connectedNodes.value = _connectedNodes.value - node()
                 }
             }
         }

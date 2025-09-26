@@ -56,13 +56,13 @@ class KtorHttpServer(
         }
     }
 
-    suspend fun start(group: HostedSyncGroup) {
+    fun start(group: HostedSyncGroup) {
         syncGroupId = group.hostedSyncGroupId
-        server.startSuspend()
+        server.start()
     }
 
-    suspend fun stop() {
-        server.stopSuspend()
+    fun stop() {
+        server.stop()
         syncGroupId = null
     }
 

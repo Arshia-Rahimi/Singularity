@@ -18,7 +18,6 @@ import com.github.singularity.core.data.impl.RandomTokenAuthRepository
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.SqlitePreferencesRepository
 import com.github.singularity.core.data.impl.SyncEventBridgeImpl
-import com.github.singularity.core.shared.canHostSyncServer
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -28,12 +27,9 @@ val DataModule = module {
     singleOf(::SqlitePreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
     singleOf(::SyncEventBridgeImpl) bind SyncEventBridge::class
-
-    if (canHostSyncServer) {
-        singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
-        singleOf(::BroadcastRepositoryImp) bind BroadcastRepository::class
-        singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
-        singleOf(::PairRequestRepositoryImpl) bind PairRequestRepository::class
-        singleOf(::RandomTokenAuthRepository) bind AuthTokenRepository::class
-    }
+    singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
+    singleOf(::BroadcastRepositoryImp) bind BroadcastRepository::class
+    singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
+    singleOf(::PairRequestRepositoryImpl) bind PairRequestRepository::class
+    singleOf(::RandomTokenAuthRepository) bind AuthTokenRepository::class
 }

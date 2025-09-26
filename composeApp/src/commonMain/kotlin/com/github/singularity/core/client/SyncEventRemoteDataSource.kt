@@ -6,7 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface SyncEventRemoteDataSource {
 
-    fun connect(server: LocalServer, token: String): Flow<SyncEvent>
+    suspend fun connect(server: LocalServer, token: String)
+
+    suspend fun disconnect()
+
+    fun incomingEventsFlow(): Flow<SyncEvent>
 
     suspend fun send(event: SyncEvent)
 

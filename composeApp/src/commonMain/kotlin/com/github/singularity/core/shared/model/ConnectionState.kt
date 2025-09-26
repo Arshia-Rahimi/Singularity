@@ -28,13 +28,13 @@ sealed interface ClientConnectionState : ConnectionState {
             @Composable get() = Res.string.searching.getString(joinedSyncGroup.syncGroupName)
     }
 
-    data class ConnectionFailed(val server: LocalServer, val errorMessage: String) :
+    data class ConnectionFailed(val server: LocalServer) :
         ClientConnectionState {
         override val message: String
             @Composable get() = Res.string.connection_failed.getString(server.syncGroupName)
     }
 
-    data class ConnectionDropped(val server: LocalServer, val errorMessage: String) :
+    data class ConnectionDropped(val server: LocalServer) :
         ClientConnectionState {
         override val message: String
             @Composable get() = Res.string.connection_dropped.getString(server.syncGroupName)
