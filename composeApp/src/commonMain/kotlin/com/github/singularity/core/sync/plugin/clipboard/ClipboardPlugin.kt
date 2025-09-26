@@ -1,6 +1,6 @@
 package com.github.singularity.core.sync.plugin.clipboard
 
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.sync.plugin.Plugin
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

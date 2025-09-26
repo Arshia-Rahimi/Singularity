@@ -3,7 +3,8 @@ package com.github.singularity.core.client.impl
 import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
+import com.github.singularity.core.shared.serialization.jsonConverter
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.api.createClientPlugin
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.json.Json
 
 class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
 
@@ -42,10 +42,9 @@ class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
 
     private val client = HttpClient(CIO) {
         install(authPlugin)
+
         install(WebSockets) {
-            contentConverter = KotlinxWebsocketSerializationConverter(
-                Json { ignoreUnknownKeys = true }
-            )
+            contentConverter = KotlinxWebsocketSerializationConverter(jsonConverter)
         }
     }
 

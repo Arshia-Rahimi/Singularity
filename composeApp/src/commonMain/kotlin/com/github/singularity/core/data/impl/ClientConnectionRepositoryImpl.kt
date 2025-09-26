@@ -7,7 +7,7 @@ import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

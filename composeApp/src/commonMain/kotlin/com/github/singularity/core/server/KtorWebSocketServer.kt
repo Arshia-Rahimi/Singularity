@@ -5,7 +5,8 @@ import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
+import com.github.singularity.core.shared.serialization.jsonConverter
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.serialize
@@ -25,12 +26,10 @@ import io.ktor.websocket.Frame
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 class KtorWebSocketServer(
     private val syncEventBridge: SyncEventBridge,
@@ -48,10 +47,9 @@ class KtorWebSocketServer(
         host = "0.0.0.0"
     ) {
         install(WebSockets) {
-            contentConverter = KotlinxWebsocketSerializationConverter(
-                Json { ignoreUnknownKeys = true }
-            )
+            contentConverter = KotlinxWebsocketSerializationConverter(jsonConverter)
         }
+
         install(Authentication) {
             bearer("auth") {
                 authenticate {
@@ -59,6 +57,7 @@ class KtorWebSocketServer(
                 }
             }
         }
+
         registerRoutes()
     }
 
@@ -85,10 +84,9 @@ class KtorWebSocketServer(
                         coroutineScope {
                             launch {
                                 try {
-                                    incoming.receiveAsFlow()
+                                    incoming.consumeAsFlow()
                                         .filterIsInstance<Frame.Text>()
                                         .map { converter.deserialize<SyncEvent>(it) }
-                                        .onEach { println("received $it") }
                                         .collect { syncEventBridge.incomingEventCallback(it) }
                                 } catch (e: Exception) {
                                     println(e.message)
@@ -99,7 +97,6 @@ class KtorWebSocketServer(
                             launch {
                                 try {
                                     syncEventBridge.outgoingSyncEvents
-                                        .onEach { println("sent $it") }
                                         .map { converter.serialize<SyncEvent>(it) }
                                         .collect {
                                             try {

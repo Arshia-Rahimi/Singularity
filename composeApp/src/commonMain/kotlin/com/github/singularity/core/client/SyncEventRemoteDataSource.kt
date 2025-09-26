@@ -1,7 +1,7 @@
 package com.github.singularity.core.client
 
 import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
 import kotlinx.coroutines.flow.Flow
 
 interface SyncEventRemoteDataSource {

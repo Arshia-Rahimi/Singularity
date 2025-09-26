@@ -1,6 +1,6 @@
 package com.github.singularity.core.sync.plugin
 
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
 
 abstract class Plugin(
     broadcastEventCallback: (SyncEvent) -> Unit,

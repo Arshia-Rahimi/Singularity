@@ -9,7 +9,7 @@ import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService

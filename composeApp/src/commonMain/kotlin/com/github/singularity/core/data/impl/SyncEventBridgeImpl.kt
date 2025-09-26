@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.SyncEventBridge
-import com.github.singularity.core.shared.model.websocket.SyncEvent
+import com.github.singularity.core.shared.serialization.SyncEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
