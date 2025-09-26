@@ -7,4 +7,6 @@ interface ServerConnectionRepository {
 
     fun runServer(): Flow<ServerConnectionState>
 
+    suspend fun refresh()
+
 }

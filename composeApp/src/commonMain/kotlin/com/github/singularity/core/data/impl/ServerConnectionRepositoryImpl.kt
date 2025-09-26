@@ -5,11 +5,14 @@ import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.server.KtorWebSocketServer
 import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerConnectionRepositoryImpl(
@@ -18,18 +21,29 @@ class ServerConnectionRepositoryImpl(
     private val broadcastRepo: BroadcastRepository,
 ) : ServerConnectionRepository {
 
-    override fun runServer() = hostedSyncGroupRepo.defaultSyncGroup.flatMapLatest { group ->
-        if (group == null) flowOf(ServerConnectionState.NoDefaultServer)
-        else {
-            webSocketServer.start(group)
-            broadcastRepo.startBroadcast()
-            webSocketServer.connectedNodes.map { nodes ->
-                ServerConnectionState.Running(group, nodes)
-            }
+    private val refreshState = MutableSharedFlow<Unit>()
+
+    override fun runServer() = refreshState
+        .onStart { emit(Unit) }
+        .flatMapLatest {
+            hostedSyncGroupRepo.defaultSyncGroup
+                .flatMapLatest { group ->
+                    if (group == null) flowOf(ServerConnectionState.NoDefaultServer)
+                    else {
+                        webSocketServer.start(group)
+                        broadcastRepo.startBroadcast()
+                        webSocketServer.connectedNodes.map { nodes ->
+                            ServerConnectionState.Running(group, nodes)
+                        }
+                    }
+                }
+        }.onCompletion {
+            broadcastRepo.stopBroadcast()
+            webSocketServer.stop()
         }
-    }.onCompletion {
-        broadcastRepo.stopBroadcast()
-        webSocketServer.stop()
+
+    override suspend fun refresh() {
+        refreshState.sendPulse()
     }
 
 }

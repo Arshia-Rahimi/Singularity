@@ -48,8 +48,8 @@ class DiscoverRepositoryImp(
                 .catch {}
         }
 
-    override fun refreshDiscovery() {
-        refreshState.sendPulse(scope)
+    override suspend fun refreshDiscovery() {
+        refreshState.sendPulse()
     }
 
     override fun sendPairRequest(server: LocalServer) = flow {

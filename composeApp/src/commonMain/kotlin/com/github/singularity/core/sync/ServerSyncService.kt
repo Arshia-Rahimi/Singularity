@@ -24,7 +24,7 @@ class ServerSyncService(
     private val scope: CoroutineScope,
     private val preferencesRepo: PreferencesRepository,
     private val clientConnectionRepo: ClientConnectionRepository,
-    serverConnectionRepo: ServerConnectionRepository,
+    private val serverConnectionRepo: ServerConnectionRepository,
     syncEventBridge: SyncEventBridge,
 ) : SyncService,
     PluginManager by PluginManagerImpl(
@@ -46,10 +46,11 @@ class ServerSyncService(
         }
     }
 
-    override fun refreshClient() {
+    override fun refresh() {
         scope.launch {
             if (syncMode.first() == SyncMode.Client)
                 clientConnectionRepo.refresh()
+            else serverConnectionRepo.refresh()
         }
     }
 

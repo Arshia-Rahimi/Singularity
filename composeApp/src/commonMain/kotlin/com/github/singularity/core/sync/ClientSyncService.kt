@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class ClientSyncService(
     private val scope: CoroutineScope,
@@ -30,8 +31,10 @@ class ClientSyncService(
 
     override fun toggleSyncMode() = Unit
 
-    override fun refreshClient() {
-        clientConnectionRepo.refresh()
+    override fun refresh() {
+        scope.launch {
+            clientConnectionRepo.refresh()
+        }
     }
 
 }

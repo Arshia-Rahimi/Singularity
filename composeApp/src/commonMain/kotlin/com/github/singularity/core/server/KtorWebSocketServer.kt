@@ -62,6 +62,7 @@ class KtorWebSocketServer(
     }
 
     fun start(group: HostedSyncGroup) {
+        stop()
         syncGroup = group
         server.start()
     }

@@ -121,7 +121,7 @@ class MainViewModel(
     }
 
     private fun refreshConnection() {
-        syncService.refreshClient()
+        syncService.refresh()
     }
 
     fun executeBroadcast(intent: MainIntent.BroadcastIntent) {
@@ -172,7 +172,7 @@ class MainViewModel(
         when (intent) {
             is MainIntent.DiscoverIntent.SendPairRequest -> sendPairRequest(intent.server)
             is MainIntent.DiscoverIntent.CancelPairRequest -> cancelPairRequest()
-            is MainIntent.DiscoverIntent.RefreshDiscovery -> discoverRepo.refreshDiscovery()
+            is MainIntent.DiscoverIntent.RefreshDiscovery -> viewModelScope.launch { discoverRepo.refreshDiscovery() }
         }
     }
 

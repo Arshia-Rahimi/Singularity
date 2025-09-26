@@ -8,8 +8,8 @@ interface ClientConnectionRepository {
 
     val connectionState: Flow<ClientConnectionState>
 
-    fun refresh()
+    suspend fun refresh()
 
-    fun send(event: SyncEvent)
+    suspend fun send(event: SyncEvent)
 
 }

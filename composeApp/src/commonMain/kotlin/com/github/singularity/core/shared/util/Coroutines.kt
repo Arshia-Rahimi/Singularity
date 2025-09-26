@@ -10,15 +10,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 fun Channel<Unit>.sendPulse() = trySend(Unit)
 
 fun MutableSharedFlow<Unit>.trySendPulse() = tryEmit(Unit)
 
-fun MutableSharedFlow<Unit>.sendPulse(scope: CoroutineScope) {
-    scope.launch { emit(Unit) }
-}
+suspend fun MutableSharedFlow<Unit>.sendPulse() = emit(Unit)
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
     var isFirst = true

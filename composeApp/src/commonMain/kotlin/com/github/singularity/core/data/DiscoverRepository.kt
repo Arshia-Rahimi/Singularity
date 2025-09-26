@@ -9,7 +9,7 @@ interface DiscoverRepository {
 
     val discoveredServers: Flow<List<LocalServer>>
 
-    fun refreshDiscovery()
+    suspend fun refreshDiscovery()
 
     fun sendPairRequest(server: LocalServer): Flow<Resource<Success>>
 

@@ -9,11 +9,7 @@ import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
@@ -21,7 +17,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -31,8 +26,6 @@ class ClientConnectionRepositoryImpl(
     joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
     deviceDiscoveryService: DeviceDiscoveryService,
 ) : ClientConnectionRepository {
-
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private val refreshState = MutableSharedFlow<Unit>()
 
@@ -74,14 +67,12 @@ class ClientConnectionRepositoryImpl(
                 }
         }
 
-    override fun refresh() {
-        refreshState.sendPulse(scope)
+    override suspend fun refresh() {
+        refreshState.sendPulse()
     }
 
-    override fun send(event: SyncEvent) {
-        scope.launch {
-            syncEventRemoteDataSource.send(event)
-        }
+    override suspend fun send(event: SyncEvent) {
+        syncEventRemoteDataSource.send(event)
     }
 
 }

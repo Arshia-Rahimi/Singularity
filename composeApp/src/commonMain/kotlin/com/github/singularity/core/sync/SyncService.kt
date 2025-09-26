@@ -12,6 +12,6 @@ interface SyncService {
 
     fun toggleSyncMode()
 
-    fun refreshClient()
+    fun refresh()
     
 }
