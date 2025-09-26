@@ -1,6 +1,6 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.broadcast.DeviceDiscoveryService
+import com.github.singularity.core.broadcast.DeviceDiscoverService
 import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventBridge
@@ -24,7 +24,7 @@ class ClientConnectionRepositoryImpl(
     private val syncEventRemoteDataSource: SyncEventRemoteDataSource,
     syncEventBridge: SyncEventBridge,
     joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
-    deviceDiscoveryService: DeviceDiscoveryService,
+    deviceDiscoveryService: DeviceDiscoverService,
 ) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()

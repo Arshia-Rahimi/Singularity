@@ -7,23 +7,21 @@ import org.koin.core.module.Module
 import java.io.File
 import java.util.Properties
 
-actual fun Module.driver() {
-    single {
-        val directory = AppDirsFactory.getInstance()
-            .getUserDataDir("Singularity", null, null)
-        File(directory).mkdirs()
+actual fun Module.database() = single {
+    val directory = AppDirsFactory.getInstance()
+        .getUserDataDir("Singularity", null, null)
+    File(directory).mkdirs()
 
-        val databaseFile = File(directory, "singularity.db")
-        val driver = JdbcSqliteDriver(
-            url = "jdbc:sqlite:${databaseFile.absolutePath}",
-            schema = SingularityDatabase.Schema,
-            properties = Properties().apply { put("foreign_keys", "true") },
-        )
+    val databaseFile = File(directory, "singularity.db")
+    val driver = JdbcSqliteDriver(
+        url = "jdbc:sqlite:${databaseFile.absolutePath}",
+        schema = SingularityDatabase.Schema,
+        properties = Properties().apply { put("foreign_keys", "true") },
+    )
 
-        if (!databaseFile.exists()) {
-            SingularityDatabase.Schema.create(driver)
-        }
-
-        SingularityDatabase(driver)
+    if (!databaseFile.exists()) {
+        SingularityDatabase.Schema.create(driver)
     }
+
+    SingularityDatabase(driver)
 }

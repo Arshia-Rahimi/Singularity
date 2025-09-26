@@ -1,6 +1,6 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.broadcast.DeviceDiscoveryService
+import com.github.singularity.core.broadcast.DeviceDiscoverService
 import com.github.singularity.core.client.PairRemoteDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
@@ -34,7 +34,7 @@ class DiscoverRepositoryImp(
     private val joinedSyncGroupsRepo: JoinedSyncGroupsLocalDataSource,
     private val preferencesRepo: PreferencesRepository,
     private val pairRemoteDataSource: PairRemoteDataSource,
-    private val discoveryService: DeviceDiscoveryService,
+    private val discoveryService: DeviceDiscoverService,
 ) : DiscoverRepository {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

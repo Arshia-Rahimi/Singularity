@@ -45,6 +45,7 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.navigation)
@@ -61,7 +62,6 @@ kotlin {
                 implementation(libs.ktor.server.websockets)
                 implementation(libs.ktor.json)
                 implementation(libs.kotlinx.serialization.json)
-                implementation(libs.koin.core)
                 implementation(libs.jwt.kt)
                 implementation(libs.jwt.kt.hmac)
                 implementation(libs.datetime)
@@ -85,7 +85,6 @@ kotlin {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
-                implementation(libs.koin.android.startup)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
             }

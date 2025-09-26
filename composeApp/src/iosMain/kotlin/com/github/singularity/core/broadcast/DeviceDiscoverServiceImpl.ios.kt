@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.runningFold
 
-class DeviceDiscoveryServiceImpl : DeviceDiscoveryService {
+class DeviceDiscoverServiceImpl : DeviceDiscoverService {
 
     override fun discoveredServers() = discoverServices(MDNS_SERVICE_TYPE)
         .runningFold(emptyList<LocalServer>()) { list, newServer ->

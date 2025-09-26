@@ -1,5 +1,16 @@
 package com.github.singularity.core.broadcast.di
 
+import com.github.singularity.core.broadcast.DeviceBroadcastService
+import com.github.singularity.core.broadcast.DeviceDiscoverService
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
+import org.koin.dsl.module
 
-expect val BroadcastModule: Module
+expect fun Module.broadcastService(): KoinDefinition<out DeviceBroadcastService>
+
+expect fun Module.discoverService(): KoinDefinition<out DeviceDiscoverService>
+
+val BroadcastModule = module {
+    broadcastService()
+    discoverService()
+}
