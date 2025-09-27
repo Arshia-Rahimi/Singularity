@@ -72,7 +72,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.junit)
-                implementation(libs.kotlin.test.junit)
             }
         }
         val androidInstrumentedTest by getting {
