@@ -39,7 +39,6 @@ import singularity.composeapp.generated.resources.server
 import singularity.composeapp.generated.resources.settings
 import singularity.composeapp.generated.resources.switch_to_client
 import singularity.composeapp.generated.resources.switch_to_server
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun MainScreen(
@@ -59,7 +58,7 @@ fun MainScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(
     uiState: MainUiState,
