@@ -28,32 +28,12 @@ import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-// test
-@Serializable
-@SerialName("test")
-data class TestEvent(
-    val time: Long,
-    override val plugin: String
-) : SyncEvent
-// test end
-
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
 class MainViewModel(
     private val syncService: SyncService,
     private val broadcastRepo: BroadcastRepository,
     private val discoverRepo: DiscoverRepository,
-    // test
-    private val syncEventBridge: SyncEventBridge,
-    // test end
 ) : ViewModel() {
-
-    // test
-    fun sendEvent() {
-        viewModelScope.launch {
-            syncEventBridge.send(TestEvent(Clock.System.now().toEpochMilliseconds(), "test"))
-        }
-    }
-    // test end
 
     private val connectionState = syncService.connectionState
 
