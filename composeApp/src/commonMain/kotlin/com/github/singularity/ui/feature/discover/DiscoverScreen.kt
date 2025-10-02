@@ -26,7 +26,7 @@ import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.discover.components.discover.DiscoverSection
+import com.github.singularity.ui.feature.discover.components.DiscoverSection
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.discover

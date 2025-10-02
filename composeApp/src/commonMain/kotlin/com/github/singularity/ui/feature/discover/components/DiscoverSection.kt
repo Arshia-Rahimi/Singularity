@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover.components.discover
+package com.github.singularity.ui.feature.discover.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.feature.discover.DiscoverIntent
 import com.github.singularity.ui.feature.discover.DiscoverUiState
-import com.github.singularity.ui.feature.discover.MainIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.approved_to_join
 import singularity.composeapp.generated.resources.await_pair_request_approval
@@ -30,7 +30,7 @@ import singularity.composeapp.generated.resources.refresh
 @Composable
 fun ColumnScope.DiscoverSection(
     uiState: DiscoverUiState,
-    execute: MainIntent.DiscoverIntent.() -> Unit,
+    execute: DiscoverIntent.() -> Unit,
 ) {
     AnimatedContent(
         targetState = uiState.sentPairRequestState,
@@ -77,7 +77,7 @@ fun ColumnScope.DiscoverSection(
         contentAlignment = Alignment.Center,
     ) {
         Button(
-            onClick = { MainIntent.DiscoverIntent.RefreshDiscovery.execute() },
+            onClick = { DiscoverIntent.RefreshDiscovery.execute() },
         ) {
             Text(Res.string.refresh.getString())
         }

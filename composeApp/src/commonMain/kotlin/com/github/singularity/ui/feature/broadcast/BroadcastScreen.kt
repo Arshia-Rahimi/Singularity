@@ -26,11 +26,11 @@ import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.discover.components.broadcast.BroadcastSection
+import com.github.singularity.ui.feature.broadcast.broadcast.BroadcastSection
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.broadcast
 import singularity.composeapp.generated.resources.client
-import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.settings
 import singularity.composeapp.generated.resources.switch_to_client
@@ -66,7 +66,7 @@ private fun BroadcastScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(Res.string.discover.getString())
+                    Text(Res.string.broadcast.getString())
                 },
                 actions = {
                     IconButton(
@@ -81,15 +81,13 @@ private fun BroadcastScreen(
             )
         },
         floatingActionButton = {
-            if (canHostSyncServer) {
-                IconButton(
-                    onClick = { showSwitchModeDialog = true },
-                ) {
-                    Icon(
-                        painter = Res.drawable.client.getPainter(),
-                        contentDescription = Res.string.switch_to_client.getString()
-                    )
-                }
+            IconButton(
+                onClick = { showSwitchModeDialog = true },
+            ) {
+                Icon(
+                    painter = Res.drawable.client.getPainter(),
+                    contentDescription = Res.string.switch_to_client.getString()
+                )
             }
         },
     ) { ip ->

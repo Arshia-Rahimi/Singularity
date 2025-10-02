@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover.components.broadcast
+package com.github.singularity.ui.feature.broadcast.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +32,7 @@ import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.discover.MainIntent
+import com.github.singularity.ui.feature.broadcast.BroadcastIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete
@@ -47,7 +47,7 @@ import singularity.composeapp.generated.resources.set_group_as_default
 fun LazyItemScope.HostedSyncGroupItem(
     hostedSyncGroup: HostedSyncGroup,
     modifier: Modifier = Modifier,
-    execute: MainIntent.BroadcastIntent.() -> Unit,
+    execute: BroadcastIntent.() -> Unit,
 ) {
     var showSetAsDefaultDialog by remember { mutableStateOf(false) }
     var showDropDownMenu by remember { mutableStateOf(false) }
@@ -130,7 +130,7 @@ fun LazyItemScope.HostedSyncGroupItem(
     ConfirmationDialog(
         visible = showSetAsDefaultDialog,
         message = Res.string.set_group_as_default.getString(hostedSyncGroup.name),
-        onConfirm = { MainIntent.BroadcastIntent.SetAsDefault(hostedSyncGroup).execute() },
+        onConfirm = { BroadcastIntent.SetAsDefault(hostedSyncGroup).execute() },
         onDismiss = { showSetAsDefaultDialog = false },
     )
 
@@ -138,7 +138,7 @@ fun LazyItemScope.HostedSyncGroupItem(
         visible = showDeletionDialog,
         title = Res.string.confirm_action.getString(),
         message = Res.string.delete_group.getString(hostedSyncGroup.name),
-        onConfirm = { MainIntent.BroadcastIntent.DeleteGroup(hostedSyncGroup).execute() },
+        onConfirm = { BroadcastIntent.DeleteGroup(hostedSyncGroup).execute() },
         onDismiss = { showDeletionDialog = false },
         confirmText = Res.string.delete.getString(),
     )
@@ -146,7 +146,7 @@ fun LazyItemScope.HostedSyncGroupItem(
     InputDialog(
         visible = showEditDialog,
         title = Res.string.edit_group_name.getString(),
-        onConfirm = { MainIntent.BroadcastIntent.EditGroupName(it, hostedSyncGroup).execute() },
+        onConfirm = { BroadcastIntent.EditGroupName(it, hostedSyncGroup).execute() },
         initialValue = hostedSyncGroup.name,
         onDismiss = {
             showEditDialog = false

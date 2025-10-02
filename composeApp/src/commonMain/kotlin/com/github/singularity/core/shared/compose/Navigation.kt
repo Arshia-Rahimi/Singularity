@@ -12,3 +12,10 @@ fun NavController.popToRoot() {
         inclusive = false,
     )
 }
+
+fun <T : Any> NavController.navigateAndClearStack(route: T) {
+    navigate(route) {
+        popUpTo(0) { inclusive = true }
+        launchSingleTop = true
+    }
+}

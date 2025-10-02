@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover.components.broadcast
+package com.github.singularity.ui.feature.broadcast.broadcast
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
@@ -33,8 +33,10 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.discover.BroadcastUiState
-import com.github.singularity.ui.feature.discover.MainIntent
+import com.github.singularity.ui.feature.broadcast.BroadcastIntent
+import com.github.singularity.ui.feature.broadcast.BroadcastUiState
+import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
+import com.github.singularity.ui.feature.broadcast.components.NodeItem
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.close
@@ -47,7 +49,7 @@ import singularity.composeapp.generated.resources.plus
 @Composable
 fun ColumnScope.BroadcastSection(
     uiState: BroadcastUiState,
-    execute: MainIntent.BroadcastIntent.() -> Unit,
+    execute: BroadcastIntent.() -> Unit,
 ) {
     var showHostedSyncGroupsDialog by remember { mutableStateOf(false) }
     var showCreateGroupDialog by remember { mutableStateOf(false) }
@@ -66,10 +68,12 @@ fun ColumnScope.BroadcastSection(
             }
         }
         item {
-            HostedSyncGroupItem(
-                hostedSyncGroup = uiState.hostedSyncGroups.first { it.isDefault },
-                execute = execute,
-            )
+            uiState.hostedSyncGroups.firstOrNull { it.isDefault }?.let {
+                HostedSyncGroupItem(
+                    hostedSyncGroup = it,
+                    execute = execute,
+                )
+            }
 
             Text(
                 text = Res.string.pair_requests.getString(),
@@ -136,7 +140,7 @@ fun ColumnScope.BroadcastSection(
 
             InputDialog(
                 visible = showCreateGroupDialog,
-                onConfirm = { MainIntent.BroadcastIntent.CreateGroup(it).execute() },
+                onConfirm = { BroadcastIntent.CreateGroup(it).execute() },
                 onDismiss = {
                     showCreateGroupDialog = false
                     focusManager.clearFocus()
