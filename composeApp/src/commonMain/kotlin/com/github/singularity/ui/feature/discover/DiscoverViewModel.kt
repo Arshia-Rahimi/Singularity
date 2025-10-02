@@ -1,0 +1,87 @@
+package com.github.singularity.ui.feature.discover
+
+import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.github.singularity.core.data.DiscoverRepository
+import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.LocalServer
+import com.github.singularity.core.shared.util.Resource
+import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.core.sync.SyncService
+import com.github.singularity.ui.feature.discover.components.discover.PairRequestState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
+
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
+class DiscoverViewModel(
+    private val syncService: SyncService,
+    private val discoverRepo: DiscoverRepository,
+) : ViewModel() {
+
+    private val connectionState = syncService.connectionState
+        .filterIsInstance<ClientConnectionState>()
+
+    private val availableServers = discoverRepo.discoveredServers
+        .stateInWhileSubscribed(emptyList())
+
+    private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
+
+    val uiState = combine(
+        connectionState,
+        availableServers,
+        sentPairRequestState,
+    ) { connectionState, availableServers, sentPairRequestState ->
+        DiscoverUiState(
+            connectionState = connectionState,
+            availableServers = availableServers.toMutableStateList(),
+            sentPairRequestState = sentPairRequestState,
+        )
+    }.stateInWhileSubscribed(DiscoverUiState())
+
+    private var pairRequestJob: Job? = null
+
+    private fun refreshConnection() {
+        syncService.refresh()
+    }
+
+    fun execute(intent: DiscoverIntent) {
+        when (intent) {
+            is DiscoverIntent.SendPairRequest -> sendPairRequest(intent.server)
+            is DiscoverIntent.CancelPairRequest -> cancelPairRequest()
+            is DiscoverIntent.RefreshDiscovery -> viewModelScope.launch { discoverRepo.refreshDiscovery() }
+            is DiscoverIntent.RefreshConnection -> refreshConnection()
+            is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
+            is DiscoverIntent.ToSettingsScreen -> Unit
+        }
+    }
+
+    private fun sendPairRequest(server: LocalServer) {
+        pairRequestJob?.cancel()
+        pairRequestJob = discoverRepo.sendPairRequest(server).onEach {
+            sentPairRequestState.value = when (it) {
+                is Resource.Loading -> PairRequestState.Awaiting(server)
+                is Resource.Error -> PairRequestState.Error(it.error?.message ?: "failed")
+                is Resource.Success -> PairRequestState.Success(server)
+            }
+        }.onCompletion {
+            delay(5000)
+            sentPairRequestState.value = PairRequestState.Idle
+        }.launchIn(viewModelScope)
+    }
+
+    private fun cancelPairRequest() {
+        pairRequestJob?.cancel()
+        sentPairRequestState.value = PairRequestState.Idle
+    }
+
+}

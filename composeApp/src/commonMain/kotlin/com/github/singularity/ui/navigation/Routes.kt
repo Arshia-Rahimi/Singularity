@@ -6,7 +6,10 @@ import kotlinx.serialization.Serializable
 sealed interface Route {
 
     @Serializable
-    object Main : Route
+    object Discover : Route
+
+    @Serializable
+    object Broadcast : Route
 
     @Serializable
     object Settings : Route

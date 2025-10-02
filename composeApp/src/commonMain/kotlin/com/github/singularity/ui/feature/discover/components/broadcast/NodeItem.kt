@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.main.components.broadcast
+package com.github.singularity.ui.feature.discover.components.broadcast
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.ui.designsystem.components.dialogs.ApprovalDialog
-import com.github.singularity.ui.feature.main.MainIntent
+import com.github.singularity.ui.feature.discover.MainIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.approve_pair_request
 import singularity.composeapp.generated.resources.reject_or_approve

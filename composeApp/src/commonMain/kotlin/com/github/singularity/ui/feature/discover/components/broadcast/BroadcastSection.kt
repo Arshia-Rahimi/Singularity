@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.main.components.broadcast
+package com.github.singularity.ui.feature.discover.components.broadcast
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.main.BroadcastUiState
-import com.github.singularity.ui.feature.main.MainIntent
+import com.github.singularity.ui.feature.discover.BroadcastUiState
+import com.github.singularity.ui.feature.discover.MainIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.close

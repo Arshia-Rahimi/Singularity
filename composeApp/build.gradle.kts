@@ -64,7 +64,6 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.jwt.kt)
                 implementation(libs.jwt.kt.hmac)
-                implementation(libs.datetime)
                 api(libs.dns.sd)
             }
         }

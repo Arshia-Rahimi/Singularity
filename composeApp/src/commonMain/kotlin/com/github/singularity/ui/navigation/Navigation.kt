@@ -10,7 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
-import com.github.singularity.ui.feature.main.MainScreen
+import com.github.singularity.ui.feature.broadcast.BroadcastScreen
+import com.github.singularity.ui.feature.discover.DiscoverScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import org.koin.compose.koinInject
 
@@ -48,10 +49,15 @@ fun Navigation() {
                 )
             },
             navController = navController,
-            startDestination = Route.Main,
+            startDestination = Route.Discover,
         ) {
-            composable<Route.Main> {
-                MainScreen(
+            composable<Route.Discover> {
+                DiscoverScreen(
+                    toSettingsScreen = { navController.navigate(Route.Settings) },
+                )
+            }
+            composable<Route.Broadcast> {
+                BroadcastScreen(
                     toSettingsScreen = { navController.navigate(Route.Settings) },
                 )
             }

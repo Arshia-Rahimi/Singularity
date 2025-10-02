@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.main
+package com.github.singularity.ui.feature.discover
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -22,36 +22,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.main.components.broadcast.BroadcastSection
-import com.github.singularity.ui.feature.main.components.discover.DiscoverSection
+import com.github.singularity.ui.feature.discover.components.discover.DiscoverSection
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.broadcast
-import singularity.composeapp.generated.resources.client
 import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.server
 import singularity.composeapp.generated.resources.settings
-import singularity.composeapp.generated.resources.switch_to_client
 import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
-fun MainScreen(
+fun DiscoverScreen(
     toSettingsScreen: () -> Unit,
 ) {
-    val viewModel = koinViewModel<MainViewModel>()
+    val viewModel = koinViewModel<DiscoverViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MainScreen(
+    DiscoverScreen(
         uiState = uiState,
         execute = {
             when (this) {
-                is MainIntent.ToSettingsScreen -> toSettingsScreen()
+                is DiscoverIntent.ToSettingsScreen -> toSettingsScreen()
                 else -> viewModel.execute(this)
             }
         },
@@ -60,9 +55,9 @@ fun MainScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(
-    uiState: MainUiState,
-    execute: MainIntent.() -> Unit,
+private fun DiscoverScreen(
+    uiState: DiscoverUiState,
+    execute: DiscoverIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
 
@@ -71,14 +66,11 @@ private fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    AnimatedContent(uiState.syncMode) {
-                        if (it == SyncMode.Client) Text(Res.string.discover.getString())
-                        else Text(Res.string.broadcast.getString())
-                    }
+                    Text(Res.string.discover.getString())
                 },
                 actions = {
                     IconButton(
-                        onClick = { MainIntent.ToSettingsScreen.execute() },
+                        onClick = { DiscoverIntent.ToSettingsScreen.execute() },
                     ) {
                         Icon(
                             painter = Res.drawable.settings.getPainter(),
@@ -93,17 +85,10 @@ private fun MainScreen(
                 IconButton(
                     onClick = { showSwitchModeDialog = true },
                 ) {
-                    if (uiState.syncMode == SyncMode.Client) {
-                        Icon(
-                            painter = Res.drawable.server.getPainter(),
-                            contentDescription = Res.string.switch_to_server.getString()
-                        )
-                    } else {
-                        Icon(
-                            painter = Res.drawable.client.getPainter(),
-                            contentDescription = Res.string.switch_to_client.getString()
-                        )
-                    }
+                    Icon(
+                        painter = Res.drawable.server.getPainter(),
+                        contentDescription = Res.string.switch_to_server.getString()
+                    )
                 }
             }
         },
@@ -126,7 +111,7 @@ private fun MainScreen(
                 }
 
                 IconButton(
-                    onClick = { MainIntent.RefreshConnection.execute() },
+                    onClick = { DiscoverIntent.RefreshConnection.execute() },
                 ) {
                     Icon(
                         painter = Res.drawable.refresh.getPainter(),
@@ -135,27 +120,16 @@ private fun MainScreen(
                 }
             }
 
-            AnimatedContent(uiState.syncMode) {
-                if (it == SyncMode.Client) {
-                    DiscoverSection(
-                        uiState = uiState.discoverUiState,
-                        execute = execute,
-                    )
-                } else {
-                    BroadcastSection(
-                        uiState = uiState.broadcastUiState,
-                        execute = execute,
-                    )
-                }
-            }
+            DiscoverSection(
+                uiState = uiState,
+                execute = execute,
+            )
 
             ConfirmationDialog(
                 visible = showSwitchModeDialog && canHostSyncServer,
-                onConfirm = { MainIntent.ToggleSyncMode.execute() },
+                onConfirm = { DiscoverIntent.ToggleSyncMode.execute() },
                 onDismiss = { showSwitchModeDialog = false },
-                message = if (uiState.syncMode == SyncMode.Client)
-                    Res.string.switch_to_server.getString()
-                else Res.string.switch_to_client.getString(),
+                message = Res.string.switch_to_server.getString(),
             )
 
         }
