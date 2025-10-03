@@ -5,6 +5,7 @@ import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
+import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.serialization.SyncEvent
@@ -25,6 +26,7 @@ class ClientConnectionRepositoryImpl(
     syncEventBridge: SyncEventBridge,
     joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
     deviceDiscoveryService: DeviceDiscoverService,
+    logger: Logger,
 ) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
@@ -46,19 +48,22 @@ class ClientConnectionRepositoryImpl(
 
                         if (server == null) {
                             emit(ClientConnectionState.ServerNotFound(defaultServer, "timeout"))
+                            logger.i(this::class.simpleName, "server not found")
                             return@flow
                         }
 
                         try {
                             syncEventRemoteDataSource.connect(server, defaultServer.authToken)
-                        } catch (_: Exception) {
+                        } catch (e: Exception) {
                             emit(ClientConnectionState.ConnectionFailed(server))
+                            logger.e(this::class.simpleName, "error connecting to server", e)
                             return@flow
                         }
 
                         syncEventRemoteDataSource.incomingEventsFlow()
                             .onStart { emit(ClientConnectionState.Connected(server)) }
                             .catch { e ->
+                                logger.e(this::class.simpleName, "websocket connection timeout", e)
                                 emit(
                                     ClientConnectionState.ConnectionDropped(server)
                                 )

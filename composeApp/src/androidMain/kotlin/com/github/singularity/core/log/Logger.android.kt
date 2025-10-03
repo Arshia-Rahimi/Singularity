@@ -6,6 +6,7 @@ import android.util.Log
 import com.github.singularity.core.shared.LOG_FILE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -18,10 +19,10 @@ import java.io.File
 import java.io.FileReader
 
 class AndroidLogger(
-    private val scope: CoroutineScope,
     context: Context,
 ) : Logger {
 
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val logFile: File = File(context.filesDir, LOG_FILE)
 
     override val logStream = flow {
@@ -58,7 +59,7 @@ class AndroidLogger(
 
     override fun e(tag: String?, message: String?, throwable: Throwable?) {
         scope.launch {
-            logFile.appendText("tag: $tag, message: $message, throwable: { cause: ${throwable?.cause}, errorMessage: ${throwable?.localizedMessage} }\n")
+            logFile.appendText("tag: $tag, message: $message, throwable: { cause: ${throwable?.cause}, errorMessage: ${throwable?.localizedMessage}, e: ${throwable?.stackTrace} }\n")
         }
         Log.e("log-$tag", message, throwable)
     }
