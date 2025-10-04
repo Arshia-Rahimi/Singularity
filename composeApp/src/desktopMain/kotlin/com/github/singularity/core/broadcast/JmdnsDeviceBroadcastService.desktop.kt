@@ -2,7 +2,7 @@ package com.github.singularity.core.broadcast
 
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.HTTP_SERVER_PORT
-import com.github.singularity.core.shared.getDeviceName
+import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.platform
@@ -25,7 +25,7 @@ class JmdnsDeviceBroadcastService(
             0,
             0,
             mapOf(
-                "deviceName" to getDeviceName(),
+                "deviceName" to deviceName,
                 "deviceId" to deviceId,
                 "devicePlatform" to platform,
                 "deviceOs" to os,
