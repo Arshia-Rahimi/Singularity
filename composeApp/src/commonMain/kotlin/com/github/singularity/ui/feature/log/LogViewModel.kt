@@ -5,7 +5,7 @@ import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 
 class LogViewModel(
-    private val logger: Logger,
+    logger: Logger,
 ): ViewModel() {
 
     val logStream = logger.logStream
