@@ -16,6 +16,7 @@ import com.github.singularity.core.shared.compose.navigateAndClearStack
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.feature.broadcast.BroadcastScreen
 import com.github.singularity.ui.feature.discover.DiscoverScreen
+import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import org.koin.compose.koinInject
 
@@ -68,6 +69,12 @@ fun Navigation() {
             }
             composable<Route.Settings> {
                 SettingsScreen(
+                    navBack = navController::popBackStack,
+                    toLogScreen = { navController.navigate(Route.Log) },
+                )
+            }
+            composable<Route.Log> {
+                LogScreen(
                     navBack = navController::popBackStack,
                 )
             }

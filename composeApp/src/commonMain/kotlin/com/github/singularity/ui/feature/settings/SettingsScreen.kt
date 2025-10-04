@@ -28,6 +28,7 @@ import singularity.composeapp.generated.resources.settings
 @Composable
 fun SettingsScreen(
     navBack: () -> Unit,
+    toLogScreen: () -> Unit,
 ) {
     val viewModel = koinViewModel<SettingsViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -37,6 +38,7 @@ fun SettingsScreen(
         execute = {
             when(this) {
                 is SettingsIntent.NavBack -> navBack()
+                is SettingsIntent.ToLogScreen -> toLogScreen()
                 else -> viewModel.execute(this)
             }
         }
@@ -75,10 +77,20 @@ private fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { SettingsIntent.ToggleApptheme.execute() }
+                        .clickable { SettingsIntent.ToggleAppTheme.execute() }
                         .padding(vertical = 4.dp, horizontal = 8.dp),
                 ) {
                     Text("theme: ${uiState.appTheme.title.getString()}")
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { SettingsIntent.ToLogScreen.execute() }
+                        .padding(vertical = 4.dp, horizontal = 8.dp),
+                ) {
+                    Text("view logs")
                 }
             }
         }

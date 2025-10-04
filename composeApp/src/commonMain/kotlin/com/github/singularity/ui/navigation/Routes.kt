@@ -14,4 +14,7 @@ sealed interface Route {
     @Serializable
     object Settings : Route
 
+    @Serializable
+    object Log : Route
+
 }
