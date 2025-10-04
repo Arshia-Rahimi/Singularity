@@ -7,5 +7,4 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 
-actual fun Module.logger(): KoinDefinition<out Logger> =
-    singleOf(::IosLogger) bind Logger::class
+actual fun Module.logger() = singleOf(::IosLogger) bind Logger::class
