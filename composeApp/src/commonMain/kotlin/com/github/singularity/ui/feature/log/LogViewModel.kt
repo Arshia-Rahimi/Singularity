@@ -6,9 +6,8 @@ import com.github.singularity.core.shared.util.stateInWhileSubscribed
 
 class LogViewModel(
     logger: Logger,
-): ViewModel() {
+) : ViewModel() {
 
-    val logStream = logger.logStream
-        .stateInWhileSubscribed("")
+    val logStream = logger.logStream.stateInWhileSubscribed("")
 
 }
