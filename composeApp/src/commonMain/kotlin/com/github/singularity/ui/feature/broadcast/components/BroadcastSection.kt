@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.broadcast.broadcast
+package com.github.singularity.ui.feature.broadcast.components
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
@@ -35,8 +35,6 @@ import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.broadcast.BroadcastIntent
 import com.github.singularity.ui.feature.broadcast.BroadcastUiState
-import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
-import com.github.singularity.ui.feature.broadcast.components.NodeItem
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.close
