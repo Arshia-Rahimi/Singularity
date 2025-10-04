@@ -6,7 +6,7 @@ import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
-import com.github.singularity.core.shared.getDeviceName
+import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
@@ -98,7 +98,7 @@ class DiscoverRepositoryImp(
     }.asResult(Dispatchers.IO)
 
     private suspend fun getCurrentDeviceAsNode() = Node(
-        deviceName = getDeviceName(),
+        deviceName = deviceName,
         deviceOs = os,
         deviceId = preferencesRepo.preferences.first().deviceId,
     )
