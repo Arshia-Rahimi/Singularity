@@ -3,8 +3,8 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.broadcast.DeviceDiscoverService
 import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.data.ClientConnectionRepository
+import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.SyncEventBridge
-import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -24,7 +23,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 class ClientConnectionRepositoryImpl(
     private val syncEventRemoteDataSource: SyncEventRemoteDataSource,
     syncEventBridge: SyncEventBridge,
-    joinedSyncGroupsLocalDataSource: JoinedSyncGroupsLocalDataSource,
+    joinedSyncGroupRepo: JoinedSyncGroupRepository,
     deviceDiscoveryService: DeviceDiscoverService,
     logger: Logger,
 ) : ClientConnectionRepository {
@@ -35,8 +34,7 @@ class ClientConnectionRepositoryImpl(
         .onStart { emit(Unit) }
         .flatMapLatest {
             syncEventRemoteDataSource.disconnect()
-            joinedSyncGroupsLocalDataSource.joinedSyncGroups
-                .map { it.firstOrNull { group -> group.isDefault } }
+            joinedSyncGroupRepo.defaultJoinedSyncGroup
                 .flatMapLatest { defaultServer ->
                     if (defaultServer == null) flowOf<ClientConnectionState>(ClientConnectionState.NoDefaultServer)
                     else flow {

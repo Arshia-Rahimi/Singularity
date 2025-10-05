@@ -26,6 +26,7 @@
     <string name="options">options</string>
     <string name="edit">edit</string>
     <string name="pair_requests">Pair requests:</string>
+    <string name="hosted_sync_groups">HostedSyncGroups</string>
     <string name="edit_group_name">Edit group name</string>
     <string name="approve_pair_request">Approve pair request</string>
     <string name="send_pair_request">Send pair request to %1$d?</string>
@@ -42,4 +43,6 @@
     <string name="server_running">%1$d nodes connected to %2$d</string>
     <string name="switch_to_server">Switch to server mode?</string>
     <string name="switch_to_client">Switch to client mode?</string>
+    <string name="available_servers">Available Servers</string>
+    <string name="paired_servers">Paired Servers</string>
 </resources>

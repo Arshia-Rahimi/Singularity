@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,17 +24,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.broadcast.components.BroadcastSection
+import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
+import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
+import com.github.singularity.ui.feature.broadcast.components.NodeItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.broadcast
 import singularity.composeapp.generated.resources.client
+import singularity.composeapp.generated.resources.create
+import singularity.composeapp.generated.resources.create_new_sync_group
+import singularity.composeapp.generated.resources.hosted_sync_groups
+import singularity.composeapp.generated.resources.pair_requests
+import singularity.composeapp.generated.resources.plus
 import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.settings
 import singularity.composeapp.generated.resources.switch_to_client
@@ -61,6 +74,9 @@ private fun BroadcastScreen(
     execute: BroadcastIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
+    var showCreateGroupDialog by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -76,6 +92,15 @@ private fun BroadcastScreen(
                         Icon(
                             painter = Res.drawable.settings.getPainter(),
                             contentDescription = Res.string.settings.getString(),
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { showCreateGroupDialog = true },
+                    ) {
+                        Icon(
+                            painter = Res.drawable.plus.getPainter(),
+                            contentDescription = Res.string.create_new_sync_group.getString(),
                         )
                     }
                 },
@@ -119,17 +144,75 @@ private fun BroadcastScreen(
                 }
             }
 
-            BroadcastSection(
-                uiState = uiState,
-                execute = execute,
-            )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = Res.string.hosted_sync_groups.getString(),
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                        )
+                    }
+                }
 
-            ConfirmationDialog(
-                visible = showSwitchModeDialog && canHostSyncServer,
-                onConfirm = { BroadcastIntent.ToggleSyncMode.execute() },
-                onDismiss = { showSwitchModeDialog = false },
-                message = Res.string.switch_to_client.getString(),
-            )
+                items(
+                    items = uiState.hostedSyncGroups,
+                    key = { it.hostedSyncGroupId },
+                ) {
+                    HostedSyncGroupItem(
+                        hostedSyncGroup = it,
+                        execute = execute,
+                    )
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = Res.string.pair_requests.getString(),
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                        )
+                    }
+                }
+
+                items(
+                    items = uiState.receivedPairRequests,
+                    key = { it.deviceId },
+                ) {
+                    NodeItem(it, execute)
+                }
+            }
+
         }
+
+        InputDialog(
+            visible = showCreateGroupDialog,
+            onConfirm = { BroadcastIntent.CreateGroup(it).execute() },
+            onDismiss = {
+                showCreateGroupDialog = false
+                focusManager.clearFocus()
+            },
+            confirmText = Res.string.create.getString(),
+            title = Res.string.create_new_sync_group.getString(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        )
+
+        ConfirmationDialog(
+            visible = showSwitchModeDialog && canHostSyncServer,
+            onConfirm = { BroadcastIntent.ToggleSyncMode.execute() },
+            onDismiss = { showSwitchModeDialog = false },
+            message = Res.string.switch_to_client.getString(),
+        )
     }
 }
+

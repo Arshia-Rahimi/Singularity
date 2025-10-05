@@ -4,7 +4,9 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
+import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
@@ -26,6 +28,7 @@ import kotlin.time.ExperimentalTime
 class DiscoverViewModel(
     private val syncService: SyncService,
     private val discoverRepo: DiscoverRepository,
+    private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
 ) : ViewModel() {
 
     private val connectionState = syncService.connectionState
@@ -36,14 +39,19 @@ class DiscoverViewModel(
 
     private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
+    private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups
+        .stateInWhileSubscribed(emptyList())
+
     val uiState = combine(
         connectionState,
         availableServers,
         sentPairRequestState,
-    ) { connectionState, availableServers, sentPairRequestState ->
+        joinedSyncGroups,
+    ) { connectionState, availableServers, sentPairRequestState, joinedSyncGroups ->
         DiscoverUiState(
             connectionState = connectionState,
             availableServers = availableServers.toMutableStateList(),
+            joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
         )
     }.stateInWhileSubscribed(DiscoverUiState())
@@ -61,6 +69,8 @@ class DiscoverViewModel(
             is DiscoverIntent.RefreshDiscovery -> viewModelScope.launch { discoverRepo.refreshDiscovery() }
             is DiscoverIntent.RefreshConnection -> refreshConnection()
             is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
+            is DiscoverIntent.DeleteGroup -> delete(intent.group)
+            is DiscoverIntent.SetAsDefault -> delete(intent.group)
             is DiscoverIntent.ToSettingsScreen -> Unit
         }
     }
@@ -82,6 +92,14 @@ class DiscoverViewModel(
     private fun cancelPairRequest() {
         pairRequestJob?.cancel()
         sentPairRequestState.value = PairRequestState.Idle
+    }
+
+    private fun delete(group: JoinedSyncGroup) {
+        viewModelScope.launch { joinedSyncGroupRepo.delete(group) }
+    }
+
+    private fun setAsDefault(group: JoinedSyncGroup) {
+        viewModelScope.launch { joinedSyncGroupRepo.setAsDefault(group) }
     }
 
 }

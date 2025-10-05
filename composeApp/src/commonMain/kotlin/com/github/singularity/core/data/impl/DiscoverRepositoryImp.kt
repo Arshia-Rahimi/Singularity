@@ -3,8 +3,8 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.broadcast.DeviceDiscoverService
 import com.github.singularity.core.client.PairRemoteDataSource
 import com.github.singularity.core.data.DiscoverRepository
+import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
@@ -15,11 +15,9 @@ import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
 import com.github.singularity.core.shared.util.sendPulse
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -31,13 +29,12 @@ import kotlinx.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiscoverRepositoryImp(
-    private val joinedSyncGroupsRepo: JoinedSyncGroupsLocalDataSource,
+    private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
     private val preferencesRepo: PreferencesRepository,
     private val pairRemoteDataSource: PairRemoteDataSource,
     private val discoveryService: DeviceDiscoverService,
 ) : DiscoverRepository {
 
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val refreshState = MutableSharedFlow<Unit>()
 
     override val discoveredServers = refreshState
