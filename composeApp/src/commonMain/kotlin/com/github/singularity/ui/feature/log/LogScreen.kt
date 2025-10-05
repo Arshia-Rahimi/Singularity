@@ -79,8 +79,8 @@ fun LogScreen(
                     .weight(1f)
                     .verticalScroll(scrollState),
                 text = log,
-                fontSize = 8.sp,
-                lineHeight = TextUnit(10f, TextUnitType.Sp),
+                fontSize = 12.sp,
+                lineHeight = TextUnit(16f, TextUnitType.Sp),
             )
         }
     }
