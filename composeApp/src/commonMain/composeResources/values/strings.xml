@@ -14,6 +14,8 @@
     <string name="disabled">disabled</string>
     <string name="cancel">cancel</string>
     <string name="approve">approve</string>
+    <string name="home">Home</string>
+    <string name="navigation_drawer">navigation drawer</string>
     <string name="reject">reject</string>
     <string name="default">default</string>
     <string name="refresh">Refresh</string>

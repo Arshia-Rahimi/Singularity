@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,17 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.compose.getString
-import org.jetbrains.compose.resources.painterResource
+import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.arrow_back
-import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.logs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogScreen(
-    navBack: () -> Unit,
+    openDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<LogViewModel>()
     val log by viewModel.logStream.collectAsStateWithLifecycle()
@@ -50,23 +44,9 @@ fun LogScreen(
         }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text(Res.string.logs.getString()) },
-                navigationIcon = {
-                    IconButton(
-                        onClick = navBack,
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = Res.string.back.getString(),
-                        )
-                    }
-                }
-            )
-        }
+    ScreenScaffold(
+        topBarTitle = { Text(Res.string.logs.getString()) },
+        openDrawer = openDrawer,
     ) { ip ->
         Column(
             modifier = Modifier

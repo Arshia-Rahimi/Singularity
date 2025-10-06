@@ -16,9 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.discover.components.JoinedSyncGroupItem
 import com.github.singularity.ui.feature.discover.components.PairRequestState
@@ -45,12 +44,11 @@ import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.paired_servers
 import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.server
-import singularity.composeapp.generated.resources.settings
 import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
 fun DiscoverScreen(
-    toSettingsScreen: () -> Unit,
+    openDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<DiscoverViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -59,7 +57,7 @@ fun DiscoverScreen(
         uiState = uiState,
         execute = {
             when (this) {
-                is DiscoverIntent.ToSettingsScreen -> toSettingsScreen()
+                is DiscoverIntent.OpenDrawer -> openDrawer()
                 else -> viewModel.execute(this)
             }
         },
@@ -73,26 +71,9 @@ private fun DiscoverScreen(
     execute: DiscoverIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(Res.string.discover.getString())
-                },
-                actions = {
-                    IconButton(
-                        onClick = { DiscoverIntent.ToSettingsScreen.execute() },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.settings.getPainter(),
-                            contentDescription = Res.string.settings.getString(),
-                        )
-                    }
-                },
-            )
-        },
+    ScreenScaffold(
+        topBarTitle = { Text(Res.string.discover.getString()) },
+        openDrawer = { DiscoverIntent.OpenDrawer.execute() },
         floatingActionButton = {
             if (canHostSyncServer) {
                 FloatingActionButton(

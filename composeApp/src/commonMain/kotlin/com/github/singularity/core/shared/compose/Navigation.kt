@@ -1,9 +1,17 @@
 package com.github.singularity.core.shared.compose
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
-fun NavController.getCurrentRouteClassName() =
-    currentBackStackEntry?.destination?.route?.split(".")?.last()
+val NavController.currentRoute: State<String?>
+    @Composable get() {
+        val currentBackStackEntry by currentBackStackEntryAsState()
+        return derivedStateOf { currentBackStackEntry?.destination?.route?.split(".")?.last() }
+    }
 
 fun NavController.popToRoot() {
     val root = graph.startDestinationRoute ?: return

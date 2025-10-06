@@ -16,7 +16,6 @@ sealed interface BroadcastIntent {
     ) : BroadcastIntent
 
     data object RefreshConnection : BroadcastIntent
-    data object ToSettingsScreen : BroadcastIntent
     data object ToggleSyncMode : BroadcastIntent
+    data object OpenDrawer : BroadcastIntent
 }
-

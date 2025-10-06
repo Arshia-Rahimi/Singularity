@@ -27,8 +27,7 @@ class SettingsViewModel(
     fun execute(intent: SettingsIntent) {
         when(intent) {
             is SettingsIntent.ToggleAppTheme -> toggleAppTheme()
-            is SettingsIntent.NavBack -> Unit
-            is SettingsIntent.ToLogScreen -> Unit
+            is SettingsIntent.OpenDrawer -> Unit
         }
     }
 

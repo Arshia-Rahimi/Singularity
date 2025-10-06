@@ -11,6 +11,6 @@ sealed interface DiscoverIntent {
     data object CancelPairRequest : DiscoverIntent
     data object RefreshDiscovery : DiscoverIntent
     data object RefreshConnection : DiscoverIntent
-    data object ToSettingsScreen : DiscoverIntent
     data object ToggleSyncMode : DiscoverIntent
+    data object OpenDrawer : DiscoverIntent
 }

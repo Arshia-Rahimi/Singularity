@@ -70,8 +70,8 @@ class DiscoverViewModel(
             is DiscoverIntent.RefreshConnection -> refreshConnection()
             is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is DiscoverIntent.DeleteGroup -> delete(intent.group)
-            is DiscoverIntent.SetAsDefault -> delete(intent.group)
-            is DiscoverIntent.ToSettingsScreen -> Unit
+            is DiscoverIntent.SetAsDefault -> setAsDefault(intent.group)
+            is DiscoverIntent.OpenDrawer -> Unit
         }
     }
 

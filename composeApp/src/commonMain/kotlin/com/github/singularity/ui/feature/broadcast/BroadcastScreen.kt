@@ -14,9 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
@@ -46,12 +45,11 @@ import singularity.composeapp.generated.resources.hosted_sync_groups
 import singularity.composeapp.generated.resources.pair_requests
 import singularity.composeapp.generated.resources.plus
 import singularity.composeapp.generated.resources.refresh
-import singularity.composeapp.generated.resources.settings
 import singularity.composeapp.generated.resources.switch_to_client
 
 @Composable
 fun BroadcastScreen(
-    toSettingsScreen: () -> Unit,
+    openDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<BroadcastViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -60,7 +58,7 @@ fun BroadcastScreen(
         uiState = uiState,
         execute = {
             when (this) {
-                is BroadcastIntent.ToSettingsScreen -> toSettingsScreen()
+                is BroadcastIntent.OpenDrawer -> openDrawer()
                 else -> viewModel.execute(this)
             }
         },
@@ -78,34 +76,21 @@ private fun BroadcastScreen(
 
     val focusManager = LocalFocusManager.current
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(Res.string.broadcast.getString())
-                },
-                actions = {
-                    IconButton(
-                        onClick = { BroadcastIntent.ToSettingsScreen.execute() },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.settings.getPainter(),
-                            contentDescription = Res.string.settings.getString(),
-                        )
-                    }
-
-                    IconButton(
-                        onClick = { showCreateGroupDialog = true },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.plus.getPainter(),
-                            contentDescription = Res.string.create_new_sync_group.getString(),
-                        )
-                    }
-                },
-            )
+    ScreenScaffold(
+        topBarTitle = {
+            Text(Res.string.broadcast.getString())
         },
+        topBarActions = {
+            IconButton(
+                onClick = { showCreateGroupDialog = true },
+            ) {
+                Icon(
+                    painter = Res.drawable.plus.getPainter(),
+                    contentDescription = Res.string.create_new_sync_group.getString(),
+                )
+            }
+        },
+        openDrawer = { BroadcastIntent.OpenDrawer.execute() },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showSwitchModeDialog = true },
@@ -215,4 +200,3 @@ private fun BroadcastScreen(
         )
     }
 }
-

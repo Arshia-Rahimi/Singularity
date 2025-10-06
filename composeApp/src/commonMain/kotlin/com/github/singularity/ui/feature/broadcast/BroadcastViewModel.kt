@@ -50,7 +50,7 @@ class BroadcastViewModel(
             is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.RefreshConnection -> refreshConnection()
             is BroadcastIntent.ToggleSyncMode -> syncService.toggleSyncMode()
-            is BroadcastIntent.ToSettingsScreen -> Unit
+            is BroadcastIntent.OpenDrawer -> Unit
         }
     }
 
