@@ -24,7 +24,7 @@ class DesktopLogger : Logger {
         .getUserDataDir("Singularity", null, null)
     private val logFile: File = File(directory, LOG_FILE)
 
-    override val logStream = flow {
+    override val log = flow {
         while (!logFile.exists()) delay(1000)
 
         logFile.readLines().joinToString("\n").let { emit(it) }

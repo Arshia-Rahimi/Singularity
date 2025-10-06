@@ -25,7 +25,7 @@ class AndroidLogger(
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val logFile: File = File(context.filesDir, LOG_FILE)
 
-    override val logStream = flow {
+    override val log = flow {
         while (!logFile.exists()) delay(1000)
 
         logFile.readLines().joinToString("\n").let { emit(it) }

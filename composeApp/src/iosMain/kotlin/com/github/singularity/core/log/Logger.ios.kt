@@ -16,7 +16,7 @@ class IosLogger : Logger {
         TODO("Not yet implemented")
     }
 
-    override val logStream: Flow<String>
+    override val log: Flow<String>
         get() = TODO("Not yet implemented")
 
 }

@@ -66,7 +66,7 @@ class DiscoverViewModel(
         when (intent) {
             is DiscoverIntent.SendPairRequest -> sendPairRequest(intent.server)
             is DiscoverIntent.CancelPairRequest -> cancelPairRequest()
-            is DiscoverIntent.RefreshDiscovery -> viewModelScope.launch { discoverRepo.refreshDiscovery() }
+            is DiscoverIntent.RefreshDiscovery -> refreshDiscovery()
             is DiscoverIntent.RefreshConnection -> refreshConnection()
             is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is DiscoverIntent.DeleteGroup -> delete(intent.group)
@@ -100,6 +100,12 @@ class DiscoverViewModel(
 
     private fun setAsDefault(group: JoinedSyncGroup) {
         viewModelScope.launch { joinedSyncGroupRepo.setAsDefault(group) }
+    }
+
+    private fun refreshDiscovery() {
+        viewModelScope.launch {
+            discoverRepo.refreshDiscovery()
+        }
     }
 
 }

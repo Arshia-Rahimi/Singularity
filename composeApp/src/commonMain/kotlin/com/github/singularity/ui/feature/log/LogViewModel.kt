@@ -8,6 +8,6 @@ class LogViewModel(
     logger: Logger,
 ) : ViewModel() {
 
-    val logStream = logger.logStream.stateInWhileSubscribed("")
+    val logStream = logger.log.stateInWhileSubscribed("")
 
 }

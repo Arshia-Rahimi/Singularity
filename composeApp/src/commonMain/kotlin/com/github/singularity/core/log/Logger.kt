@@ -10,6 +10,6 @@ interface Logger {
 
     suspend fun clearLog()
 
-    val logStream: Flow<String>
+    val log: Flow<String>
 
 }
