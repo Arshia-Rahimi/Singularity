@@ -2,7 +2,6 @@ package com.github.singularity.ui.feature.broadcast
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -102,101 +101,98 @@ private fun BroadcastScreen(
             }
         },
     ) { ip ->
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxSize()
                 .padding(ip)
                 .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                AnimatedContent(
-                    targetState = uiState.connectionState.message,
+            stickyHeader {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(it)
-                }
+                    AnimatedContent(
+                        targetState = uiState.connectionState.message,
+                    ) {
+                        Text(it)
+                    }
 
-                IconButton(
-                    onClick = { BroadcastIntent.RefreshConnection.execute() },
+                    IconButton(
+                        onClick = { BroadcastIntent.RefreshConnection.execute() },
+                    ) {
+                        Icon(
+                            painter = Res.drawable.refresh.getPainter(),
+                            contentDescription = Res.string.refresh.getString(),
+                        )
+                    }
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Icon(
-                        painter = Res.drawable.refresh.getPainter(),
-                        contentDescription = Res.string.refresh.getString(),
+                    Text(
+                        text = Res.string.hosted_sync_groups.getString(),
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                     )
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+            items(
+                items = uiState.hostedSyncGroups,
+                key = { it.hostedSyncGroupId },
             ) {
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = Res.string.hosted_sync_groups.getString(),
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-                        )
-                    }
-                }
+                HostedSyncGroupItem(
+                    hostedSyncGroup = it,
+                    execute = execute,
+                )
+            }
 
-                items(
-                    items = uiState.hostedSyncGroups,
-                    key = { it.hostedSyncGroupId },
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    HostedSyncGroupItem(
-                        hostedSyncGroup = it,
-                        execute = execute,
+                    Text(
+                        text = Res.string.pair_requests.getString(),
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                     )
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = Res.string.pair_requests.getString(),
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-                        )
-                    }
-                }
-
-                items(
-                    items = uiState.receivedPairRequests,
-                    key = { it.deviceId },
-                ) {
-                    NodeItem(it, execute)
                 }
             }
 
+            items(
+                items = uiState.receivedPairRequests,
+                key = { it.deviceId },
+            ) {
+                NodeItem(it, execute)
+            }
         }
 
-        InputDialog(
-            visible = showCreateGroupDialog,
-            onConfirm = { BroadcastIntent.CreateGroup(it).execute() },
-            onDismiss = {
-                showCreateGroupDialog = false
-                focusManager.clearFocus()
-            },
-            confirmText = Res.string.create.getString(),
-            title = Res.string.create_new_sync_group.getString(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        )
-
-        ConfirmationDialog(
-            visible = showSwitchModeDialog && canHostSyncServer,
-            onConfirm = { BroadcastIntent.ToggleSyncMode.execute() },
-            onDismiss = { showSwitchModeDialog = false },
-            message = Res.string.switch_to_client.getString(),
-        )
     }
+
+    InputDialog(
+        visible = showCreateGroupDialog,
+        onConfirm = { BroadcastIntent.CreateGroup(it).execute() },
+        onDismiss = {
+            showCreateGroupDialog = false
+            focusManager.clearFocus()
+        },
+        confirmText = Res.string.create.getString(),
+        title = Res.string.create_new_sync_group.getString(),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    )
+
+    ConfirmationDialog(
+        visible = showSwitchModeDialog && canHostSyncServer,
+        onConfirm = { BroadcastIntent.ToggleSyncMode.execute() },
+        onDismiss = { showSwitchModeDialog = false },
+        message = Res.string.switch_to_client.getString(),
+    )
 }

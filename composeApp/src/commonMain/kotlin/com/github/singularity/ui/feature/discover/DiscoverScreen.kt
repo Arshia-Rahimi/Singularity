@@ -3,7 +3,6 @@ package com.github.singularity.ui.feature.discover
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -87,120 +86,116 @@ private fun DiscoverScreen(
             }
         },
     ) { ip ->
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxSize()
                 .padding(ip)
                 .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
+            stickyHeader {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    AnimatedContent(
+                        targetState = uiState.connectionState.message,
+                    ) {
+                        Text(it)
+                    }
+
+                    IconButton(
+                        onClick = { DiscoverIntent.RefreshConnection.execute() },
+                    ) {
+                        Icon(
+                            painter = Res.drawable.refresh.getPainter(),
+                            contentDescription = Res.string.refresh.getString(),
+                        )
+                    }
+                }
+
                 AnimatedContent(
-                    targetState = uiState.connectionState.message,
+                    targetState = uiState.sentPairRequestState,
                 ) {
-                    Text(it)
-                }
-
-                IconButton(
-                    onClick = { DiscoverIntent.RefreshConnection.execute() },
-                ) {
-                    Icon(
-                        painter = Res.drawable.refresh.getPainter(),
-                        contentDescription = Res.string.refresh.getString(),
-                    )
-                }
-            }
-
-            AnimatedContent(
-                targetState = uiState.sentPairRequestState,
-            ) {
-                if (it !is PairRequestState.Idle) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        when (uiState.sentPairRequestState) {
-                            is PairRequestState.Awaiting -> {
-                                Text(Res.string.await_pair_request_approval.getString(uiState.sentPairRequestState.server.syncGroupName))
-                                CircularProgressIndicator()
-                            }
-
-                            is PairRequestState.Success -> Text(
-                                Res.string.approved_to_join.getString(
-                                    uiState.sentPairRequestState.server
-                                )
-                            )
-
-                            is PairRequestState.Error -> Text(uiState.sentPairRequestState.message)
-                            is PairRequestState.Idle -> Unit
-                        }
-                    }
-                }
-            }
-
-            LazyColumn(
-                modifier = Modifier.weight(0.8f)
-                    .fillMaxWidth(),
-            ) {
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                    ) {
-                        Text(
-                            text = Res.string.paired_servers.getString(),
-                            fontSize = 16.sp,
-                        )
-                    }
-                }
-                items(uiState.joinedSyncGroups) {
-                    JoinedSyncGroupItem(
-                        joinedSyncGroup = it,
-                        execute = execute,
-                    )
-                }
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                    ) {
-                        Text(
-                            text = Res.string.available_servers.getString(),
-                            fontSize = 16.sp,
-                        )
-                    }
-                }
-                items(uiState.availableServers) {
-                    ServerItem(
-                        server = it,
-                        execute = execute,
-                    )
-                }
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Button(
-                            onClick = { DiscoverIntent.RefreshDiscovery.execute() },
+                    if (it !is PairRequestState.Idle) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
                         ) {
-                            Text(Res.string.refresh.getString())
+                            when (uiState.sentPairRequestState) {
+                                is PairRequestState.Awaiting -> {
+                                    Text(Res.string.await_pair_request_approval.getString(uiState.sentPairRequestState.server.syncGroupName))
+                                    CircularProgressIndicator()
+                                }
+
+                                is PairRequestState.Success -> Text(
+                                    Res.string.approved_to_join.getString(
+                                        uiState.sentPairRequestState.server
+                                    )
+                                )
+
+                                is PairRequestState.Error -> Text(uiState.sentPairRequestState.message)
+                                is PairRequestState.Idle -> Unit
+                            }
                         }
                     }
                 }
             }
-
-            ConfirmationDialog(
-                visible = showSwitchModeDialog && canHostSyncServer,
-                onConfirm = { DiscoverIntent.ToggleSyncMode.execute() },
-                onDismiss = { showSwitchModeDialog = false },
-                message = Res.string.switch_to_server.getString(),
-            )
-
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                ) {
+                    Text(
+                        text = Res.string.paired_servers.getString(),
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+            items(uiState.joinedSyncGroups) {
+                JoinedSyncGroupItem(
+                    joinedSyncGroup = it,
+                    execute = execute,
+                )
+            }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                ) {
+                    Text(
+                        text = Res.string.available_servers.getString(),
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+            items(uiState.availableServers) {
+                ServerItem(
+                    server = it,
+                    execute = execute,
+                )
+            }
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Button(
+                        onClick = { DiscoverIntent.RefreshDiscovery.execute() },
+                    ) {
+                        Text(Res.string.refresh.getString())
+                    }
+                }
+            }
         }
+
+        ConfirmationDialog(
+            visible = showSwitchModeDialog && canHostSyncServer,
+            onConfirm = { DiscoverIntent.ToggleSyncMode.execute() },
+            onDismiss = { showSwitchModeDialog = false },
+            message = Res.string.switch_to_server.getString(),
+        )
+
     }
 }
