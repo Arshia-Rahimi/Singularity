@@ -16,6 +16,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.discover.components.JoinedSyncGroupItem
@@ -70,9 +72,16 @@ private fun DiscoverScreen(
     execute: DiscoverIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
+
     ScreenScaffold(
-        topBarTitle = { Text(Res.string.discover.getString()) },
-        openDrawer = { DiscoverIntent.OpenDrawer.execute() },
+        topBar = {
+            TopAppBar(
+                title = { Text(Res.string.discover.getString()) },
+                navigationIcon = {
+                    DrawerIcon { DiscoverIntent.OpenDrawer.execute() }
+                },
+            )
+        },
         floatingActionButton = {
             if (canHostSyncServer) {
                 FloatingActionButton(

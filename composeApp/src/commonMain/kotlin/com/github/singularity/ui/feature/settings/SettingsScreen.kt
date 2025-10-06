@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
@@ -44,8 +46,14 @@ private fun SettingsScreen(
     execute: SettingsIntent.() -> Unit,
 ) {
     ScreenScaffold(
-        topBarTitle = { Text(Res.string.settings.getString()) },
-        openDrawer = { SettingsIntent.OpenDrawer.execute() },
+        topBar = {
+            TopAppBar(
+                title = { Text(Res.string.settings.getString()) },
+                navigationIcon = {
+                    DrawerIcon { SettingsIntent.OpenDrawer.execute() }
+                },
+            )
+        }
     ) { ip ->
         LazyColumn(
             modifier = Modifier.fillMaxSize()

@@ -14,6 +14,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
@@ -76,20 +78,24 @@ private fun BroadcastScreen(
     val focusManager = LocalFocusManager.current
 
     ScreenScaffold(
-        topBarTitle = {
-            Text(Res.string.broadcast.getString())
+        topBar = {
+            TopAppBar(
+                title = { Text(Res.string.broadcast.getString()) },
+                navigationIcon = {
+                    DrawerIcon { BroadcastIntent.OpenDrawer.execute() }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { showCreateGroupDialog = true },
+                    ) {
+                        Icon(
+                            painter = Res.drawable.plus.getPainter(),
+                            contentDescription = Res.string.create_new_sync_group.getString(),
+                        )
+                    }
+                },
+            )
         },
-        topBarActions = {
-            IconButton(
-                onClick = { showCreateGroupDialog = true },
-            ) {
-                Icon(
-                    painter = Res.drawable.plus.getPainter(),
-                    contentDescription = Res.string.create_new_sync_group.getString(),
-                )
-            }
-        },
-        openDrawer = { BroadcastIntent.OpenDrawer.execute() },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showSwitchModeDialog = true },
