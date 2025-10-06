@@ -3,14 +3,19 @@ package com.github.singularity.ui.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
@@ -21,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,6 +49,7 @@ import singularity.composeapp.generated.resources.home
 import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
 import singularity.composeapp.generated.resources.settings
+import singularity.composeapp.generated.resources.singularity
 
 @Composable
 fun Navigation() {
@@ -68,10 +75,21 @@ fun Navigation() {
             drawerState = drawerState,
             drawerContent = {
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
                         .width(IntrinsicSize.Max)
-                        .verticalScroll(rememberScrollState())
+                        .fillMaxHeight()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(horizontal = 16.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = Res.string.singularity.getString(),
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    HorizontalDivider(Modifier.padding(vertical = 8.dp))
                     NavigationDrawerItem(
                         label = { Text(Res.string.home.getString()) },
                         icon = {
@@ -86,6 +104,7 @@ fun Navigation() {
                         },
                         selected = homeRoute::class.simpleName == currentRoute,
                     )
+                    HorizontalDivider(Modifier.padding(vertical = 8.dp))
                     NavigationDrawerItem(
                         label = { Text(Res.string.settings.getString()) },
                         icon = {
