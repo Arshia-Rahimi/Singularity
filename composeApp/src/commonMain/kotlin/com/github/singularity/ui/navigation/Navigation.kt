@@ -52,6 +52,7 @@ import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.navigation.components.DrawerStateController
 import com.github.singularity.ui.navigation.components.NavigationDrawerItem
+import com.github.singularity.ui.navigation.components.SplashScreen
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import singularity.composeapp.generated.resources.Res
@@ -72,7 +73,8 @@ fun Navigation() {
     val currentRoute by navController.currentRoute
 
     SingularityTheme(theme ?: AppTheme.System) {
-        if (windowSizeClass == WindowSizeClass.Expanded) {
+        if (theme == null) SplashScreen()
+        else if (windowSizeClass == WindowSizeClass.Expanded) {
             PermanentNavigationDrawer(
                 drawerContent = {
                     PermanentDrawerSheet(
