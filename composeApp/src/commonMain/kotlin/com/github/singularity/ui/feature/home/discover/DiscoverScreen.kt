@@ -99,6 +99,7 @@ private fun DiscoverScreen(
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     AnimatedContent(
                         targetState = uiState.connectionState.message,

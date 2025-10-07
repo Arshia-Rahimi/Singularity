@@ -68,7 +68,7 @@ fun Navigation() {
     val syncMode by viewModel.syncMode.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
-    val windowSizeClass = rememberWindowSizeClass()
+    val windowSizeClass by rememberWindowSizeClass()
 
     val currentRoute by navController.currentRoute
 
