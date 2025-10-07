@@ -143,11 +143,6 @@ fun NavigationDrawerItem(
                     }
                 )
             }
-//            if (badge != null) {
-//                Spacer(Modifier.width(12.dp))
-//                val badgeColor = colors.badgeColor(selected).value
-//                CompositionLocalProvider(LocalContentColor provides badgeColor, content = badge)
-//            }
         }
 
     }
