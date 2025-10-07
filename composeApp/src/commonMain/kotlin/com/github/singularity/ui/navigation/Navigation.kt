@@ -11,14 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
@@ -36,11 +36,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
-import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.compose.isInGraphRoot
 import com.github.singularity.ui.designsystem.PainterIconButton
@@ -52,7 +50,6 @@ import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.navigation.components.DrawerStateController
 import com.github.singularity.ui.navigation.components.NavigationDrawerItem
-import com.github.singularity.ui.navigation.components.SplashScreen
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import singularity.composeapp.generated.resources.Res
@@ -72,9 +69,8 @@ fun Navigation() {
 
     val currentRoute by navController.currentRoute
 
-    SingularityTheme(theme ?: AppTheme.System) {
-        if (theme == null) SplashScreen()
-        else if (windowSizeClass == WindowSizeClass.Expanded) {
+    SingularityTheme(theme) {
+        if (windowSizeClass == WindowSizeClass.Expanded) {
             PermanentNavigationDrawer(
                 drawerContent = {
                     PermanentDrawerSheet(
@@ -140,6 +136,7 @@ private fun DrawerContent(
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
+            .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(12.dp))
         Row(
@@ -163,25 +160,11 @@ private fun DrawerContent(
         HorizontalDivider(Modifier.padding(vertical = 8.dp))
         NavigationDrawerItem.entries.forEach { item ->
             NavigationDrawerItem(
-                label = { Text(item.label.getString()) },
-                icon = {
-                    Icon(
-                        painter = item.icon.getPainter(),
-                        contentDescription = item.label.getString(),
-                    )
-                },
-                onClick = {
-                    if (currentRoute != item.route::class.simpleName) {
-                        navController.navigate(item.route)
-                    }
-                    closeDrawer()
-                },
-                selected = item.route::class.simpleName == currentRoute,
+                item = item,
+                currentRoute = currentRoute,
+                closeDrawer = closeDrawer,
+                navigateTo = { navController.navigate(it) },
             )
-
-            if (item.isFollowedByDivider) {
-                HorizontalDivider(Modifier.padding(vertical = 4.dp))
-            }
         }
     }
 }
