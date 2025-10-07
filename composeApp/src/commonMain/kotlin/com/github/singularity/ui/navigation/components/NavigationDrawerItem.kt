@@ -4,6 +4,7 @@ import com.github.singularity.ui.navigation.Route
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.home
 import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
 import singularity.composeapp.generated.resources.settings
@@ -14,6 +15,11 @@ enum class NavigationDrawerItem(
     val route: Any,
     val isFollowedByDivider: Boolean = false,
 ) {
+    Home(
+        icon = Res.drawable.home,
+        label = Res.string.home,
+        route = Route.Home,
+    ),
     Settings(
         icon = Res.drawable.settings,
         label = Res.string.settings,

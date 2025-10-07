@@ -1,15 +1,18 @@
 package com.github.singularity.ui.navigation
 
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +24,6 @@ import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -34,26 +36,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
-import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.currentRoute
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.compose.navigateAndClearStack
+import com.github.singularity.core.shared.compose.isInGraphRoot
+import com.github.singularity.ui.designsystem.PainterIconButton
 import com.github.singularity.ui.designsystem.WindowSizeClass
 import com.github.singularity.ui.designsystem.rememberWindowSizeClass
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
-import com.github.singularity.ui.feature.broadcast.BroadcastScreen
-import com.github.singularity.ui.feature.discover.DiscoverScreen
+import com.github.singularity.ui.feature.home.HomeScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.navigation.components.NavigationDrawerItem
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.home
+import singularity.composeapp.generated.resources.arrow_back
+import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.singularity
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation() {
     val viewModel = koinInject<NavigationViewModel>()
@@ -63,16 +67,9 @@ fun Navigation() {
     val navController = rememberNavController()
     val windowSizeClass = rememberWindowSizeClass()
 
-    val homeRoute = if (syncMode == SyncMode.Client) Route.Discover else Route.Broadcast
     val currentRoute by navController.currentRoute
 
-    LaunchedEffect(syncMode) {
-        if (syncMode == SyncMode.Client) navController.navigateAndClearStack(Route.Discover)
-        else navController.navigateAndClearStack(Route.Broadcast)
-    }
-
-    SingularityTheme(theme) {
-
+    SingularityTheme(theme ?: AppTheme.System) {
         if (windowSizeClass == WindowSizeClass.Expanded) {
             PermanentNavigationDrawer(
                 drawerContent = {
@@ -81,9 +78,9 @@ fun Navigation() {
                     ) {
                         DrawerContent(
                             navController = navController,
-                            homeRoute = homeRoute,
                             currentRoute = currentRoute,
                             closeDrawer = {},
+                            windowSizeClass = windowSizeClass,
                         )
                     }
                 },
@@ -91,6 +88,7 @@ fun Navigation() {
                 NavigationHost(
                     navController = navController,
                     openDrawer = {},
+                    syncMode = syncMode,
                 )
             }
 
@@ -113,15 +111,16 @@ fun Navigation() {
                     ) {
                         DrawerContent(
                             navController = navController,
-                            homeRoute = homeRoute,
                             currentRoute = currentRoute,
                             closeDrawer = closeDrawer,
+                            windowSizeClass = windowSizeClass,
                         )
                     }
                 }
             ) {
                 NavigationHost(
                     navController = navController,
+                    syncMode = syncMode,
                     openDrawer = toggleDrawer,
                 )
             }
@@ -133,37 +132,33 @@ fun Navigation() {
 @Composable
 private fun DrawerContent(
     navController: NavController,
-    homeRoute: Route,
     currentRoute: String?,
+    windowSizeClass: WindowSizeClass,
     closeDrawer: () -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         Spacer(Modifier.height(12.dp))
-        Text(
-            text = Res.string.singularity.getString(),
-            fontSize = 24.sp,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
-        HorizontalDivider(Modifier.padding(vertical = 8.dp))
-        NavigationDrawerItem(
-            label = { Text(Res.string.home.getString()) },
-            icon = {
-                Icon(
-                    painter = Res.drawable.home.getPainter(),
-                    contentDescription = Res.string.home.getString(),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (windowSizeClass == WindowSizeClass.Expanded) {
+                PainterIconButton(
+                    onClick = navController::popBackStack,
+                    image = Res.drawable.arrow_back,
+                    contentDescription = Res.string.back,
+                    enabled = navController.isInGraphRoot,
                 )
-            },
-            onClick = {
-                if (currentRoute != homeRoute::class.simpleName) {
-                    navController.navigate(homeRoute)
-                }
-                closeDrawer()
-            },
-            selected = homeRoute::class.simpleName == currentRoute,
-        )
+            }
+            Text(
+                text = Res.string.singularity.getString(),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        HorizontalDivider(Modifier.padding(vertical = 8.dp))
         NavigationDrawerItem.entries.forEach { item ->
             NavigationDrawerItem(
                 label = { Text(item.label.getString()) },
@@ -192,38 +187,28 @@ private fun DrawerContent(
 @Composable
 private fun NavigationHost(
     navController: NavHostController,
+    syncMode: SyncMode,
     openDrawer: () -> Unit,
 ) {
     NavHost(
         enterTransition = {
             slideInVertically(
                 initialOffsetY = { it },
-                animationSpec = tween(250),
+                animationSpec = spring(stiffness = Spring.StiffnessMedium),
             )
         },
         popEnterTransition = {
             slideInVertically(
-                initialOffsetY = { -it },
-                animationSpec = tween(250),
-            )
-        },
-        exitTransition = {
-            slideOutVertically(
-                targetOffsetY = { -it },
-                animationSpec = tween(250),
-            )
-        },
-        popExitTransition = {
-            slideOutVertically(
-                targetOffsetY = { it },
-                animationSpec = tween(250),
+                initialOffsetY = { it },
+                animationSpec = spring(stiffness = Spring.StiffnessMedium),
             )
         },
         navController = navController,
-        startDestination = Route.Discover,
+        startDestination = Route.Home,
     ) {
-        composable<Route.Discover> {
-            DiscoverScreen(
+        composable<Route.Home> {
+            HomeScreen(
+                syncMode = syncMode,
                 openDrawer = openDrawer,
             )
         }
@@ -236,13 +221,6 @@ private fun NavigationHost(
             LogScreen(
                 openDrawer = openDrawer,
             )
-        }
-        if (canHostSyncServer) {
-            composable<Route.Broadcast> {
-                BroadcastScreen(
-                    openDrawer = openDrawer,
-                )
-            }
         }
     }
 }

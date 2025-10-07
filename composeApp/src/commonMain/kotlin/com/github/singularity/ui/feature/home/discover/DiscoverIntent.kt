@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover
+package com.github.singularity.ui.feature.home.discover
 
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer

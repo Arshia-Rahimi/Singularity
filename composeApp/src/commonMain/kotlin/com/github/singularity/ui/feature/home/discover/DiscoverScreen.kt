@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover
+package com.github.singularity.ui.feature.home.discover
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -33,9 +33,9 @@ import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.discover.components.JoinedSyncGroupItem
-import com.github.singularity.ui.feature.discover.components.PairRequestState
-import com.github.singularity.ui.feature.discover.components.ServerItem
+import com.github.singularity.ui.feature.home.discover.components.JoinedSyncGroupItem
+import com.github.singularity.ui.feature.home.discover.components.PairRequestState
+import com.github.singularity.ui.feature.home.discover.components.ServerItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.approved_to_join

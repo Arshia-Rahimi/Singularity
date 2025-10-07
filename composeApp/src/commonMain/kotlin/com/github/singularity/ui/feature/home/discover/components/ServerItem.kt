@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover.components
+package com.github.singularity.ui.feature.home.discover.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.discover.DiscoverIntent
+import com.github.singularity.ui.feature.home.discover.DiscoverIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.send_pair_request
 

@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.broadcast
+package com.github.singularity.ui.feature.home.broadcast
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateListOf

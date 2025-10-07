@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover.components
+package com.github.singularity.ui.feature.home.discover.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +27,7 @@ import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.discover.DiscoverIntent
+import com.github.singularity.ui.feature.home.discover.DiscoverIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete

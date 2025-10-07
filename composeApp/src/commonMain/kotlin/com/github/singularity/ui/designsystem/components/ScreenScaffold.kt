@@ -7,6 +7,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.singularity.ui.designsystem.PainterIconButton
+import com.github.singularity.ui.designsystem.WindowSizeClass
+import com.github.singularity.ui.designsystem.rememberWindowSizeClass
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.drawer
 import singularity.composeapp.generated.resources.navigation_drawer
@@ -31,9 +33,12 @@ fun ScreenScaffold(
 fun DrawerIcon(
     openDrawer: () -> Unit
 ) {
-    PainterIconButton(
-        onClick = openDrawer,
-        image = Res.drawable.drawer,
-        contentDescription = Res.string.navigation_drawer,
-    )
+    val windowSizeClass = rememberWindowSizeClass()
+    if (windowSizeClass != WindowSizeClass.Expanded) {
+        PainterIconButton(
+            onClick = openDrawer,
+            image = Res.drawable.drawer,
+            contentDescription = Res.string.navigation_drawer,
+        )
+    }
 }

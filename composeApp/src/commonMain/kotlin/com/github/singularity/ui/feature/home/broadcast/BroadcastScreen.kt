@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.broadcast
+package com.github.singularity.ui.feature.home.broadcast
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +34,8 @@ import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.broadcast.components.HostedSyncGroupItem
-import com.github.singularity.ui.feature.broadcast.components.NodeItem
+import com.github.singularity.ui.feature.home.broadcast.components.HostedSyncGroupItem
+import com.github.singularity.ui.feature.home.broadcast.components.NodeItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.broadcast

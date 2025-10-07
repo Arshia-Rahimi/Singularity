@@ -1,7 +1,7 @@
 package com.github.singularity.ui.di
 
-import com.github.singularity.ui.feature.broadcast.BroadcastViewModel
-import com.github.singularity.ui.feature.discover.DiscoverViewModel
+import com.github.singularity.ui.feature.home.broadcast.BroadcastViewModel
+import com.github.singularity.ui.feature.home.discover.DiscoverViewModel
 import com.github.singularity.ui.feature.log.LogViewModel
 import com.github.singularity.ui.feature.settings.SettingsViewModel
 import com.github.singularity.ui.navigation.NavigationViewModel

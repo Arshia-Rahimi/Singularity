@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.discover
+package com.github.singularity.ui.feature.home.discover
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -11,7 +11,7 @@ import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
-import com.github.singularity.ui.feature.discover.components.PairRequestState
+import com.github.singularity.ui.feature.home.discover.components.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

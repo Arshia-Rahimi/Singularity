@@ -21,6 +21,9 @@ fun NavController.popToRoot() {
     )
 }
 
+val NavController.isInGraphRoot: Boolean
+    get() = previousBackStackEntry != null
+
 fun <T : Any> NavController.navigateAndClearStack(route: T) {
     navigate(route) {
         popUpTo(0) { inclusive = true }
