@@ -23,15 +23,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
+import com.github.singularity.ui.navigation.components.DrawerStateController
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.logs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LogScreen(
-    openDrawer: () -> Unit,
-) {
+fun LogScreen() {
     val viewModel = koinViewModel<LogViewModel>()
     val log by viewModel.logStream.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
@@ -51,7 +50,7 @@ fun LogScreen(
             TopAppBar(
                 title = { Text(Res.string.logs.getString()) },
                 navigationIcon = {
-                    DrawerIcon { openDrawer() }
+                    DrawerIcon { DrawerStateController.openDrawer() }
                 },
             )
         },

@@ -6,6 +6,7 @@ import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.ui.navigation.components.DrawerStateController
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -27,7 +28,7 @@ class SettingsViewModel(
     fun execute(intent: SettingsIntent) {
         when(intent) {
             is SettingsIntent.ToggleAppTheme -> toggleAppTheme()
-            is SettingsIntent.OpenDrawer -> Unit
+            is SettingsIntent.OpenDrawer -> DrawerStateController.openDrawer()
         }
     }
 

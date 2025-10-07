@@ -9,17 +9,11 @@ import com.github.singularity.ui.feature.home.discover.DiscoverScreen
 @Composable
 fun HomeScreen(
     syncMode: SyncMode,
-    openDrawer: () -> Unit
 ) {
     AnimatedContent(syncMode) {
         when (it) {
-            SyncMode.Server -> BroadcastScreen(
-                openDrawer = openDrawer,
-            )
-
-            SyncMode.Client -> DiscoverScreen(
-                openDrawer = openDrawer,
-            )
+            SyncMode.Server -> BroadcastScreen()
+            SyncMode.Client -> DiscoverScreen()
         }
     }
 }

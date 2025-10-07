@@ -22,20 +22,13 @@ import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.settings
 
 @Composable
-fun SettingsScreen(
-    openDrawer: () -> Unit,
-) {
+fun SettingsScreen() {
     val viewModel = koinViewModel<SettingsViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     SettingsScreen(
         uiState = uiState,
-        execute = {
-            when (this) {
-                is SettingsIntent.OpenDrawer -> openDrawer()
-                else -> viewModel.execute(this)
-            }
-        }
+        execute = { viewModel.execute(this) },
     )
 }
 

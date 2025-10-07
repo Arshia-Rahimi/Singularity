@@ -9,6 +9,7 @@ import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
+import com.github.singularity.ui.navigation.components.DrawerStateController
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
@@ -50,7 +51,7 @@ class BroadcastViewModel(
             is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.RefreshConnection -> refreshConnection()
             is BroadcastIntent.ToggleSyncMode -> syncService.toggleSyncMode()
-            is BroadcastIntent.OpenDrawer -> Unit
+            is BroadcastIntent.OpenDrawer -> DrawerStateController.openDrawer()
         }
     }
 

@@ -48,20 +48,13 @@ import singularity.composeapp.generated.resources.server
 import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
-fun DiscoverScreen(
-    openDrawer: () -> Unit,
-) {
+fun DiscoverScreen() {
     val viewModel = koinViewModel<DiscoverViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DiscoverScreen(
         uiState = uiState,
-        execute = {
-            when (this) {
-                is DiscoverIntent.OpenDrawer -> openDrawer()
-                else -> viewModel.execute(this)
-            }
-        },
+        execute = { viewModel.execute(this) },
     )
 }
 

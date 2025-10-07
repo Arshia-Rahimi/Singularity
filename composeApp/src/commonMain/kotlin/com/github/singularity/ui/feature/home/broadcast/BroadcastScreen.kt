@@ -49,20 +49,13 @@ import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.switch_to_client
 
 @Composable
-fun BroadcastScreen(
-    openDrawer: () -> Unit,
-) {
+fun BroadcastScreen() {
     val viewModel = koinViewModel<BroadcastViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BroadcastScreen(
         uiState = uiState,
-        execute = {
-            when (this) {
-                is BroadcastIntent.OpenDrawer -> openDrawer()
-                else -> viewModel.execute(this)
-            }
-        },
+        execute = { viewModel.execute(this) },
     )
 }
 

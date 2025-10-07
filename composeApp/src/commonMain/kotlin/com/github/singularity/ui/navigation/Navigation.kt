@@ -38,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
@@ -49,6 +50,7 @@ import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.feature.home.HomeScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
+import com.github.singularity.ui.navigation.components.DrawerStateController
 import com.github.singularity.ui.navigation.components.NavigationDrawerItem
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -87,7 +89,6 @@ fun Navigation() {
             ) {
                 NavigationHost(
                     navController = navController,
-                    openDrawer = {},
                     syncMode = syncMode,
                 )
             }
@@ -96,10 +97,10 @@ fun Navigation() {
             val scope = rememberCoroutineScope()
             val drawerState = rememberDrawerState(DrawerValue.Closed)
             val closeDrawer: () -> Unit = { scope.launch { drawerState.close() } }
-            val toggleDrawer: () -> Unit = {
+
+            ObserveForEvents(DrawerStateController.openDrawerEvent) {
                 scope.launch {
-                    if (drawerState.isClosed) drawerState.open()
-                    else drawerState.close()
+                    drawerState.open()
                 }
             }
 
@@ -121,7 +122,6 @@ fun Navigation() {
                 NavigationHost(
                     navController = navController,
                     syncMode = syncMode,
-                    openDrawer = toggleDrawer,
                 )
             }
         }
@@ -188,7 +188,6 @@ private fun DrawerContent(
 private fun NavigationHost(
     navController: NavHostController,
     syncMode: SyncMode,
-    openDrawer: () -> Unit,
 ) {
     NavHost(
         enterTransition = {
@@ -209,18 +208,14 @@ private fun NavigationHost(
         composable<Route.Home> {
             HomeScreen(
                 syncMode = syncMode,
-                openDrawer = openDrawer,
             )
         }
         composable<Route.Settings> {
             SettingsScreen(
-                openDrawer = openDrawer,
             )
         }
         composable<Route.Log> {
-            LogScreen(
-                openDrawer = openDrawer,
-            )
+            LogScreen()
         }
     }
 }
