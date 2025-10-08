@@ -37,7 +37,7 @@ actual fun AppWindow(content: @Composable (() -> Unit)) {
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
-                .height(40.dp)
+                .height(36.dp)
                 .background(MaterialTheme.colorScheme.surface)
                 .combinedClickable(
                     onClick = {},
