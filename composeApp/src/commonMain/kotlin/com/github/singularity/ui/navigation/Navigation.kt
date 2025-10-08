@@ -2,11 +2,14 @@ package com.github.singularity.ui.navigation
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -175,6 +178,8 @@ private fun NavigationHost(
     syncMode: SyncMode,
 ) {
     NavHost(
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
         enterTransition = {
             slideInVertically(
                 initialOffsetY = { it },
@@ -186,6 +191,9 @@ private fun NavigationHost(
                 initialOffsetY = { it },
                 animationSpec = spring(stiffness = Spring.StiffnessMedium),
             )
+        },
+        exitTransition = {
+            fadeOut()
         },
         navController = navController,
         startDestination = Route.Home,
