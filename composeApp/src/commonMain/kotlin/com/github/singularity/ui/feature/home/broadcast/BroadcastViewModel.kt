@@ -3,13 +3,13 @@ package com.github.singularity.ui.feature.home.broadcast
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.singularity.app.navigation.components.AppStateController
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
-import com.github.singularity.ui.navigation.components.DrawerStateController
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
@@ -51,7 +51,7 @@ class BroadcastViewModel(
             is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.RefreshConnection -> refreshConnection()
             is BroadcastIntent.ToggleSyncMode -> syncService.toggleSyncMode()
-            is BroadcastIntent.OpenDrawer -> DrawerStateController.openDrawer()
+            is BroadcastIntent.OpenDrawer -> AppStateController.openDrawer()
         }
     }
 

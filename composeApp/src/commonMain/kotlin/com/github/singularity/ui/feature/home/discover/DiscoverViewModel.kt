@@ -3,6 +3,7 @@ package com.github.singularity.ui.feature.home.discover
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.singularity.app.navigation.components.AppStateController
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.shared.model.ClientConnectionState
@@ -12,7 +13,6 @@ import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
 import com.github.singularity.ui.feature.home.discover.components.PairRequestState
-import com.github.singularity.ui.navigation.components.DrawerStateController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -72,7 +72,7 @@ class DiscoverViewModel(
             is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is DiscoverIntent.DeleteGroup -> delete(intent.group)
             is DiscoverIntent.SetAsDefault -> setAsDefault(intent.group)
-            is DiscoverIntent.OpenDrawer -> DrawerStateController.openDrawer()
+            is DiscoverIntent.OpenDrawer -> AppStateController.openDrawer()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.github.singularity.ui.navigation
+package com.github.singularity.app.navigation
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -33,12 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.github.singularity.app.navigation.components.AppStateController
+import com.github.singularity.app.navigation.components.NavigationDrawerItem
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
@@ -47,14 +48,10 @@ import com.github.singularity.core.shared.compose.isInGraphRoot
 import com.github.singularity.ui.designsystem.PainterIconButton
 import com.github.singularity.ui.designsystem.WindowSizeClass
 import com.github.singularity.ui.designsystem.rememberWindowSizeClass
-import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.feature.home.HomeScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
-import com.github.singularity.ui.navigation.components.DrawerStateController
-import com.github.singularity.ui.navigation.components.NavigationDrawerItem
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_back
 import singularity.composeapp.generated.resources.back
@@ -62,69 +59,66 @@ import singularity.composeapp.generated.resources.singularity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation() {
-    val viewModel = koinInject<NavigationViewModel>()
-    val theme by viewModel.appTheme.collectAsStateWithLifecycle()
-    val syncMode by viewModel.syncMode.collectAsStateWithLifecycle()
+fun Navigation(
+    syncMode: SyncMode,
+) {
 
     val navController = rememberNavController()
     val windowSizeClass by rememberWindowSizeClass()
 
     val currentRoute by navController.currentRoute
 
-    SingularityTheme(theme) {
-        if (windowSizeClass == WindowSizeClass.Expanded) {
-            PermanentNavigationDrawer(
-                drawerContent = {
-                    PermanentDrawerSheet(
-                        modifier = Modifier.width(IntrinsicSize.Max),
-                    ) {
-                        DrawerContent(
-                            navController = navController,
-                            currentRoute = currentRoute,
-                            closeDrawer = {},
-                            windowSizeClass = windowSizeClass,
-                        )
-                    }
-                },
-            ) {
-                NavigationHost(
-                    navController = navController,
-                    syncMode = syncMode,
-                )
+    if (windowSizeClass == WindowSizeClass.Expanded) {
+        PermanentNavigationDrawer(
+            drawerContent = {
+                PermanentDrawerSheet(
+                    modifier = Modifier.width(IntrinsicSize.Max),
+                ) {
+                    DrawerContent(
+                        navController = navController,
+                        currentRoute = currentRoute,
+                        closeDrawer = {},
+                        windowSizeClass = windowSizeClass,
+                    )
+                }
+            },
+        ) {
+            NavigationHost(
+                navController = navController,
+                syncMode = syncMode,
+            )
+        }
+
+    } else {
+        val scope = rememberCoroutineScope()
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
+        val closeDrawer: () -> Unit = { scope.launch { drawerState.close() } }
+
+        ObserveForEvents(AppStateController.openDrawerEvent) {
+            scope.launch {
+                drawerState.open()
             }
+        }
 
-        } else {
-            val scope = rememberCoroutineScope()
-            val drawerState = rememberDrawerState(DrawerValue.Closed)
-            val closeDrawer: () -> Unit = { scope.launch { drawerState.close() } }
-
-            ObserveForEvents(DrawerStateController.openDrawerEvent) {
-                scope.launch {
-                    drawerState.open()
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(
+                    modifier = Modifier.width(IntrinsicSize.Max),
+                ) {
+                    DrawerContent(
+                        navController = navController,
+                        currentRoute = currentRoute,
+                        closeDrawer = closeDrawer,
+                        windowSizeClass = windowSizeClass,
+                    )
                 }
             }
-
-            ModalNavigationDrawer(
-                drawerState = drawerState,
-                drawerContent = {
-                    ModalDrawerSheet(
-                        modifier = Modifier.width(IntrinsicSize.Max),
-                    ) {
-                        DrawerContent(
-                            navController = navController,
-                            currentRoute = currentRoute,
-                            closeDrawer = closeDrawer,
-                            windowSizeClass = windowSizeClass,
-                        )
-                    }
-                }
-            ) {
-                NavigationHost(
-                    navController = navController,
-                    syncMode = syncMode,
-                )
-            }
+        ) {
+            NavigationHost(
+                navController = navController,
+                syncMode = syncMode,
+            )
         }
     }
 

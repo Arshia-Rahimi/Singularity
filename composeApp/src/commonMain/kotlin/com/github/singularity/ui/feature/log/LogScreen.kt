@@ -20,10 +20,10 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.singularity.app.navigation.components.AppStateController
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
-import com.github.singularity.ui.navigation.components.DrawerStateController
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.logs
@@ -50,7 +50,7 @@ fun LogScreen() {
             TopAppBar(
                 title = { Text(Res.string.logs.getString()) },
                 navigationIcon = {
-                    DrawerIcon { DrawerStateController.openDrawer() }
+                    DrawerIcon { AppStateController.openDrawer() }
                 },
             )
         },
