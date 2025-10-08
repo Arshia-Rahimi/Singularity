@@ -27,7 +27,6 @@ import singularity.composeapp.generated.resources.expand
 import singularity.composeapp.generated.resources.fullscreen
 import singularity.composeapp.generated.resources.minimize
 import singularity.composeapp.generated.resources.window
-import java.awt.Frame
 
 @Composable
 actual fun AppWindow(content: @Composable (() -> Unit)) {
@@ -64,16 +63,14 @@ actual fun AppWindow(content: @Composable (() -> Unit)) {
 
 @Composable
 private fun WindowIcons() {
-    val window = LocalWindow.current
+    val windowController = LocalWindowController.current
 
     Row(
         modifier = Modifier.fillMaxHeight(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextButton(
-            onClick = {
-                window.isMinimized = true
-            },
+            onClick = windowController::minimize,
         ) {
             Icon(
                 painter = Res.drawable.minimize.getPainter(),
@@ -81,11 +78,9 @@ private fun WindowIcons() {
             )
         }
 
-        if (window.extendedState == Frame.MAXIMIZED_BOTH) {
+        if (windowController.isMaximized) {
             TextButton(
-                onClick = {
-                    window.extendedState = Frame.NORMAL
-                },
+                onClick = windowController::restore,
             ) {
                 Icon(
                     painter = Res.drawable.window.getPainter(),
@@ -94,9 +89,7 @@ private fun WindowIcons() {
             }
         } else {
             TextButton(
-                onClick = {
-                    window.extendedState = Frame.MAXIMIZED_BOTH
-                },
+                onClick = windowController::maximize,
             ) {
                 Icon(
                     painter = Res.drawable.expand.getPainter(),
@@ -106,7 +99,7 @@ private fun WindowIcons() {
         }
 
         TextButton(
-            onClick = {},
+            onClick = windowController::close,
         ) {
             Icon(
                 painter = Res.drawable.close.getPainter(),
