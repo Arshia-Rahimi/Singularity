@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.app.navigation.components.AppStateController
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
@@ -50,7 +50,7 @@ fun LogScreen() {
             TopAppBar(
                 title = { Text(Res.string.logs.getString()) },
                 navigationIcon = {
-                    DrawerIcon { AppStateController.openDrawer() }
+                    DrawerIcon { AppNavigationController.toggleDrawer() }
                 },
             )
         },

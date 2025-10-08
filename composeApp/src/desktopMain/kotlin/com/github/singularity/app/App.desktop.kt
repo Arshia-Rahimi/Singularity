@@ -15,16 +15,26 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.PainterIconButton
+import com.github.singularity.ui.designsystem.WindowSizeClass
+import com.github.singularity.ui.designsystem.rememberWindowSizeClass
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.arrow_back
+import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.close
+import singularity.composeapp.generated.resources.drawer
 import singularity.composeapp.generated.resources.expand
 import singularity.composeapp.generated.resources.fullscreen
 import singularity.composeapp.generated.resources.minimize
+import singularity.composeapp.generated.resources.navigation_drawer
 import singularity.composeapp.generated.resources.window
 
 @Composable
@@ -113,6 +123,21 @@ private fun RowScope.WindowTitle() {
             .weight(1f),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text("singularity")
+        val enabled by AppNavigationController.canPopBackStack.collectAsStateWithLifecycle()
+        PainterIconButton(
+            onClick = AppNavigationController::popBackStack,
+            image = Res.drawable.arrow_back,
+            contentDescription = Res.string.back,
+            enabled = enabled,
+        )
+        val windowSizeClass by rememberWindowSizeClass()
+        if (windowSizeClass != WindowSizeClass.Expanded) {
+            PainterIconButton(
+                onClick = AppNavigationController::toggleDrawer,
+                image = Res.drawable.drawer,
+                contentDescription = Res.string.navigation_drawer,
+            )
+        }
+        Text("Singularity")
     }
 }

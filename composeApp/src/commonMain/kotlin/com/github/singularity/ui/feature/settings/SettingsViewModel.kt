@@ -2,7 +2,7 @@ package com.github.singularity.ui.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.app.navigation.components.AppStateController
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.util.next
@@ -28,7 +28,7 @@ class SettingsViewModel(
     fun execute(intent: SettingsIntent) {
         when(intent) {
             is SettingsIntent.ToggleAppTheme -> toggleAppTheme()
-            is SettingsIntent.OpenDrawer -> AppStateController.openDrawer()
+            is SettingsIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
         }
     }
 

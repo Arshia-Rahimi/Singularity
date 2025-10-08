@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -21,8 +22,15 @@ fun NavController.popToRoot() {
     )
 }
 
-val NavController.isInGraphRoot: Boolean
-    get() = previousBackStackEntry != null
+@Composable
+fun NavController.rememberCanPopBackStack(): State<Boolean> {
+    val currentEntry by currentBackStackEntryAsState()
+    return remember(currentEntry) {
+        derivedStateOf {
+            previousBackStackEntry != null
+        }
+    }
+}
 
 fun <T : Any> NavController.navigateAndClearStack(route: T) {
     navigate(route) {

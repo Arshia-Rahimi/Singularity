@@ -3,7 +3,7 @@ package com.github.singularity.ui.feature.home.broadcast
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.app.navigation.components.AppStateController
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
@@ -51,7 +51,7 @@ class BroadcastViewModel(
             is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
             is BroadcastIntent.RefreshConnection -> refreshConnection()
             is BroadcastIntent.ToggleSyncMode -> syncService.toggleSyncMode()
-            is BroadcastIntent.OpenDrawer -> AppStateController.openDrawer()
+            is BroadcastIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
         }
     }
 

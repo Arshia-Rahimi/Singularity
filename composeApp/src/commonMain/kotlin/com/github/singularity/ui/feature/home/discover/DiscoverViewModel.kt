@@ -3,7 +3,7 @@ package com.github.singularity.ui.feature.home.discover
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.app.navigation.components.AppStateController
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.shared.model.ClientConnectionState
@@ -72,7 +72,7 @@ class DiscoverViewModel(
             is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is DiscoverIntent.DeleteGroup -> delete(intent.group)
             is DiscoverIntent.SetAsDefault -> setAsDefault(intent.group)
-            is DiscoverIntent.OpenDrawer -> AppStateController.openDrawer()
+            is DiscoverIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
         }
     }
 

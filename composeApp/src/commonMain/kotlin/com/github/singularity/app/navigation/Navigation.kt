@@ -7,10 +7,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -18,44 +16,35 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.singularity.app.navigation.components.AppStateController
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.app.navigation.components.NavigationDrawerItem
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
-import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.compose.isInGraphRoot
-import com.github.singularity.ui.designsystem.PainterIconButton
+import com.github.singularity.core.shared.compose.rememberCanPopBackStack
 import com.github.singularity.ui.designsystem.WindowSizeClass
 import com.github.singularity.ui.designsystem.rememberWindowSizeClass
 import com.github.singularity.ui.feature.home.HomeScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import kotlinx.coroutines.launch
-import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.arrow_back
-import singularity.composeapp.generated.resources.back
-import singularity.composeapp.generated.resources.singularity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +66,6 @@ fun Navigation(
                         navController = navController,
                         currentRoute = currentRoute,
                         closeDrawer = {},
-                        windowSizeClass = windowSizeClass,
                     )
                 }
             },
@@ -89,13 +77,15 @@ fun Navigation(
         }
 
     } else {
+
         val scope = rememberCoroutineScope()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         val closeDrawer: () -> Unit = { scope.launch { drawerState.close() } }
 
-        ObserveForEvents(AppStateController.openDrawerEvent) {
+        ObserveForEvents(AppNavigationController.toggleDrawerEvent) {
             scope.launch {
-                drawerState.open()
+                if (drawerState.isOpen) drawerState.close()
+                else drawerState.open()
             }
         }
 
@@ -109,7 +99,6 @@ fun Navigation(
                         navController = navController,
                         currentRoute = currentRoute,
                         closeDrawer = closeDrawer,
-                        windowSizeClass = windowSizeClass,
                     )
                 }
             }
@@ -127,7 +116,6 @@ fun Navigation(
 private fun DrawerContent(
     navController: NavController,
     currentRoute: String?,
-    windowSizeClass: WindowSizeClass,
     closeDrawer: () -> Unit,
 ) {
     Column(
@@ -135,25 +123,9 @@ private fun DrawerContent(
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(12.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (windowSizeClass == WindowSizeClass.Expanded) {
-                PainterIconButton(
-                    onClick = navController::popBackStack,
-                    image = Res.drawable.arrow_back,
-                    contentDescription = Res.string.back,
-                    enabled = navController.isInGraphRoot,
-                )
-            }
-            Text(
-                text = Res.string.singularity.getString(),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-        HorizontalDivider(Modifier.padding(vertical = 8.dp))
+
+        DrawerTopBar()
+        
         NavigationDrawerItem.entries.forEach { item ->
             NavigationDrawerItem(
                 item = item,
@@ -204,4 +176,17 @@ private fun NavigationHost(
             LogScreen()
         }
     }
+
+    val canPopBackStack by navController.rememberCanPopBackStack()
+    LaunchedEffect(canPopBackStack) {
+        AppNavigationController.canPopBackStack(canPopBackStack)
+    }
+
+    ObserveForEvents(AppNavigationController.popStackEvent) {
+        navController.popBackStack()
+    }
+
 }
+
+@Composable
+expect fun DrawerTopBar()
