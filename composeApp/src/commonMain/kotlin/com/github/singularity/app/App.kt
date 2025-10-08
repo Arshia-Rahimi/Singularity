@@ -48,9 +48,16 @@ fun App() {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
         SingularityTheme(uiState.theme) {
-            Navigation(
-                syncMode = uiState.syncMode,
-            )
+            AppWindow {
+                Navigation(
+                    syncMode = uiState.syncMode,
+                )
+            }
         }
     }
-} 
+}
+
+@Composable
+expect fun AppWindow(
+    content: @Composable () -> Unit,
+)

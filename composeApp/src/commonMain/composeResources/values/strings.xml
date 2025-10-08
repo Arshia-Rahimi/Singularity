@@ -47,4 +47,8 @@
     <string name="switch_to_client">Switch to client mode?</string>
     <string name="available_servers">Available Servers</string>
     <string name="paired_servers">Paired Servers</string>
+    <string name="close">close</string>
+    <string name="minimize">minimize</string>
+    <string name="window">window</string>
+    <string name="fullscreen">fullscreen</string>
 </resources>

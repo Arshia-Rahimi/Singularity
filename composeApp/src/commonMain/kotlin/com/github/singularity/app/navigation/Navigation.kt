@@ -62,7 +62,6 @@ import singularity.composeapp.generated.resources.singularity
 fun Navigation(
     syncMode: SyncMode,
 ) {
-
     val navController = rememberNavController()
     val windowSizeClass by rememberWindowSizeClass()
 
