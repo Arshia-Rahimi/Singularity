@@ -28,7 +28,9 @@ import singularity.composeapp.generated.resources.minimize
 import singularity.composeapp.generated.resources.window
 
 @Composable
-actual fun AppWindow(content: @Composable (() -> Unit)) {
+actual fun AppWindow(
+    content: @Composable (() -> Unit),
+) {
     val windowController = LocalWindowController.current
 
     Column(
