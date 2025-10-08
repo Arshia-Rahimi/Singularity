@@ -58,6 +58,4 @@ fun App() {
 }
 
 @Composable
-expect fun AppWindow(
-    content: @Composable () -> Unit,
-)
+expect fun AppWindow(content: @Composable () -> Unit)

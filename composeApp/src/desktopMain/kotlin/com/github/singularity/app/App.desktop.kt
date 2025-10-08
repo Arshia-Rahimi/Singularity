@@ -2,8 +2,8 @@ package com.github.singularity.app
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
@@ -30,6 +31,8 @@ import singularity.composeapp.generated.resources.window
 
 @Composable
 actual fun AppWindow(content: @Composable (() -> Unit)) {
+    val windowController = LocalWindowController.current
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
@@ -40,12 +43,25 @@ actual fun AppWindow(content: @Composable (() -> Unit)) {
                 .background(MaterialTheme.colorScheme.surface)
                 .combinedClickable(
                     onClick = {},
-                    onDoubleClick = {
-
-                    },
+                    onDoubleClick = windowController::toggleMaximize,
                     interactionSource = null,
                     indication = null,
-                ),
+                )
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            println(windowController.window.x)
+                            println(dragAmount.x)
+                            println(windowController.window.y)
+                            println(dragAmount.y)
+                            windowController.window.setLocation(
+                                (windowController.window.x + dragAmount.x).toInt(),
+                                (windowController.window.y + dragAmount.y).toInt()
+                            )
+                        }
+                    )
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -53,11 +69,7 @@ actual fun AppWindow(content: @Composable (() -> Unit)) {
             WindowIcons()
         }
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            content()
-        }
+        content()
     }
 }
 

@@ -1,7 +1,6 @@
 package com.github.singularity.app
 
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -20,8 +19,4 @@ fun main() = application {
             App()
         }
     }
-}
-
-val LocalWindowController = staticCompositionLocalOf<WindowController> {
-    error("No WindowController provided")
 }
