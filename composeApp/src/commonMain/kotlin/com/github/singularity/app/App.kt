@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.app.navigation.Navigation
-import com.github.singularity.app.window.AppWindow
 import com.github.singularity.core.broadcast.di.BroadcastModule
 import com.github.singularity.core.client.di.ClientModule
 import com.github.singularity.core.data.di.DataModule
@@ -61,11 +60,9 @@ fun App() {
 			)
 		) {
 			SingularityTheme(uiState.theme) {
-				AppWindow {
-					Navigation(
-						syncMode = uiState.syncMode,
-					)
-				}
+				Navigation(
+					syncMode = uiState.syncMode,
+				)
 			}
 		}
 	}

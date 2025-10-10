@@ -1,14 +1,11 @@
 package com.github.singularity.app
 
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.github.singularity.app.window.LocalWindowController
-import com.github.singularity.app.window.WindowController
 import org.koin.compose.koinInject
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -29,14 +26,11 @@ fun main() = application {
 	uiState?.let {
 		Window(
 			onCloseRequest = ::exitApplication,
-			undecorated = true,
 			state = rememberWindowState(width = 800.dp, height = 600.dp)
 		) {
 			window.minimumSize = Dimension(500, 350)
 
-			CompositionLocalProvider(LocalWindowController provides WindowController(window)) {
-				App()
-			}
+			App()
 		}
 	}
 }
