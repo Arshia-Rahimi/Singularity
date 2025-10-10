@@ -3,6 +3,7 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.PreferencesLocalDataSource
 import com.github.singularity.core.shared.AppTheme
+import com.github.singularity.core.shared.ScaleOption
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
 import com.github.singularity.core.shared.util.onFirst
@@ -52,6 +53,12 @@ class SqlitePreferencesRepository(
     override suspend fun setSyncMode(syncMode: SyncMode) {
         preferencesLocalDataSource.update(
             preferences.first().copy(syncMode = syncMode)
+        )
+    }
+
+    override suspend fun setScale(scale: ScaleOption) {
+        preferencesLocalDataSource.update(
+            preferences.first().copy(scale = scale)
         )
     }
 

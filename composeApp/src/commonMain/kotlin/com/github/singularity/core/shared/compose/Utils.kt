@@ -31,3 +31,5 @@ fun StringResource.getString(vararg formatArgs: Any) = stringResource(this, *for
 
 @Composable
 fun DrawableResource.getPainter() = painterResource(this)
+
+fun <T> Boolean.select(onFalse: T, onTrue: T) = if(this) onTrue else onFalse

@@ -1,4 +1,4 @@
-package com.github.singularity.app
+package com.github.singularity.app.window
 
 import androidx.compose.runtime.Composable
 

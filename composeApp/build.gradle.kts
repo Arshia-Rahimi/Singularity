@@ -85,6 +85,7 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
+                implementation(libs.koin.startup)
             }
         }
         val iosMain by getting {

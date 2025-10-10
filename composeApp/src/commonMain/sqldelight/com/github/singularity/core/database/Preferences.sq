@@ -3,12 +3,13 @@ CREATE TABLE Preferences (
     theme INTEGER NOT NULL,
     deviceId TEXT NOT NULL,
     appSecret TEXT NOT NULL,
-    syncMode INTEGER NOT NULL
+    syncMode INTEGER NOT NULL,
+    scale INTEGER NOT NULL
 );
 
 insert:
-INSERT INTO Preferences (id, theme, deviceId, appSecret, syncMode)
-    VALUES (1, ?, ?, ?, ?);
+INSERT INTO Preferences (id, theme, deviceId, appSecret, syncMode, scale)
+    VALUES (1, ?, ?, ?, ?, ?);
 
 get:
 SELECT * FROM Preferences
@@ -17,5 +18,5 @@ SELECT * FROM Preferences
 
 update:
 UPDATE Preferences
-    SET theme = ?, deviceId = ?, appSecret = ?, syncMode = ?
+    SET theme = ?, deviceId = ?, appSecret = ?, syncMode = ?, scale = ?
     WHERE id = 1;

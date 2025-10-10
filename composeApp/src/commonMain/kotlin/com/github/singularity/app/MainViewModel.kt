@@ -13,7 +13,8 @@ class MainViewModel(
         MainUiState(
             theme = it.theme,
             syncMode = it.syncMode,
+            scale = it.scale,
         )
-    }.stateInWhileSubscribed(MainUiState())
+    }.stateInWhileSubscribed(null)
 
 }
