@@ -24,48 +24,48 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 private val AppModule = module {
-	viewModelOf(::MainViewModel)
+    viewModelOf(::MainViewModel)
 }
 
 val CommonModules = listOf(
-	AppModule,
-	ViewmodelModule,
-	DataModule,
-	DatabaseModule,
-	ClientModule,
-	SyncModule,
-	BroadcastModule,
-	ServerModule,
-	LoggerModule,
+    AppModule,
+    ViewmodelModule,
+    DataModule,
+    DatabaseModule,
+    ClientModule,
+    SyncModule,
+    BroadcastModule,
+    ServerModule,
+    LoggerModule,
 )
 
 private var koinApp: KoinApplication? = null
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
-	if (koinApp != null) return
-	koinApp = startKoin {
-		appDeclaration()
-		modules(CommonModules)
-	}
+    if (koinApp != null) return
+    koinApp = startKoin {
+        appDeclaration()
+        modules(CommonModules)
+    }
 }
 
 @Composable
 fun App() {
-	val viewModel = koinInject<MainViewModel>()
-	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val viewModel = koinInject<MainViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	uiState?.let { uiState ->
-		CompositionLocalProvider(
-			LocalDensity provides Density(
-				uiState.scale.value,
-				uiState.scale.value
-			)
-		) {
-			SingularityTheme(uiState.theme) {
-				Navigation(
-					syncMode = uiState.syncMode,
-				)
-			}
-		}
-	}
+    uiState?.let { uiState ->
+        CompositionLocalProvider(
+            LocalDensity provides Density(
+                uiState.scale.value,
+                uiState.scale.value
+            )
+        ) {
+            SingularityTheme(uiState.theme) {
+                Navigation(
+                    syncMode = uiState.syncMode,
+                )
+            }
+        }
+    }
 }
