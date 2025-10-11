@@ -2,13 +2,12 @@ package com.github.singularity.ui.feature.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,71 +66,68 @@ private fun SettingsScreen(
     ) { ip ->
         LazyColumn(
             modifier = Modifier.fillMaxSize()
-                .padding(ip)
+                .padding(ip),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            settingsItem(
-                onClick = { SettingsIntent.ToggleTheme.execute() },
-            ) {
-                Text("theme: ${uiState.theme.title.getString()}")
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { SettingsIntent.ToggleTheme.execute() }
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("theme: ${uiState.theme.title.getString()}")
+                }
             }
 
-            settingsItem {
+            item {
                 var expanded by remember { mutableStateOf(false) }
-                Text("scale: ")
-                OutlinedTextField(
-                    enabled = false,
-                    readOnly = true,
-                    value = uiState.scale.label,
-                    onValueChange = {},
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { expanded = true },
-                        ) {
-                            Icon(
-                                painter = expanded.select(
-                                    Res.drawable.arrow_down,
-                                    Res.drawable.arrow_up,
-                                ).getPainter(),
-                                contentDescription = "",
-                            )
-                        }
-                    },
-                )
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ScaleOption.entries.forEach {
-                        DropdownMenuItem(
-                            text = { Text(it.label) },
-                            onClick = {
-                                SettingsIntent.ChangeScale(it).execute()
-                                expanded = false
-                            }
+                    Text("scale: ")
+                    Box {
+                        OutlinedTextField(
+                            enabled = false,
+                            readOnly = true,
+                            value = uiState.scale.label,
+                            onValueChange = {},
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = { expanded = true },
+                                ) {
+                                    Icon(
+                                        painter = expanded.select(
+                                            Res.drawable.arrow_down,
+                                            Res.drawable.arrow_up,
+                                        ).getPainter(),
+                                        contentDescription = "",
+                                    )
+                                }
+                            },
                         )
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                        ) {
+                            ScaleOption.entries.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.label) },
+                                    onClick = {
+                                        SettingsIntent.ChangeScale(it).execute()
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
-
             }
         }
-    }
-}
-
-private fun LazyListScope.settingsItem(
-    onClick: (() -> Unit)? = null,
-    horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
-    content: @Composable RowScope.() -> Unit,
-) {
-    item {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick != null, onClick = onClick ?: {})
-                .padding(vertical = 4.dp, horizontal = 8.dp),
-            content = content,
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = horizontalArrangement,
-        )
     }
 }

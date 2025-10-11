@@ -55,10 +55,11 @@ fun App() {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     uiState?.let { uiState ->
+        val density = LocalDensity.current
         CompositionLocalProvider(
             LocalDensity provides Density(
-                uiState.scale.value,
-                uiState.scale.value
+                density.density * uiState.scale.value,
+                density.fontScale * uiState.scale.value
             )
         ) {
             SingularityTheme(uiState.theme) {
