@@ -17,6 +17,7 @@ import com.github.singularity.core.sync.di.SyncModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
 import org.koin.compose.koinInject
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.KoinAppDeclaration
@@ -38,11 +39,12 @@ val CommonModules = listOf(
 	LoggerModule,
 )
 
-fun initKoin(
-	platformConfig: KoinAppDeclaration = {}
-) {
-	startKoin {
-		platformConfig()
+private var koinApp: KoinApplication? = null
+
+fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
+	if (koinApp != null) return
+	koinApp = startKoin {
+		appDeclaration()
 		modules(CommonModules)
 	}
 }

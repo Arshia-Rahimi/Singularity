@@ -8,13 +8,12 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.KoinConfiguration
 
 @OptIn(KoinExperimentalAPI::class)
-class SingularityApplication: Application(), KoinStartup {
+class SingularityApplication : Application(), KoinStartup {
 
-	override fun onKoinStartup() = KoinConfiguration {
-		initKoin {
-			androidContext(this@SingularityApplication)
-			androidLogger()
-		}
-	}
+    override fun onKoinStartup() = KoinConfiguration {
+        androidContext(this@SingularityApplication)
+        androidLogger()
+        modules(CommonModules)
+    }
 
 }
