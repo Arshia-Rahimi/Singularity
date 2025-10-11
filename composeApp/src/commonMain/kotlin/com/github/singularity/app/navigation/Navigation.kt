@@ -122,7 +122,7 @@ private fun DrawerContent(
         Spacer(Modifier.height(12.dp))
 
         DrawerTopBar()
-        
+
         NavigationDrawerItem.entries.forEach { item ->
             NavigationDrawerItem(
                 item = item,
@@ -166,8 +166,7 @@ private fun NavigationHost(
             )
         }
         composable<Route.Settings> {
-            SettingsScreen(
-            )
+            SettingsScreen()
         }
         composable<Route.Log> {
             LogScreen()
