@@ -54,7 +54,6 @@ fun Navigation(
     val navController = rememberNavController()
     val windowSizeClass by rememberWindowSizeClass()
 
-    val currentRoute by navController.currentRoute
 
     if (windowSizeClass == WindowSizeClass.Expanded) {
         PermanentNavigationDrawer(
@@ -64,7 +63,6 @@ fun Navigation(
                 ) {
                     DrawerContent(
                         navController = navController,
-                        currentRoute = currentRoute,
                         closeDrawer = {},
                     )
                 }
@@ -97,7 +95,6 @@ fun Navigation(
                 ) {
                     DrawerContent(
                         navController = navController,
-                        currentRoute = currentRoute,
                         closeDrawer = closeDrawer,
                     )
                 }
@@ -115,9 +112,9 @@ fun Navigation(
 @Composable
 private fun DrawerContent(
     navController: NavController,
-    currentRoute: String?,
     closeDrawer: () -> Unit,
 ) {
+    val currentRoute by navController.currentRoute
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
             .verticalScroll(rememberScrollState()),
