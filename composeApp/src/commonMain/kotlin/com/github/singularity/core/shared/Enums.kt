@@ -19,59 +19,20 @@ enum class SyncMode {
 }
 
 enum class ScaleOption(
-	val value: Float,
-	val label: String,
+    val value: Float,
+    val label: String,
 ) {
-	S50(
-		value = 0.5f,
-		label = "50%",
-	),
-	S62_5(
-		value = 0.625f,
-		label = "62.5%",
-	),
-	S75(
-		value = 0.75f,
-		label = "75%",
-	),
-	S87_5(
-		value = 0.875f,
-		label = "87.5%",
-	),
-	S100(
-		value = 1f,
-		label = "100%",
-	),
-	S112_5(
-		value = 1.125f,
-		label = "112.5%",
-	),
-	S125(
-		value = 1.125f,
-		label = "125%",
-	),
-	S137_5(
-		value = 1.375f,
-		label = "137.5%",
-	),
-	S150(
-		value = 1.5f,
-		label = "150%",
-	),
-	S162_5(
-		value = 1.625f,
-		label = "162.5%",
-	),
-	S175(
-		value = 1.75f,
-		label = "175%",
-	),
-	S187_5(
-		value = 1.875f,
-		label = "187.5%",
-	),
-	S200(
-		value = 2f,
-		label = "200%",
-	),
+    S50(0.5f, "50%"),
+    S62_5(0.625f, "62.5%"),
+    S75(0.75f, "75%"),
+    S87_5(0.875f, "87.5%"),
+    S100(1f, "100%"),
+    S112_5(1.125f, "112.5%"),
+    S125(1.125f, "125%"),
+    S137_5(1.375f, "137.5%"),
+    S150(1.5f, "150%"),
+    S162_5(1.625f, "162.5%"),
+    S175(1.75f, "175%"),
+    S187_5(1.875f, "187.5%"),
+    S200(2f, "200%"),
 }
