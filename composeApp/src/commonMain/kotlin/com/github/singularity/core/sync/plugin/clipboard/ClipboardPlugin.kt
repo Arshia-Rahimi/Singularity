@@ -1,5 +1,6 @@
 package com.github.singularity.core.sync.plugin.clipboard
 
+import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.sync.plugin.Plugin
 import kotlinx.serialization.SerialName
@@ -8,10 +9,8 @@ import kotlinx.serialization.Serializable
 private const val PLUGIN_NAME = "clipboard"
 
 class ClipboardPlugin(
-    private val broadcastEventCallback: (SyncEvent) -> Unit,
-) : Plugin(
-    broadcastEventCallback = broadcastEventCallback,
-) {
+    private val syncEventBridge: SyncEventBridge,
+) : Plugin {
 
     override val pluginName = PLUGIN_NAME
 

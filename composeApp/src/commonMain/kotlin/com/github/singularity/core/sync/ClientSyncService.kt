@@ -6,6 +6,7 @@ import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.core.sync.plugin.Plugin
 import com.github.singularity.core.sync.plugin.PluginManager
 import com.github.singularity.core.sync.plugin.PluginManagerImpl
 import kotlinx.coroutines.CoroutineScope
@@ -19,9 +20,10 @@ import kotlinx.coroutines.launch
 
 class ClientSyncService(
     private val clientConnectionRepo: ClientConnectionRepository,
+    plugins: List<Plugin>,
     syncEventBridge: SyncEventBridge,
 ) : SyncService,
-    PluginManager by PluginManagerImpl(syncEventBridge) {
+    PluginManager by PluginManagerImpl(plugins, syncEventBridge) {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 

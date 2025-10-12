@@ -2,12 +2,10 @@ package com.github.singularity.core.sync.plugin
 
 import com.github.singularity.core.shared.serialization.SyncEvent
 
-abstract class Plugin(
-    broadcastEventCallback: (SyncEvent) -> Unit,
-) {
+interface Plugin {
 
-    abstract val pluginName: String
+    val pluginName: String
 
-    abstract fun handleEvent(event: SyncEvent)
+    fun handleEvent(event: SyncEvent)
 
 }
