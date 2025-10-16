@@ -98,6 +98,7 @@ kotlin {
                 implementation(libs.appdirs)
                 implementation(libs.sqldelight.driver.sqlite)
                 implementation(libs.jmdns)
+                implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
             }
         }
     }

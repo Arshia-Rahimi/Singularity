@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.runningFold
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
 
-class JmdnsDeviceDiscoverService : DeviceDiscoverService {
+class JmdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
     private val serviceType = MDNS_SERVICE_TYPE + "local."
 

@@ -1,6 +1,6 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.broadcast.DeviceDiscoverService
+import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
@@ -21,11 +21,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-    private val syncEventRemoteDataSource: SyncEventRemoteDataSource,
-    syncEventBridge: SyncEventBridge,
-    joinedSyncGroupRepo: JoinedSyncGroupRepository,
-    deviceDiscoveryService: DeviceDiscoverService,
-    logger: Logger,
+	private val syncEventRemoteDataSource: SyncEventRemoteDataSource,
+	syncEventBridge: SyncEventBridge,
+	joinedSyncGroupRepo: JoinedSyncGroupRepository,
+	deviceDiscoveryService: DeviceDiscoveryService,
+	logger: Logger,
 ) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()

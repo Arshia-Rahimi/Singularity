@@ -4,7 +4,7 @@ import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import kotlinx.coroutines.flow.Flow
 
-interface DeviceDiscoverService {
+interface DeviceDiscoveryService {
 
     fun discoveredServers(): Flow<List<LocalServer>>
 

@@ -1,6 +1,6 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.broadcast.DeviceDiscoverService
+import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.PairRemoteDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
@@ -29,10 +29,10 @@ import kotlinx.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiscoverRepositoryImp(
-    private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
-    private val preferencesRepo: PreferencesRepository,
-    private val pairRemoteDataSource: PairRemoteDataSource,
-    private val discoveryService: DeviceDiscoverService,
+	private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
+	private val preferencesRepo: PreferencesRepository,
+	private val pairRemoteDataSource: PairRemoteDataSource,
+	private val discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
