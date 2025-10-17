@@ -5,6 +5,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -133,6 +134,10 @@ private fun DrawerContent(
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
             .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(
+            space = 4.dp,
+            alignment = Alignment.Top,
+        )
     ) {
         Spacer(Modifier.height(12.dp))
 
@@ -156,7 +161,7 @@ private fun DrawerContent(
             )
         }
 
-        HorizontalDivider(Modifier.padding(vertical = 8.dp))
+        HorizontalDivider(Modifier.padding(vertical = 4.dp))
 
 
         NavigationDrawerItem.entries.forEach { item ->

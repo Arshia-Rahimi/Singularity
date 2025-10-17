@@ -22,8 +22,8 @@ class ZeroconfDeviceBroadcastService(
 
 		zeroconf = Zeroconf()
 		service = Service.Builder()
-			.setName("_singularity")
-			.setType("_tcp.")
+			.setName(getServiceName(group))
+			.setType(MDNS_SERVICE_TYPE + "local")
 			.setPort(HTTP_SERVER_PORT)
 			.put("deviceName", deviceName)
 			.put("deviceId", deviceId)

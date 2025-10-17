@@ -92,8 +92,7 @@ fun NavigationDrawerItem(
         color = colors.containerColor(selected).value,
         modifier = Modifier
             .semantics { role = Role.Tab }
-            .fillMaxWidth()
-            .height(40.dp),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(4.dp),
     ) {
         Row(

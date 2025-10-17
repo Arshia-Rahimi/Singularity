@@ -21,12 +21,12 @@ fun main() = application {
     }
 
     val viewModel = koinInject<DesktopViewModel>()
-    val uiState by viewModel.uiState.collectAsState()
+    val scale by viewModel.scale.collectAsState()
 
-    uiState?.let {
+    scale?.let { scale ->
         Window(
             onCloseRequest = ::exitApplication,
-            state = rememberWindowState(width = 800.dp, height = 600.dp)
+            state = rememberWindowState(width = 800.dp * scale.value, height = 600.dp * scale.value)
         ) {
             window.minimumSize = Dimension(500, 350)
 
