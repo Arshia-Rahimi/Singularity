@@ -13,7 +13,7 @@ import javax.jmdns.ServiceListener
 
 class JmdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
-    private val serviceType = MDNS_SERVICE_TYPE + "local."
+    private val serviceType = MDNS_SERVICE_TYPE
 
     private val servers = callbackFlow {
         val listener = object : ServiceListener {

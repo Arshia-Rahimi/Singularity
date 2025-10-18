@@ -23,7 +23,7 @@ class ZeroconfDeviceBroadcastService(
 		zeroconf = Zeroconf()
 		service = Service.Builder()
 			.setName(getServiceName(group))
-			.setType(MDNS_SERVICE_TYPE + "local")
+			.setType(MDNS_SERVICE_TYPE)
 			.setPort(HTTP_SERVER_PORT)
 			.put("deviceName", deviceName)
 			.put("deviceId", deviceId)
