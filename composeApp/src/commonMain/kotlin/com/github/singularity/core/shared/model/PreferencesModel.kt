@@ -1,7 +1,6 @@
 package com.github.singularity.core.shared.model
 
 import com.github.singularity.core.shared.AppTheme
-import com.github.singularity.core.shared.ScaleOption
 import com.github.singularity.core.shared.SyncMode
 import kotlinx.serialization.Serializable
 
@@ -12,5 +11,5 @@ data class PreferencesModel(
     val deviceId: String = "",
     val appSecret: ByteArray = byteArrayOf(),
     val syncMode: SyncMode = SyncMode.Client,
-    val scale: ScaleOption = ScaleOption.S100,
+    val scale: Float = 1f,
 )

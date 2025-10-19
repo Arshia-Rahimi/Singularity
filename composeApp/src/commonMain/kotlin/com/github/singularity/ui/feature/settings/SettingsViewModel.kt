@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.shared.ScaleOption
 import com.github.singularity.core.shared.model.PreferencesModel
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
@@ -39,7 +38,7 @@ class SettingsViewModel(
 		}
 	}
 
-	private fun changeScale(scale: ScaleOption) {
+	private fun changeScale(scale: Float) {
 		viewModelScope.launch {
 			preferencesRepo.setScale(scale)
 		}

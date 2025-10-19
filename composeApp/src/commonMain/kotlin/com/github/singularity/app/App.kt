@@ -58,8 +58,8 @@ fun App() {
         val density = LocalDensity.current
         CompositionLocalProvider(
             LocalDensity provides Density(
-                density.density * uiState.scale.value,
-                density.fontScale * uiState.scale.value
+                density.density * uiState.scale,
+                density.fontScale * uiState.scale,
             )
         ) {
             SingularityTheme(uiState.theme) {

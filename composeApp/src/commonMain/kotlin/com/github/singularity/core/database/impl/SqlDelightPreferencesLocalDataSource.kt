@@ -27,7 +27,7 @@ class SqlDelightPreferencesLocalDataSource(
                     deviceId = it.deviceId,
                     appSecret = it.appSecret.toByteArray(),
                     syncMode = it.syncMode.toEnum(),
-                    scale = it.scale.toEnum(),
+                    scale = it.scale.toFloat(),
                 )
             }
         }
@@ -38,7 +38,7 @@ class SqlDelightPreferencesLocalDataSource(
             deviceId = preferences.deviceId,
             appSecret = preferences.appSecret.toString(),
             syncMode = preferences.syncMode.ordinal.toLong(),
-            scale = preferences.scale.ordinal.toLong(),
+            scale = preferences.scale.toDouble(),
         )
     }
 
@@ -48,7 +48,7 @@ class SqlDelightPreferencesLocalDataSource(
             deviceId = preferences.deviceId,
             appSecret = preferences.appSecret.toString(),
             syncMode = preferences.syncMode.ordinal.toLong(),
-            scale = preferences.scale.ordinal.toLong(),
+            scale = preferences.scale.toDouble(),
         )
     }
 

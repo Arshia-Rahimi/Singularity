@@ -26,7 +26,7 @@ fun main() = application {
     scale?.let { scale ->
         Window(
             onCloseRequest = ::exitApplication,
-            state = rememberWindowState(width = 800.dp * scale.value, height = 600.dp * scale.value)
+            state = rememberWindowState(width = 800.dp * scale, height = 600.dp * scale)
         ) {
             window.minimumSize = Dimension(500, 350)
 

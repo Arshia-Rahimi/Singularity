@@ -29,11 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.ScaleOption
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.compose.select
+import com.github.singularity.core.shared.getScaleLabel
+import com.github.singularity.core.shared.scaleOptions
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import org.koin.compose.viewmodel.koinViewModel
@@ -87,7 +88,7 @@ private fun SettingsScreen(
                     OutlinedTextField(
                         enabled = false,
                         readOnly = true,
-                        value = uiState.scale.label,
+                        value = uiState.scale.getScaleLabel(),
                         onValueChange = {},
                         trailingIcon = {
                             IconButton(
@@ -108,9 +109,9 @@ private fun SettingsScreen(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                     ) {
-                        ScaleOption.entries.forEach {
+                        scaleOptions.forEach {
                             DropdownMenuItem(
-                                text = { Text(it.label) },
+                                text = { Text(it.getScaleLabel()) },
                                 onClick = {
                                     SettingsIntent.ChangeScale(it).execute()
                                     expanded = false

@@ -4,7 +4,7 @@ CREATE TABLE Preferences (
     deviceId TEXT NOT NULL,
     appSecret TEXT NOT NULL,
     syncMode INTEGER NOT NULL,
-    scale INTEGER NOT NULL
+    scale REAL NOT NULL
 );
 
 insert:

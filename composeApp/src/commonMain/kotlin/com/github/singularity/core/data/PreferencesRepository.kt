@@ -1,7 +1,6 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.shared.AppTheme
-import com.github.singularity.core.shared.ScaleOption
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
 import kotlinx.coroutines.flow.SharedFlow
@@ -14,6 +13,6 @@ interface PreferencesRepository {
 
     suspend fun setSyncMode(syncMode: SyncMode)
 
-    suspend fun setScale(scale: ScaleOption)
+    suspend fun setScale(scale: Float)
 
 }
