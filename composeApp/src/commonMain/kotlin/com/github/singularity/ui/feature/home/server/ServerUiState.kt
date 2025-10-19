@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.broadcast
+package com.github.singularity.ui.feature.home.server
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateListOf
@@ -9,7 +9,7 @@ import com.github.singularity.core.shared.model.ServerConnectionState
 
 
 @Immutable
-data class BroadcastUiState(
+data class ServerUiState(
     val connectionState: ServerConnectionState = ServerConnectionState.NoDefaultServer,
     val receivedPairRequests: SnapshotStateList<Node> = mutableStateListOf(),
     val hostedSyncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),

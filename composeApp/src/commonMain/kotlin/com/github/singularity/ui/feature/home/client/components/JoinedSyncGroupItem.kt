@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.discover.components
+package com.github.singularity.ui.feature.home.client.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +27,7 @@ import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.home.discover.DiscoverIntent
+import com.github.singularity.ui.feature.home.client.ClientIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete
@@ -39,7 +39,7 @@ import singularity.composeapp.generated.resources.set_group_as_default
 fun LazyItemScope.JoinedSyncGroupItem(
     joinedSyncGroup: JoinedSyncGroup,
     modifier: Modifier = Modifier,
-    execute: DiscoverIntent.() -> Unit,
+    execute: ClientIntent.() -> Unit,
 ) {
     var showSetAsDefaultDialog by remember { mutableStateOf(false) }
     var showDropDownMenu by remember { mutableStateOf(false) }
@@ -96,7 +96,7 @@ fun LazyItemScope.JoinedSyncGroupItem(
     ConfirmationDialog(
         visible = showSetAsDefaultDialog,
         message = Res.string.set_group_as_default.getString(joinedSyncGroup.syncGroupName),
-        onConfirm = { DiscoverIntent.SetAsDefault(joinedSyncGroup).execute() },
+        onConfirm = { ClientIntent.SetAsDefault(joinedSyncGroup).execute() },
         onDismiss = { showSetAsDefaultDialog = false },
     )
 
@@ -104,7 +104,7 @@ fun LazyItemScope.JoinedSyncGroupItem(
         visible = showDeletionDialog,
         title = Res.string.confirm_action.getString(),
         message = Res.string.delete_group.getString(joinedSyncGroup.syncGroupName),
-        onConfirm = { DiscoverIntent.DeleteGroup(joinedSyncGroup).execute() },
+        onConfirm = { ClientIntent.DeleteGroup(joinedSyncGroup).execute() },
         onDismiss = { showDeletionDialog = false },
         confirmText = Res.string.delete.getString(),
     )

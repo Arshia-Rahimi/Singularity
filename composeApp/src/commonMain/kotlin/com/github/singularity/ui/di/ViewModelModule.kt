@@ -1,15 +1,15 @@
 package com.github.singularity.ui.di
 
-import com.github.singularity.ui.feature.home.broadcast.BroadcastViewModel
-import com.github.singularity.ui.feature.home.discover.DiscoverViewModel
+import com.github.singularity.ui.feature.home.client.ClientViewModel
+import com.github.singularity.ui.feature.home.server.ServerViewModel
 import com.github.singularity.ui.feature.log.LogViewModel
 import com.github.singularity.ui.feature.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val ViewmodelModule = module {
-    viewModelOf(::DiscoverViewModel)
-    viewModelOf(::BroadcastViewModel)
+    viewModelOf(::ClientViewModel)
+    viewModelOf(::ServerViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::LogViewModel)
 }

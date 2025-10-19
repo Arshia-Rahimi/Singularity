@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.discover.components
+package com.github.singularity.ui.feature.home.client.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -16,14 +16,14 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.home.discover.DiscoverIntent
+import com.github.singularity.ui.feature.home.client.ClientIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.send_pair_request
 
 @Composable
 fun ServerItem(
     server: LocalServer,
-    execute: DiscoverIntent.() -> Unit,
+    execute: ClientIntent.() -> Unit,
 ) {
     var showPairRequestDialog by remember { mutableStateOf(false) }
 
@@ -49,7 +49,7 @@ fun ServerItem(
     ConfirmationDialog(
         visible = showPairRequestDialog,
         message = Res.string.send_pair_request.getString(server.syncGroupName),
-        onConfirm = { DiscoverIntent.SendPairRequest(server).execute() },
+        onConfirm = { ClientIntent.SendPairRequest(server).execute() },
         onDismiss = { showPairRequestDialog = false },
     )
 

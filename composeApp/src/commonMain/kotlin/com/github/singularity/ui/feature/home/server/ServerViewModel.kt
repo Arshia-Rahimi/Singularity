@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.broadcast
+package com.github.singularity.ui.feature.home.server
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
-class BroadcastViewModel(
+class ServerViewModel(
     private val broadcastRepo: BroadcastRepository,
     private val syncService: SyncService,
 ) : ViewModel() {
@@ -34,24 +34,24 @@ class BroadcastViewModel(
         hostedSyncGroups,
         receivedPairRequests,
     ) { connectionState, hostedSyncGroups, receivedPairRequests ->
-        BroadcastUiState(
+        ServerUiState(
             connectionState = connectionState,
             hostedSyncGroups = hostedSyncGroups.toMutableStateList(),
             receivedPairRequests = receivedPairRequests.toMutableStateList(),
         )
-    }.stateInWhileSubscribed(BroadcastUiState())
+    }.stateInWhileSubscribed(ServerUiState())
 
-    fun execute(intent: BroadcastIntent) {
+    fun execute(intent: ServerIntent) {
         when (intent) {
-            is BroadcastIntent.Approve -> approve(intent.node)
-            is BroadcastIntent.Reject -> reject(intent.node)
-            is BroadcastIntent.CreateGroup -> create(intent.groupName)
-            is BroadcastIntent.EditGroupName -> editName(intent.groupName, intent.group)
-            is BroadcastIntent.DeleteGroup -> delete(intent.group)
-            is BroadcastIntent.SetAsDefault -> setAsDefault(intent.group)
-            is BroadcastIntent.RefreshConnection -> refreshConnection()
-            is BroadcastIntent.ToggleSyncMode -> syncService.toggleSyncMode()
-            is BroadcastIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
+            is ServerIntent.Approve -> approve(intent.node)
+            is ServerIntent.Reject -> reject(intent.node)
+            is ServerIntent.CreateGroup -> create(intent.groupName)
+            is ServerIntent.EditGroupName -> editName(intent.groupName, intent.group)
+            is ServerIntent.DeleteGroup -> delete(intent.group)
+            is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
+            is ServerIntent.RefreshConnection -> refreshConnection()
+            is ServerIntent.ToggleSyncMode -> syncService.toggleSyncMode()
+            is ServerIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
         }
     }
 

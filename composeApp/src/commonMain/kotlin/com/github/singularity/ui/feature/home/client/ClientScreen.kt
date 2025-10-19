@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.discover
+package com.github.singularity.ui.feature.home.client
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +34,9 @@ import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.home.discover.components.JoinedSyncGroupItem
-import com.github.singularity.ui.feature.home.discover.components.PairRequestState
-import com.github.singularity.ui.feature.home.discover.components.ServerItem
+import com.github.singularity.ui.feature.home.client.components.JoinedSyncGroupItem
+import com.github.singularity.ui.feature.home.client.components.PairRequestState
+import com.github.singularity.ui.feature.home.client.components.ServerItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.approved_to_join
@@ -50,7 +50,7 @@ import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
 fun DiscoverScreen() {
-    val viewModel = koinViewModel<DiscoverViewModel>()
+    val viewModel = koinViewModel<ClientViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DiscoverScreen(
@@ -62,8 +62,8 @@ fun DiscoverScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DiscoverScreen(
-    uiState: DiscoverUiState,
-    execute: DiscoverIntent.() -> Unit,
+    uiState: ClientUiState,
+    execute: ClientIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
 
@@ -72,7 +72,7 @@ private fun DiscoverScreen(
             TopAppBar(
                 title = { Text(Res.string.discover.getString()) },
                 navigationIcon = {
-                    DrawerIcon { DiscoverIntent.OpenDrawer.execute() }
+                    DrawerIcon { ClientIntent.OpenDrawer.execute() }
                 },
             )
         },
@@ -98,7 +98,7 @@ private fun DiscoverScreen(
 
         ConfirmationDialog(
             visible = showSwitchModeDialog && canHostSyncServer,
-            onConfirm = { DiscoverIntent.ToggleSyncMode.execute() },
+            onConfirm = { ClientIntent.ToggleSyncMode.execute() },
             onDismiss = { showSwitchModeDialog = false },
             message = Res.string.switch_to_server.getString(),
         )
@@ -109,8 +109,8 @@ private fun DiscoverScreen(
 @Composable
 private fun Content(
     ip: PaddingValues,
-    uiState: DiscoverUiState,
-    execute: DiscoverIntent.() -> Unit,
+    uiState: ClientUiState,
+    execute: ClientIntent.() -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -132,7 +132,7 @@ private fun Content(
                 }
 
                 IconButton(
-                    onClick = { DiscoverIntent.RefreshConnection.execute() },
+                    onClick = { ClientIntent.RefreshConnection.execute() },
                 ) {
                     Icon(
                         painter = Res.drawable.refresh.getPainter(),
@@ -209,7 +209,7 @@ private fun Content(
                 contentAlignment = Alignment.Center,
             ) {
                 Button(
-                    onClick = { DiscoverIntent.RefreshDiscovery.execute() },
+                    onClick = { ClientIntent.RefreshDiscovery.execute() },
                 ) {
                     Text(Res.string.refresh.getString())
                 }

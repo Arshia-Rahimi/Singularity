@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.broadcast
+package com.github.singularity.ui.feature.home.server
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -35,8 +35,8 @@ import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.home.broadcast.components.HostedSyncGroupItem
-import com.github.singularity.ui.feature.home.broadcast.components.NodeItem
+import com.github.singularity.ui.feature.home.server.components.HostedSyncGroupItem
+import com.github.singularity.ui.feature.home.server.components.NodeItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.broadcast
@@ -50,11 +50,11 @@ import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.switch_to_client
 
 @Composable
-fun BroadcastScreen() {
-    val viewModel = koinViewModel<BroadcastViewModel>()
+fun ServerScreen() {
+    val viewModel = koinViewModel<ServerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    BroadcastScreen(
+    ServerScreen(
         uiState = uiState,
         execute = { viewModel.execute(this) },
     )
@@ -62,9 +62,9 @@ fun BroadcastScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BroadcastScreen(
-    uiState: BroadcastUiState,
-    execute: BroadcastIntent.() -> Unit,
+private fun ServerScreen(
+    uiState: ServerUiState,
+    execute: ServerIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
     var showCreateGroupDialog by remember { mutableStateOf(false) }
@@ -76,7 +76,7 @@ private fun BroadcastScreen(
             TopAppBar(
                 title = { Text(Res.string.broadcast.getString()) },
                 navigationIcon = {
-                    DrawerIcon { BroadcastIntent.OpenDrawer.execute() }
+                    DrawerIcon { ServerIntent.OpenDrawer.execute() }
                 },
                 actions = {
                     IconButton(
@@ -110,7 +110,7 @@ private fun BroadcastScreen(
 
         InputDialog(
             visible = showCreateGroupDialog,
-            onConfirm = { BroadcastIntent.CreateGroup(it).execute() },
+            onConfirm = { ServerIntent.CreateGroup(it).execute() },
             onDismiss = {
                 showCreateGroupDialog = false
                 focusManager.clearFocus()
@@ -122,7 +122,7 @@ private fun BroadcastScreen(
 
         ConfirmationDialog(
             visible = showSwitchModeDialog && canHostSyncServer,
-            onConfirm = { BroadcastIntent.ToggleSyncMode.execute() },
+            onConfirm = { ServerIntent.ToggleSyncMode.execute() },
             onDismiss = { showSwitchModeDialog = false },
             message = Res.string.switch_to_client.getString(),
         )
@@ -133,8 +133,8 @@ private fun BroadcastScreen(
 @Composable
 private fun Content(
     ip: PaddingValues,
-    uiState: BroadcastUiState,
-    execute: BroadcastIntent.() -> Unit,
+    uiState: ServerUiState,
+    execute: ServerIntent.() -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -156,7 +156,7 @@ private fun Content(
                 }
 
                 IconButton(
-                    onClick = { BroadcastIntent.RefreshConnection.execute() },
+                    onClick = { ServerIntent.RefreshConnection.execute() },
                 ) {
                     Icon(
                         painter = Res.drawable.refresh.getPainter(),

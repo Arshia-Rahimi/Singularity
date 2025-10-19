@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.discover
+package com.github.singularity.ui.feature.home.client
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -12,7 +12,7 @@ import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
-import com.github.singularity.ui.feature.home.discover.components.PairRequestState
+import com.github.singularity.ui.feature.home.client.components.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
-class DiscoverViewModel(
+class ClientViewModel(
     private val syncService: SyncService,
     private val discoverRepo: DiscoverRepository,
     private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
@@ -49,13 +49,13 @@ class DiscoverViewModel(
         sentPairRequestState,
         joinedSyncGroups,
     ) { connectionState, availableServers, sentPairRequestState, joinedSyncGroups ->
-        DiscoverUiState(
+        ClientUiState(
             connectionState = connectionState,
             availableServers = availableServers.toMutableStateList(),
             joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
         )
-    }.stateInWhileSubscribed(DiscoverUiState())
+    }.stateInWhileSubscribed(ClientUiState())
 
     private var pairRequestJob: Job? = null
 
@@ -63,16 +63,16 @@ class DiscoverViewModel(
         syncService.refresh()
     }
 
-    fun execute(intent: DiscoverIntent) {
+    fun execute(intent: ClientIntent) {
         when (intent) {
-            is DiscoverIntent.SendPairRequest -> sendPairRequest(intent.server)
-            is DiscoverIntent.CancelPairRequest -> cancelPairRequest()
-            is DiscoverIntent.RefreshDiscovery -> refreshDiscovery()
-            is DiscoverIntent.RefreshConnection -> refreshConnection()
-            is DiscoverIntent.ToggleSyncMode -> syncService.toggleSyncMode()
-            is DiscoverIntent.DeleteGroup -> delete(intent.group)
-            is DiscoverIntent.SetAsDefault -> setAsDefault(intent.group)
-            is DiscoverIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
+            is ClientIntent.SendPairRequest -> sendPairRequest(intent.server)
+            is ClientIntent.CancelPairRequest -> cancelPairRequest()
+            is ClientIntent.RefreshDiscovery -> refreshDiscovery()
+            is ClientIntent.RefreshConnection -> refreshConnection()
+            is ClientIntent.ToggleSyncMode -> syncService.toggleSyncMode()
+            is ClientIntent.DeleteGroup -> delete(intent.group)
+            is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
+            is ClientIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
         }
     }
 

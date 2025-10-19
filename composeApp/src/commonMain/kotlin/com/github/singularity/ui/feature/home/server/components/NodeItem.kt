@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.broadcast.components
+package com.github.singularity.ui.feature.home.server.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.ui.designsystem.components.dialogs.ApprovalDialog
-import com.github.singularity.ui.feature.home.broadcast.BroadcastIntent
+import com.github.singularity.ui.feature.home.server.ServerIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.approve_pair_request
 import singularity.composeapp.generated.resources.reject_or_approve
@@ -27,7 +27,7 @@ import singularity.composeapp.generated.resources.reject_or_approve
 @Composable
 fun LazyItemScope.NodeItem(
     node: Node,
-    execute: BroadcastIntent.() -> Unit,
+    execute: ServerIntent.() -> Unit,
 ) {
     var showApproveNodeDialog by remember { mutableStateOf(false) }
 
@@ -57,8 +57,8 @@ fun LazyItemScope.NodeItem(
         visible = showApproveNodeDialog,
         title = Res.string.approve_pair_request.getString(),
         message = Res.string.reject_or_approve.getString(node.deviceName),
-        onApprove = { BroadcastIntent.Approve(node).execute() },
-        onReject = { BroadcastIntent.Reject(node).execute() },
+        onApprove = { ServerIntent.Approve(node).execute() },
+        onReject = { ServerIntent.Reject(node).execute() },
         onDismiss = { showApproveNodeDialog = false },
     )
 
