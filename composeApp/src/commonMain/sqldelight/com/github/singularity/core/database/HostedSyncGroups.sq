@@ -1,5 +1,5 @@
 CREATE TABLE HostedSyncGroups(
-    hosted_sync_group_id TEXT PRIMARY KEY NOT NULL UNIQUE,
+    id TEXT PRIMARY KEY NOT NULL UNIQUE,
     name TEXT NOT NULL,
     is_default INTEGER NOT NULL CHECK (is_default IN (0, 1))
 );
@@ -8,23 +8,23 @@ index:
 SELECT *
     FROM HostedSyncGroups
     LEFT JOIN HostedSyncGroupNodes
-    ON HostedSyncGroups.hosted_sync_group_id = HostedSyncGroupNodes.hosted_sync_group_id
+    ON HostedSyncGroups.id= HostedSyncGroupNodes.hosted_sync_group_id
     ORDER BY is_default DESC, HostedSyncGroups.name DESC;
 
 insert:
-INSERT INTO HostedSyncGroups (hosted_sync_group_id, name, is_default) 
+INSERT INTO HostedSyncGroups (id, name, is_default)
     VALUES (?, ?, 0);
 
 updateIsDefault: 
 UPDATE HostedSyncGroups 
     SET is_default = ?
-    WHERE hosted_sync_group_id= ?;
+    WHERE id = ?;
     
 updateName:
 UPDATE HostedSyncGroups
     SET name = ?
-    WHERE hosted_sync_group_id = ?;
+    WHERE id = ?;
 
 delete:
 DELETE FROM HostedSyncGroups 
-    WHERE hosted_sync_group_id = ?;
+    WHERE id = ?;

@@ -1,5 +1,5 @@
 CREATE TABLE JoinedSyncGroups(
-    joined_sync_group_id TEXT PRIMARY KEY NOT NULL UNIQUE,
+    id TEXT PRIMARY KEY NOT NULL UNIQUE,
     name TEXT NOT NULL,
     is_default INTEGER NOT NULL CHECK (is_default IN (0, 1)),
     auth_token TEXT NOT NULL
@@ -11,19 +11,19 @@ SELECT *
     ORDER BY name;
     
 insert:
-INSERT INTO JoinedSyncGroups (joined_sync_group_id, name, auth_token, is_default)
+INSERT INTO JoinedSyncGroups (id, name, auth_token, is_default)
     VALUES (?, ?, ?, 1);
 
 update:
 UPDATE JoinedSyncGroups
     SET name = ?, auth_token = ?, is_default = 1
-    WHERE joined_sync_group_id == ?;
+    WHERE id == ?;
 
 updateIsDefault:
 UPDATE JoinedSyncGroups 
     SET is_default = ?
-    WHERE joined_sync_group_id = ?;
+    WHERE id = ?;
 
 delete: 
 DELETE FROM JoinedSyncGroups
-    WHERE joined_sync_group_id = ?;
+    WHERE id = ?;

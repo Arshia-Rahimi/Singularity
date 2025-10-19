@@ -22,7 +22,7 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
         .asFlow()
         .map { query ->
             query.executeAsList()
-                .groupBy { it.hosted_sync_group_id }
+                .groupBy { it.id }
                 .map { (id, nodes) ->
                     val groupData = nodes.first()
                     HostedSyncGroup(
@@ -30,9 +30,9 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
                         name = groupData.name,
                         isDefault = groupData.is_default.toBoolean(),
                         nodes = nodes.mapNotNull { node ->
-                            if (node.node_id == null) return@mapNotNull null
+                            if (node.hosted_sync_group_id == null) return@mapNotNull null
                             HostedSyncGroupNode(
-                                deviceId = node.node_id,
+                                deviceId = node.id,
                                 authToken = node.auth_token ?: "",
                                 syncGroupId = id,
                                 syncGroupName = groupData.name,
@@ -46,7 +46,7 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
 
     override fun insert(syncGroup: HostedSyncGroup) {
         queries.insert(
-            hosted_sync_group_id = syncGroup.hostedSyncGroupId,
+            id = syncGroup.hostedSyncGroupId,
             name = syncGroup.name,
         )
     }
@@ -62,7 +62,7 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
                 hosted_sync_group_id = syncGroupNode.syncGroupId,
                 node_name = syncGroupNode.deviceName,
                 node_os = syncGroupNode.deviceOs,
-                node_id = syncGroupNode.deviceId,
+                id = syncGroupNode.deviceId,
             ).value == 0L
         ) {
             nodesQueries.insert(
@@ -70,7 +70,7 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
                 hosted_sync_group_id = syncGroupNode.syncGroupId,
                 node_name = syncGroupNode.deviceName,
                 node_os = syncGroupNode.deviceOs,
-                node_id = syncGroupNode.deviceId,
+                id = syncGroupNode.deviceId,
             )
         }
     }
@@ -89,7 +89,7 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
             groups.forEach { group ->
                 val isDefault = group.hostedSyncGroupId == hostedSyncGroup.hostedSyncGroupId
                 queries.updateIsDefault(
-                    hosted_sync_group_id = group.hostedSyncGroupId,
+                    id = group.hostedSyncGroupId,
                     is_default = isDefault.toLong(),
                 )
             }

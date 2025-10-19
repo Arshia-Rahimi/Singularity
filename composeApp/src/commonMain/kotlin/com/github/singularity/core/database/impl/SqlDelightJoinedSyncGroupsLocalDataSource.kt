@@ -22,7 +22,7 @@ class SqlDelightJoinedSyncGroupsLocalDataSource(
                 JoinedSyncGroup(
                     isDefault = it.is_default.toBoolean(),
                     authToken = it.auth_token,
-                    syncGroupId = it.joined_sync_group_id,
+                    syncGroupId = it.id,
                     syncGroupName = it.name,
                 )
             }
@@ -31,13 +31,13 @@ class SqlDelightJoinedSyncGroupsLocalDataSource(
     override fun upsert(joinedSyncGroup: JoinedSyncGroup) {
         if (
             queries.update(
-                joined_sync_group_id = joinedSyncGroup.syncGroupId,
+                id = joinedSyncGroup.syncGroupId,
                 name = joinedSyncGroup.syncGroupName,
                 auth_token = joinedSyncGroup.authToken,
             ).value == 0L
         ) {
             queries.insert(
-                joined_sync_group_id = joinedSyncGroup.syncGroupId,
+                id = joinedSyncGroup.syncGroupId,
                 name = joinedSyncGroup.syncGroupName,
                 auth_token = joinedSyncGroup.authToken,
             )
@@ -54,7 +54,7 @@ class SqlDelightJoinedSyncGroupsLocalDataSource(
             groups.forEach { group ->
                 val isDefault = group.syncGroupId == joinedSyncGroup.syncGroupId
                 queries.updateIsDefault(
-                    joined_sync_group_id = group.syncGroupId,
+                    id = group.syncGroupId,
                     is_default = isDefault.toLong(),
                 )
             }
