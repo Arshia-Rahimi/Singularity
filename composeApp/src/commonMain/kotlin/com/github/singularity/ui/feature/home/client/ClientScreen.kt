@@ -49,11 +49,11 @@ import singularity.composeapp.generated.resources.server
 import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
-fun DiscoverScreen() {
+fun ClientScreen() {
     val viewModel = koinViewModel<ClientViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DiscoverScreen(
+    ClientScreen(
         uiState = uiState,
         execute = { viewModel.execute(this) },
     )
@@ -61,7 +61,7 @@ fun DiscoverScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiscoverScreen(
+private fun ClientScreen(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
 ) {
