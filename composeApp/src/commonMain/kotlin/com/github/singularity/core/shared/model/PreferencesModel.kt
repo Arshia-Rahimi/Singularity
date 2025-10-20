@@ -1,7 +1,7 @@
 package com.github.singularity.core.shared.model
 
-import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.ui.designsystem.theme.AppTheme
 import kotlinx.serialization.Serializable
 
 @Suppress("ArrayInDataClass")

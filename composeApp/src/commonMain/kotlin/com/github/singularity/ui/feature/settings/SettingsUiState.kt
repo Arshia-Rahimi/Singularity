@@ -1,7 +1,7 @@
 package com.github.singularity.ui.feature.settings
 
 import androidx.compose.runtime.Immutable
-import com.github.singularity.core.shared.AppTheme
+import com.github.singularity.ui.designsystem.theme.AppTheme
 
 @Immutable
 data class SettingsUiState(
