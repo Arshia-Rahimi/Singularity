@@ -23,13 +23,13 @@ class JmdnsDeviceDiscoveryService : DeviceDiscoveryService {
 
             override fun serviceRemoved(event: ServiceEvent?) {
                 event?.info?.toServer()?.let {
-                    trySend(JmdnsEvent.Removed(it))
+                    trySend(MdnsEvent.Removed(it))
                 }
             }
 
             override fun serviceResolved(event: ServiceEvent?) {
                 event?.info?.toServer()?.let {
-                    trySend(JmdnsEvent.Resolved(it))
+                    trySend(MdnsEvent.Resolved(it))
                 }
             }
         }
@@ -45,15 +45,14 @@ class JmdnsDeviceDiscoveryService : DeviceDiscoveryService {
     override fun discoveredServers() = servers
         .runningFold(emptyList<LocalServer>()) { list, newServer ->
             when (newServer) {
-                is JmdnsEvent.Removed -> list - newServer.server
-                is JmdnsEvent.Resolved -> list + newServer.server
+                is MdnsEvent.Removed -> list - newServer.server
+                is MdnsEvent.Resolved -> list + newServer.server
             }.distinctBy { it.syncGroupId }
         }
 
     override suspend fun discoverServer(syncGroup: JoinedSyncGroup) =
-        servers.filterIsInstance<JmdnsEvent.Resolved>()
+        servers.filterIsInstance<MdnsEvent.Resolved>()
             .map { it.server }
             .firstOrNull { it.syncGroupId == syncGroup.syncGroupId }
 
-    
 }

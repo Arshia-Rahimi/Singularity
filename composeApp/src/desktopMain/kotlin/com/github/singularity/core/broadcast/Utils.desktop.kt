@@ -1,16 +1,17 @@
 package com.github.singularity.core.broadcast
 
+import com.bfo.zeroconf.Service
 import com.github.singularity.core.shared.model.LocalServer
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceInfo
 
-sealed interface JmdnsEvent {
+sealed interface MdnsEvent {
     val server: LocalServer
 
-    data class Resolved(override val server: LocalServer) : JmdnsEvent
-    data class Removed(override val server: LocalServer) : JmdnsEvent
+    data class Resolved(override val server: LocalServer) : MdnsEvent
+    data class Removed(override val server: LocalServer) : MdnsEvent
 }
 
 
@@ -23,6 +24,17 @@ fun ServiceInfo.toServer() = LocalServer(
     deviceId = getPropertyString("deviceId"),
     syncGroupName = getPropertyString("syncGroupName"),
     syncGroupId = getPropertyString("syncGroupId"),
+)
+
+fun Service.toServer() = LocalServer(
+    ip = addresses.firstOrNull {
+        it is Inet4Address && !it.isLoopbackAddress
+    }?.hostAddress ?: "Unknown",
+    deviceOs = text["deviceOs"] ?: "Unknown",
+    deviceName = text["deviceName"] ?: "Unknown",
+    deviceId = text["deviceId"] ?: "Unknown",
+    syncGroupName = text["syncGroupName"] ?: "Unknown",
+    syncGroupId = text["syncGroupId"] ?: "Unknown",
 )
 
 fun getJmdns(): JmDNS {
