@@ -2,7 +2,6 @@ package com.github.singularity.ui.feature.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -84,46 +82,46 @@ private fun SettingsScreen(
             settingsItem {
                 var expanded by remember { mutableStateOf(false) }
                 SettingsItemText("Scale:")
-                Box {
-                    OutlinedTextField(
-                        enabled = false,
-                        readOnly = true,
-                        value = uiState.scale.getScaleLabel(),
-                        onValueChange = {},
-                        trailingIcon = {
-                            IconButton(
-                                onClick = { expanded = true },
-                            ) {
-                                Icon(
-                                    painter = expanded.select(
-                                        Res.drawable.arrow_down,
-                                        Res.drawable.arrow_up,
-                                    ).getPainter(),
-                                    contentDescription = "",
+
+                Row(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    SettingsItemText(uiState.scale.getScaleLabel())
+                    IconButton(
+                        onClick = { expanded = true },
+                    ) {
+                        Icon(
+                            painter = expanded.select(
+                                Res.drawable.arrow_down,
+                                Res.drawable.arrow_up,
+                            ).getPainter(),
+                            contentDescription = "",
+                        )
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                        ) {
+                            scaleOptions.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.getScaleLabel()) },
+                                    onClick = {
+                                        SettingsIntent.ChangeScale(it).execute()
+                                        expanded = false
+                                    }
                                 )
                             }
-                        },
-                    )
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                    ) {
-                        scaleOptions.forEach {
-                            DropdownMenuItem(
-                                text = { Text(it.getScaleLabel()) },
-                                onClick = {
-                                    SettingsIntent.ChangeScale(it).execute()
-                                    expanded = false
-                                }
-                            )
                         }
                     }
                 }
+
             }
         }
     }
 }
+
 
 private fun LazyListScope.settingsItem(
     onClick: (() -> Unit)? = null,

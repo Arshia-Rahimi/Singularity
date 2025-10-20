@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -40,12 +39,17 @@ import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
 import singularity.composeapp.generated.resources.settings
 
-enum class NavigationDrawerItem(
-    val label: StringResource,
-    val icon: DrawableResource,
-    val route: Any,
-    val followsDivider: Boolean = false,
-) {
+interface NavigationDrawerItem {
+    val label: StringResource
+    val icon: DrawableResource
+    val route: Any
+}
+
+enum class NavigationDrawerItemTop(
+    override val label: StringResource,
+    override val icon: DrawableResource,
+    override val route: Any,
+) : NavigationDrawerItem {
 
     Home(
         icon = Res.drawable.home,
@@ -53,11 +57,18 @@ enum class NavigationDrawerItem(
         route = Route.Home,
     ),
 
+}
+
+enum class NavigationDrawerItemBottom(
+    override val label: StringResource,
+    override val icon: DrawableResource,
+    override val route: Any,
+) : NavigationDrawerItem {
+
     Settings(
         icon = Res.drawable.settings,
         label = Res.string.settings,
         route = Route.Settings,
-        followsDivider = true,
     ),
 
     Logs(
@@ -77,10 +88,6 @@ fun NavigationDrawerItem(
 ) {
     val colors = NavigationDrawerItemDefaults.colors()
     val selected = item.route::class.simpleName == currentRoute
-
-    if (item.followsDivider) {
-        HorizontalDivider(Modifier.padding(vertical = 4.dp))
-    }
 
     Surface(
         selected = selected,

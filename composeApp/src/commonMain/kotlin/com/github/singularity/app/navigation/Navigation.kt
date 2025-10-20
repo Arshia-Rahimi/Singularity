@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -43,6 +41,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.app.navigation.components.NavigationDrawerItem
+import com.github.singularity.app.navigation.components.NavigationDrawerItemBottom
+import com.github.singularity.app.navigation.components.NavigationDrawerItemTop
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
@@ -132,45 +132,62 @@ private fun DrawerContent(
     val currentRoute by navController.currentRoute
 
     Column(
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 12.dp)
+            .padding(horizontal = 8.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(
-            space = 4.dp,
-            alignment = Alignment.Top,
-        )
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Spacer(Modifier.height(12.dp))
-
-        Row(
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (windowSizeClass == WindowSizeClass.Expanded) {
-                val enabled by AppNavigationController.canPopBackStack.collectAsStateWithLifecycle()
-                PainterIconButton(
-                    onClick = AppNavigationController::popBackStack,
-                    image = Res.drawable.arrow_back,
-                    contentDescription = Res.string.back,
-                    enabled = enabled,
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (windowSizeClass == WindowSizeClass.Expanded) {
+                    val enabled by AppNavigationController.canPopBackStack.collectAsStateWithLifecycle()
+                    PainterIconButton(
+                        onClick = AppNavigationController::popBackStack,
+                        image = Res.drawable.arrow_back,
+                        contentDescription = Res.string.back,
+                        enabled = enabled,
+                    )
+                }
+                Text(
+                    text = Res.string.singularity.getString(),
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
-            Text(
-                text = Res.string.singularity.getString(),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.primary,
-            )
+
+            HorizontalDivider(Modifier.padding(vertical = 4.dp))
+
+            NavigationDrawerItemTop.entries.forEach { item ->
+                NavigationDrawerItem(
+                    item = item,
+                    currentRoute = currentRoute,
+                    closeDrawer = closeDrawer,
+                    navigateTo = { navController.navigate(it) },
+                )
+            }
+
         }
 
-        HorizontalDivider(Modifier.padding(vertical = 4.dp))
-
-
-        NavigationDrawerItem.entries.forEach { item ->
-            NavigationDrawerItem(
-                item = item,
-                currentRoute = currentRoute,
-                closeDrawer = closeDrawer,
-                navigateTo = { navController.navigate(it) },
-            )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+        ) {
+            NavigationDrawerItemBottom.entries.forEach { item ->
+                NavigationDrawerItem(
+                    item = item,
+                    currentRoute = currentRoute,
+                    closeDrawer = closeDrawer,
+                    navigateTo = { navController.navigate(it) },
+                )
+            }
         }
     }
 }
