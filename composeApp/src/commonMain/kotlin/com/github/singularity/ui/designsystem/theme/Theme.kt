@@ -1,17 +1,12 @@
 package com.github.singularity.ui.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.compose.resources.StringResource
-import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.dark
-import singularity.composeapp.generated.resources.follow_system
-import singularity.composeapp.generated.resources.light
+import com.github.singularity.core.shared.AppTheme
 
 private val lightColorScheme = lightColorScheme(
 	primary = Color(0xFF415F91),
@@ -89,30 +84,12 @@ private val darkColorScheme = darkColorScheme(
 	surfaceContainerHighest = Color(0xFF33353A),
 )
 
-enum class AppTheme(
-	val title: StringResource,
-) {
-
-	Light(Res.string.light) {
-		@Composable
-		override fun getColorScheme() = lightColorScheme
-	},
-	Dark(Res.string.dark) {
-		@Composable
-		override fun getColorScheme() = darkColorScheme
-	},
-	System(
-		title = Res.string.follow_system,
-	) {
-		@Composable
-		override fun getColorScheme() =
-			if (isSystemInDarkTheme()) darkColorScheme else lightColorScheme
-	};
-
-	@Composable
-	abstract fun getColorScheme(): ColorScheme
+@Composable
+private fun AppTheme.getColorScheme() = when (this) {
+	AppTheme.Light -> lightColorScheme
+	AppTheme.Dark -> darkColorScheme
+	AppTheme.System -> if (isSystemInDarkTheme()) darkColorScheme else lightColorScheme
 }
-
 
 @Composable
 fun SingularityTheme(

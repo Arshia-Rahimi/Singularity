@@ -2,11 +2,11 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.PreferencesLocalDataSource
+import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.PreferencesModel
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
-import com.github.singularity.ui.designsystem.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
