@@ -1,6 +1,5 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.server.KtorWebSocketServer
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.onStart
 class ServerConnectionRepositoryImpl(
     private val webSocketServer: KtorWebSocketServer,
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
-    private val broadcastRepo: BroadcastRepository,
 ) : ServerConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
@@ -31,14 +29,12 @@ class ServerConnectionRepositoryImpl(
                     if (group == null) flowOf(ServerConnectionState.NoDefaultServer)
                     else {
                         webSocketServer.start()
-                        broadcastRepo.startBroadcast()
                         webSocketServer.connectedNodes.map { nodes ->
                             ServerConnectionState.Running(group, nodes)
                         }
                     }
                 }
         }.onCompletion {
-            broadcastRepo.stopBroadcast()
             webSocketServer.stop()
         }
 

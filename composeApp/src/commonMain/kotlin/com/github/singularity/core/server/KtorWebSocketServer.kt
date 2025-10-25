@@ -10,6 +10,8 @@ import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.serialize
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.AuthenticationStrategy
@@ -58,21 +60,25 @@ class KtorWebSocketServer(
         }
 
         registerRoutes()
+    }.apply {
+        monitor.subscribe(ApplicationStarted) {
+            isRunning = true
+        }
+        monitor.subscribe(ApplicationStopped) {
+            isRunning = false
+        }
     }
 
     fun start() {
         if (isRunning) {
             server.stop()
         }
-
-        isRunning = true
         _connectedNodes.value = emptyList()
         server.start()
     }
 
     fun stop() {
         server.stop()
-        isRunning = false
         _connectedNodes.value = emptyList()
     }
 
