@@ -51,7 +51,11 @@ class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
     override suspend fun connect(server: LocalServer, token: String) {
         try {
             authToken = token
-            wsSession = client.webSocketSession("ws://${server.ip}:$WEBSOCKET_SERVER_PORT/sync")
+            wsSession = client.webSocketSession(
+                host = server.ip,
+                port = WEBSOCKET_SERVER_PORT,
+                path = "/sync",
+            )
         } finally {
             authToken = null
             wsSession = null
