@@ -30,7 +30,7 @@ class ServerConnectionRepositoryImpl(
                 .flatMapLatest { group ->
                     if (group == null) flowOf(ServerConnectionState.NoDefaultServer)
                     else {
-                        webSocketServer.start(group)
+                        webSocketServer.start()
                         broadcastRepo.startBroadcast()
                         webSocketServer.connectedNodes.map { nodes ->
                             ServerConnectionState.Running(group, nodes)

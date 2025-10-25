@@ -3,7 +3,6 @@ package com.github.singularity.core.server
 import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
-import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.serialization.jsonConverter
@@ -36,10 +35,10 @@ class KtorWebSocketServer(
     private val authTokenRepo: AuthTokenRepository,
 ) {
 
-    private var syncGroup: HostedSyncGroup? = null
-
     private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
     val connectedNodes = _connectedNodes.asStateFlow()
+
+    private var isRunning = false
 
     private val server = embeddedServer(
         factory = CIO,
@@ -61,16 +60,20 @@ class KtorWebSocketServer(
         registerRoutes()
     }
 
-    fun start(group: HostedSyncGroup) {
-        stop()
-        syncGroup = group
+    fun start() {
+        if (isRunning) {
+            server.stop()
+        }
+
+        isRunning = true
+        _connectedNodes.value = emptyList()
         server.start()
     }
 
     fun stop() {
         server.stop()
+        isRunning = false
         _connectedNodes.value = emptyList()
-        syncGroup = null
     }
 
     private fun Application.registerRoutes() {
