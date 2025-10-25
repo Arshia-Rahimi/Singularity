@@ -43,17 +43,22 @@ class ClientViewModel(
     private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups
         .stateInWhileSubscribed(emptyList())
 
+    private val defaultSyncGroup = joinedSyncGroupRepo.defaultJoinedSyncGroup
+        .stateInWhileSubscribed(null)
+
     val uiState = combine(
         connectionState,
         availableServers,
         sentPairRequestState,
         joinedSyncGroups,
-    ) { connectionState, availableServers, sentPairRequestState, joinedSyncGroups ->
+        defaultSyncGroup,
+    ) { connectionState, availableServers, sentPairRequestState, joinedSyncGroups, defaultSyncGroup ->
         ClientUiState(
             connectionState = connectionState,
             availableServers = availableServers.toMutableStateList(),
             joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
+            defaultSyncGroup = defaultSyncGroup,
         )
     }.stateInWhileSubscribed(ClientUiState())
 
@@ -73,6 +78,7 @@ class ClientViewModel(
             is ClientIntent.DeleteGroup -> delete(intent.group)
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
             is ClientIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
+            is ClientIntent.RemoveAllDefaults -> removeAllDefaults()
         }
     }
 
@@ -100,7 +106,15 @@ class ClientViewModel(
     }
 
     private fun setAsDefault(group: JoinedSyncGroup) {
-        viewModelScope.launch { joinedSyncGroupRepo.setAsDefault(group) }
+        viewModelScope.launch {
+            joinedSyncGroupRepo.setAsDefault(group)
+        }
+    }
+
+    private fun removeAllDefaults() {
+        viewModelScope.launch {
+            joinedSyncGroupRepo.removeAllDefaults()
+        }
     }
 
     private fun refreshDiscovery() {

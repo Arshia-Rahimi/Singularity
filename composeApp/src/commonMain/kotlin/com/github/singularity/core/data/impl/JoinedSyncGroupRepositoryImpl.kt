@@ -35,4 +35,8 @@ class JoinedSyncGroupRepositoryImpl(
         joinedSyncGroupsLocalDataSource.setAsDefault(group)
     }
 
+    override suspend fun removeAllDefaults() {
+        joinedSyncGroupsLocalDataSource.removeAllDefaults()
+    }
+
 }

@@ -1,0 +1,162 @@
+package com.github.singularity.ui.feature.home.client.pages
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.github.singularity.core.shared.compose.getPainter
+import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.DrawerIcon
+import com.github.singularity.ui.designsystem.components.ScreenScaffold
+import com.github.singularity.ui.feature.home.client.ClientIntent
+import com.github.singularity.ui.feature.home.client.ClientUiState
+import com.github.singularity.ui.feature.home.client.components.JoinedSyncGroupItem
+import com.github.singularity.ui.feature.home.client.components.PairRequestState
+import com.github.singularity.ui.feature.home.client.components.ServerItem
+import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.approved_to_join
+import singularity.composeapp.generated.resources.available_servers
+import singularity.composeapp.generated.resources.await_pair_request_approval
+import singularity.composeapp.generated.resources.discover
+import singularity.composeapp.generated.resources.paired_servers
+import singularity.composeapp.generated.resources.refresh
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DiscoverPage(
+    uiState: ClientUiState,
+    execute: ClientIntent.() -> Unit,
+) {
+    ScreenScaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(Res.string.discover.getString()) },
+                navigationIcon = {
+                    DrawerIcon { ClientIntent.OpenDrawer.execute() }
+                },
+            )
+        },
+    ) { ip ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+                .padding(ip)
+                .padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            stickyHeader {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AnimatedContent(
+                        targetState = uiState.connectionState.message,
+                    ) {
+                        Text(it)
+                    }
+
+                    IconButton(
+                        onClick = { ClientIntent.RefreshConnection.execute() },
+                    ) {
+                        Icon(
+                            painter = Res.drawable.refresh.getPainter(),
+                            contentDescription = Res.string.refresh.getString(),
+                        )
+                    }
+                }
+
+                AnimatedContent(
+                    targetState = uiState.sentPairRequestState,
+                ) {
+                    if (it !is PairRequestState.Idle) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            when (uiState.sentPairRequestState) {
+                                is PairRequestState.Awaiting -> {
+                                    Text(Res.string.await_pair_request_approval.getString(uiState.sentPairRequestState.server.syncGroupName))
+                                    CircularProgressIndicator()
+                                }
+
+                                is PairRequestState.Success -> Text(
+                                    Res.string.approved_to_join.getString(
+                                        uiState.sentPairRequestState.server
+                                    )
+                                )
+
+                                is PairRequestState.Error -> Text(uiState.sentPairRequestState.message)
+                                is PairRequestState.Idle -> Unit
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                ) {
+                    Text(
+                        text = Res.string.paired_servers.getString(),
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+            items(uiState.joinedSyncGroups) {
+                JoinedSyncGroupItem(
+                    joinedSyncGroup = it,
+                    execute = execute,
+                )
+            }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                ) {
+                    Text(
+                        text = Res.string.available_servers.getString(),
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+            items(uiState.availableServers) {
+                ServerItem(
+                    server = it,
+                    execute = execute,
+                )
+            }
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Button(
+                        onClick = { ClientIntent.RefreshDiscovery.execute() },
+                    ) {
+                        Text(Res.string.refresh.getString())
+                    }
+                }
+            }
+        }
+    }
+}

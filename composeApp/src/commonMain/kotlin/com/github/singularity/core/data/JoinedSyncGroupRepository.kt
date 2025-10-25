@@ -15,4 +15,6 @@ interface JoinedSyncGroupRepository {
 
     suspend fun setAsDefault(group: JoinedSyncGroup)
 
+    suspend fun removeAllDefaults()
+
 }

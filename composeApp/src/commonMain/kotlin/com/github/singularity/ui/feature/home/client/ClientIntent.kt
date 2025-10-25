@@ -8,6 +8,7 @@ sealed interface ClientIntent {
     data class SendPairRequest(val server: LocalServer) : ClientIntent
     data class SetAsDefault(val group: JoinedSyncGroup) : ClientIntent
     data class DeleteGroup(val group: JoinedSyncGroup) : ClientIntent
+    data object RemoveAllDefaults : ClientIntent
     data object CancelPairRequest : ClientIntent
     data object RefreshDiscovery : ClientIntent
     data object RefreshConnection : ClientIntent

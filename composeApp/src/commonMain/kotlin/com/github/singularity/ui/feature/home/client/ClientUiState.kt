@@ -14,4 +14,5 @@ data class ClientUiState(
     val availableServers: SnapshotStateList<LocalServer> = mutableStateListOf(),
     val sentPairRequestState: PairRequestState = PairRequestState.Idle,
     val joinedSyncGroups: SnapshotStateList<JoinedSyncGroup> = mutableStateListOf(),
+    val defaultSyncGroup: JoinedSyncGroup? = null,
 )

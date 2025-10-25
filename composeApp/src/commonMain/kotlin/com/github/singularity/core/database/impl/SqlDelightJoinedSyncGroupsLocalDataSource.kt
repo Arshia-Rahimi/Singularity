@@ -61,4 +61,16 @@ class SqlDelightJoinedSyncGroupsLocalDataSource(
         }
     }
 
+    override suspend fun removeAllDefaults() {
+        val groups = joinedSyncGroups.first()
+        queries.transaction {
+            groups.forEach { group ->
+                queries.updateIsDefault(
+                    is_default = false.toLong(),
+                    id = group.syncGroupId,
+                )
+            }
+        }
+    }
+
 }

@@ -13,4 +13,6 @@ interface JoinedSyncGroupsLocalDataSource {
 
     suspend fun setAsDefault(joinedSyncGroup: JoinedSyncGroup)
 
+    suspend fun removeAllDefaults()
+
 }
