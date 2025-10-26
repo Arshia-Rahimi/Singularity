@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.client.pages.discover.components
+package com.github.singularity.ui.feature.connection.client.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.home.client.pages.discover.DiscoverIntent
+import com.github.singularity.ui.feature.connection.client.ClientIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.send_pair_request
 
 @Composable
 fun LazyGridItemScope.ServerItem(
     server: LocalServer,
-    execute: DiscoverIntent.() -> Unit,
+    execute: ClientIntent.() -> Unit,
 ) {
     var showPairRequestDialog by remember { mutableStateOf(false) }
 
@@ -44,7 +44,7 @@ fun LazyGridItemScope.ServerItem(
     ConfirmationDialog(
         visible = showPairRequestDialog,
         message = Res.string.send_pair_request.getString(server.syncGroupName),
-        onConfirm = { DiscoverIntent.SendPairRequest(server).execute() },
+        onConfirm = { ClientIntent.SendPairRequest(server).execute() },
         onDismiss = { showPairRequestDialog = false },
     )
 

@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.server
+package com.github.singularity.ui.feature.connection.server
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -35,8 +35,8 @@ import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.home.server.components.HostedSyncGroupItem
-import com.github.singularity.ui.feature.home.server.components.NodeItem
+import com.github.singularity.ui.feature.connection.server.components.HostedSyncGroupItem
+import com.github.singularity.ui.feature.connection.server.components.NodeItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.broadcast

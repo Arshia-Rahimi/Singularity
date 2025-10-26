@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.client.pages.discover.components
+package com.github.singularity.ui.feature.connection.client.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.home.client.pages.discover.DiscoverIntent
+import com.github.singularity.ui.feature.connection.client.ClientIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete
@@ -30,7 +30,7 @@ import singularity.composeapp.generated.resources.delete_group
 @Composable
 fun LazyGridItemScope.JoinedSyncGroupItem(
 	joinedSyncGroup: JoinedSyncGroup,
-	execute: DiscoverIntent.() -> Unit,
+	execute: ClientIntent.() -> Unit,
 ) {
 	var showDeletionDialog by remember { mutableStateOf(false) }
 
@@ -41,7 +41,7 @@ fun LazyGridItemScope.JoinedSyncGroupItem(
 			.clip(RoundedCornerShape(16.dp))
 			.background(MaterialTheme.colorScheme.secondary)
 			.combinedClickable(
-				onClick = { DiscoverIntent.SetAsDefault(joinedSyncGroup).execute() },
+				onClick = { ClientIntent.SetAsDefault(joinedSyncGroup).execute() },
 				onLongClick = { showDeletionDialog = true },
 			)
 			.padding(16.dp),
@@ -58,7 +58,7 @@ fun LazyGridItemScope.JoinedSyncGroupItem(
 		visible = showDeletionDialog,
 		title = Res.string.confirm_action.getString(),
 		message = Res.string.delete_group.getString(joinedSyncGroup.syncGroupName),
-		onConfirm = { DiscoverIntent.DeleteGroup(joinedSyncGroup).execute() },
+		onConfirm = { ClientIntent.DeleteGroup(joinedSyncGroup).execute() },
 		onDismiss = { showDeletionDialog = false },
 		confirmText = Res.string.delete.getString(),
 	)

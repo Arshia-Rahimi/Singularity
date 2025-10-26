@@ -51,7 +51,7 @@ import com.github.singularity.core.shared.compose.rememberCanPopBackStack
 import com.github.singularity.ui.designsystem.PainterIconButton
 import com.github.singularity.ui.designsystem.WindowSizeClass
 import com.github.singularity.ui.designsystem.rememberWindowSizeClass
-import com.github.singularity.ui.feature.home.HomeScreen
+import com.github.singularity.ui.feature.connection.HomeScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import kotlinx.coroutines.launch

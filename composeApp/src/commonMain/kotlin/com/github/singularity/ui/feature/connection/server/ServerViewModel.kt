@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.server
+package com.github.singularity.ui.feature.connection.server
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel

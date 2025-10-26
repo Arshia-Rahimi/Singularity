@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.server.components
+package com.github.singularity.ui.feature.connection.server.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +32,7 @@ import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
-import com.github.singularity.ui.feature.home.server.ServerIntent
+import com.github.singularity.ui.feature.connection.server.ServerIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete
