@@ -15,9 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
@@ -32,19 +35,21 @@ import singularity.composeapp.generated.resources.switch_to_server
 @Composable
 fun ClientScreen() {
     val viewModel = koinViewModel<ClientViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
 
     ClientScreen(
-        uiState = uiState,
-        execute = { viewModel.execute(this) },
+        connectionState = connectionState,
+        refreshConnection = viewModel::refreshConnection,
+        toggleSyncMode = viewModel::toggleSyncMode,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ClientScreen(
-    uiState: ClientUiState,
-    execute: ClientIntent.() -> Unit,
+    connectionState: ConnectionState,
+    refreshConnection: () -> Unit,
+    toggleSyncMode: () -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
 
@@ -53,7 +58,7 @@ private fun ClientScreen(
             TopAppBar(
                 title = { Text(Res.string.discover.getString()) },
                 navigationIcon = {
-                    DrawerIcon { ClientIntent.OpenDrawer.execute() }
+                    DrawerIcon { AppNavigationController.toggleDrawer() }
                 },
             )
         },
@@ -72,25 +77,19 @@ private fun ClientScreen(
     ) { ip ->
 
         AnimatedContent(
-            targetState = uiState.defaultSyncGroup,
+            targetState = connectionState,
             modifier = Modifier.fillMaxSize().padding(ip),
         ) { state ->
             when (state) {
-                null -> DiscoverPage(
-                    uiState = uiState,
-                    execute = execute,
-                )
+                is ClientConnectionState.NoDefaultServer -> DiscoverPage()
 
-                else -> JoinedSyncGroupPage(
-                    uiState = uiState,
-                    execute = execute,
-                )
+                else -> JoinedSyncGroupPage()
             }
         }
 
         ConfirmationDialog(
             visible = showSwitchModeDialog && canHostSyncServer,
-            onConfirm = { ClientIntent.ToggleSyncMode.execute() },
+            onConfirm = toggleSyncMode,
             onDismiss = { showSwitchModeDialog = false },
             message = Res.string.switch_to_server.getString(),
         )

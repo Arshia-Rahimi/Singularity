@@ -14,20 +14,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
-import com.github.singularity.ui.feature.home.client.ClientIntent
-import com.github.singularity.ui.feature.home.client.ClientUiState
 import com.github.singularity.ui.feature.home.client.pages.discover.components.JoinedSyncGroupItem
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.available_servers
 import singularity.composeapp.generated.resources.joined_sync_groups
@@ -35,10 +35,10 @@ import singularity.composeapp.generated.resources.plus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiscoverPage(
-    uiState: ClientUiState,
-    execute: ClientIntent.() -> Unit,
-) {
+fun DiscoverPage() {
+    val viewModel = koinViewModel<DiscoverViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(200.dp),
         modifier = Modifier.fillMaxSize()
@@ -72,7 +72,7 @@ fun DiscoverPage(
         ) {
             JoinedSyncGroupItem(
                 joinedSyncGroup = it,
-                execute = execute,
+                execute = { viewModel.execute(this) },
             )
         }
 
@@ -103,7 +103,7 @@ fun DiscoverPage(
                         horizontalArrangement = Arrangement.Center,
                     ) {
                         IconButton(
-                            onClick = { ClientIntent.StartDiscovery.execute() },
+                            onClick = { viewModel.execute(DiscoverIntent.StartDiscovery) },
                         ) {
                             Icon(
                                 painter = Res.drawable.plus.getPainter(),
@@ -121,18 +121,6 @@ fun DiscoverPage(
 @Composable
 private fun Preview() {
     SingularityTheme(AppTheme.Light) {
-        DiscoverPage(
-            execute = {},
-            uiState = ClientUiState(
-                joinedSyncGroups = (1..9).map {
-                    JoinedSyncGroup(
-                        authToken = "",
-                        isDefault = false,
-                        syncGroupId = it.toString(),
-                        syncGroupName = (1..8).map { ('a'..'z').random() }.joinToString("")
-                    )
-                }.toMutableStateList(),
-            ),
-        )
+        DiscoverPage()
     }
 }
