@@ -9,6 +9,9 @@ sealed interface Route {
     object Home : Route
 
     @Serializable
+    object Sync : Route
+
+    @Serializable
     object Settings : Route
 
     @Serializable

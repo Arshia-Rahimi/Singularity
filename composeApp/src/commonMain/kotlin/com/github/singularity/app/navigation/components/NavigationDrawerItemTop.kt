@@ -38,6 +38,7 @@ import singularity.composeapp.generated.resources.home
 import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
 import singularity.composeapp.generated.resources.settings
+import singularity.composeapp.generated.resources.sync
 
 interface NavigationDrawerItem {
     val label: StringResource
@@ -51,10 +52,16 @@ enum class NavigationDrawerItemTop(
     override val route: Any,
 ) : NavigationDrawerItem {
 
-    Home(
+    Connection(
         icon = Res.drawable.home,
         label = Res.string.home,
         route = Route.Home,
+    ),
+
+    Sync(
+        icon = Res.drawable.sync,
+        label = Res.string.sync,
+        route = Route.Sync,
     ),
 
 }

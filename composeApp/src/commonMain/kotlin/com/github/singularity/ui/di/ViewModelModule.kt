@@ -1,17 +1,16 @@
 package com.github.singularity.ui.di
 
 import com.github.singularity.ui.feature.connection.client.ClientViewModel
-import com.github.singularity.ui.feature.connection.client.pages.joinedgroup.JoinedGroupViewModel
 import com.github.singularity.ui.feature.connection.server.ServerViewModel
 import com.github.singularity.ui.feature.log.LogViewModel
 import com.github.singularity.ui.feature.settings.SettingsViewModel
+import com.github.singularity.ui.feature.sync.SyncViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val ViewmodelModule = module {
-    viewModelOf(::DiscoverViewModel)
     viewModelOf(::ClientViewModel)
-    viewModelOf(::JoinedGroupViewModel)
+    viewModelOf(::SyncViewModel)
     viewModelOf(::ServerViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::LogViewModel)

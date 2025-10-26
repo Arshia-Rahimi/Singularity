@@ -54,6 +54,7 @@ import com.github.singularity.ui.designsystem.rememberWindowSizeClass
 import com.github.singularity.ui.feature.connection.HomeScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
+import com.github.singularity.ui.feature.sync.SyncScreen
 import kotlinx.coroutines.launch
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_back
@@ -228,6 +229,9 @@ private fun NavigationHost(
         }
         composable<Route.Log> {
             LogScreen()
+        }
+        composable<Route.Sync> {
+            SyncScreen()
         }
     }
 
