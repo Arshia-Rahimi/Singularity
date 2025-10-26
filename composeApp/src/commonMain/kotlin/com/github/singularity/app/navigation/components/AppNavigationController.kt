@@ -25,7 +25,7 @@ object AppNavigationController {
     private val _canPopBackStack = MutableStateFlow(false)
     val canPopBackStack = _canPopBackStack.asStateFlow()
 
-    fun canPopBackStack(isInGraphRoot: Boolean) {
+    fun setCanPopBackStack(isInGraphRoot: Boolean) {
         _canPopBackStack.value = isInGraphRoot
     }
 

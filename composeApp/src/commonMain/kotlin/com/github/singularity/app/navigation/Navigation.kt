@@ -237,7 +237,7 @@ private fun NavigationHost(
 
     val canPopBackStack by navController.rememberCanPopBackStack()
     LaunchedEffect(canPopBackStack) {
-        AppNavigationController.canPopBackStack(canPopBackStack)
+        AppNavigationController.setCanPopBackStack(canPopBackStack)
     }
 
     ObserveForEvents(AppNavigationController.popStackEvent) {
