@@ -11,7 +11,6 @@ import com.github.singularity.ui.feature.home.client.ClientUiState
 fun JoinedSyncGroupPage(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
-    topBar: (@Composable () -> Unit) -> Unit,
 ) {
     Text(uiState.defaultSyncGroup?.syncGroupName ?: "")
 }

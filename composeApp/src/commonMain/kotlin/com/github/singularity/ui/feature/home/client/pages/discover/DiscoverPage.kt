@@ -13,7 +13,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -24,7 +23,6 @@ import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.JoinedSyncGroup
-import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.feature.home.client.ClientIntent
 import com.github.singularity.ui.feature.home.client.ClientUiState
@@ -32,7 +30,6 @@ import com.github.singularity.ui.feature.home.client.pages.discover.components.J
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.available_servers
-import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
 import singularity.composeapp.generated.resources.plus
 
@@ -41,17 +38,7 @@ import singularity.composeapp.generated.resources.plus
 fun DiscoverPage(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
-    topBar: (@Composable () -> Unit) -> Unit,
 ) {
-    topBar {
-        TopAppBar(
-            title = { Text(Res.string.discover.getString()) },
-            navigationIcon = {
-                DrawerIcon { ClientIntent.OpenDrawer.execute() }
-            },
-        )
-    }
-
     LazyVerticalGrid(
         columns = GridCells.Adaptive(200.dp),
         modifier = Modifier.fillMaxSize()
@@ -146,7 +133,6 @@ private fun Preview() {
                     )
                 }.toMutableStateList(),
             ),
-            topBar = {},
         )
     }
 }
