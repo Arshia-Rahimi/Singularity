@@ -14,4 +14,5 @@ sealed interface ClientIntent {
     data object RefreshConnection : ClientIntent
     data object ToggleSyncMode : ClientIntent
     data object OpenDrawer : ClientIntent
+    data object StartDiscovery : ClientIntent
 }

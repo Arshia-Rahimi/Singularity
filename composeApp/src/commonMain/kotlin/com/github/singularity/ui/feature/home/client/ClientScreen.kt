@@ -16,11 +16,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.feature.home.client.pages.DiscoverPage
-import com.github.singularity.ui.feature.home.client.pages.JoinedSyncGroupPage
+import com.github.singularity.ui.feature.home.client.pages.discover.DiscoverPage
+import com.github.singularity.ui.feature.home.client.pages.joinedsyncgroup.JoinedSyncGroupPage
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.server
@@ -63,19 +62,21 @@ private fun ClientScreen(
 	) { ip ->
 
 		AnimatedContent(
-			targetState = uiState.connectionState,
+			targetState = uiState.defaultSyncGroup,
 			modifier = Modifier
 				.fillMaxSize()
 				.padding(ip),
 		) { state ->
 			when (state) {
-				is ClientConnectionState.NoDefaultServer -> DiscoverPage(
+				null ->
+					DiscoverPage(
 					uiState = uiState,
 					execute = execute,
 					topBar = { topBar = it },
 				)
 
-				else -> JoinedSyncGroupPage(
+				else ->
+					JoinedSyncGroupPage(
 					uiState = uiState,
 					execute = execute,
 					topBar = { topBar = it },

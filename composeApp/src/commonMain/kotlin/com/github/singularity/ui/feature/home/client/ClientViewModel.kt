@@ -12,13 +12,15 @@ import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
-import com.github.singularity.ui.feature.home.client.components.PairRequestState
+import com.github.singularity.ui.feature.home.client.pages.discover.components.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -32,19 +34,23 @@ class ClientViewModel(
     private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
 ) : ViewModel() {
 
-    private val connectionState = syncService.connectionState
-        .filterIsInstance<ClientConnectionState>()
+    private val connectionState =
+        syncService.connectionState.filterIsInstance<ClientConnectionState>()
 
-    private val availableServers = discoverRepo.discoveredServers
-        .stateInWhileSubscribed(emptyList())
+    private val shouldDiscover = MutableStateFlow(false)
+
+    private val availableServers = shouldDiscover.flatMapLatest {
+        if (it) discoverRepo.discoveredServers
+        else flowOf(null)
+    }.stateInWhileSubscribed(emptyList())
 
     private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
-    private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups
-        .stateInWhileSubscribed(emptyList())
+    private val joinedSyncGroups =
+        joinedSyncGroupRepo.joinedSyncGroups.stateInWhileSubscribed(emptyList())
 
-    private val defaultSyncGroup = joinedSyncGroupRepo.defaultJoinedSyncGroup
-        .stateInWhileSubscribed(null)
+    private val defaultSyncGroup =
+        joinedSyncGroupRepo.defaultJoinedSyncGroup.stateInWhileSubscribed(null)
 
     val uiState = combine(
         connectionState,
@@ -55,7 +61,7 @@ class ClientViewModel(
     ) { connectionState, availableServers, sentPairRequestState, joinedSyncGroups, defaultSyncGroup ->
         ClientUiState(
             connectionState = connectionState,
-            availableServers = availableServers.toMutableStateList(),
+            availableServers = availableServers?.toMutableStateList(),
             joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
             defaultSyncGroup = defaultSyncGroup,
@@ -79,6 +85,7 @@ class ClientViewModel(
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
             is ClientIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
             is ClientIntent.RemoveAllDefaults -> removeAllDefaults()
+            is ClientIntent.StartDiscovery -> startDiscovery()
         }
     }
 
@@ -108,6 +115,7 @@ class ClientViewModel(
     private fun setAsDefault(group: JoinedSyncGroup) {
         viewModelScope.launch {
             joinedSyncGroupRepo.setAsDefault(group)
+            shouldDiscover.value = false
         }
     }
 
@@ -121,6 +129,10 @@ class ClientViewModel(
         viewModelScope.launch {
             discoverRepo.refreshDiscovery()
         }
+    }
+
+    private fun startDiscovery() {
+        shouldDiscover.value = true
     }
 
 }

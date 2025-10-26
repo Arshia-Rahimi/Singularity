@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.home.client.components
+package com.github.singularity.ui.feature.home.client.pages.discover.components
 
 import com.github.singularity.core.shared.model.LocalServer
 

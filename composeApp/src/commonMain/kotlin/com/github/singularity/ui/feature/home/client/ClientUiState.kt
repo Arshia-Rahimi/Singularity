@@ -6,12 +6,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.ui.feature.home.client.components.PairRequestState
+import com.github.singularity.ui.feature.home.client.pages.discover.components.PairRequestState
 
 @Immutable
 data class ClientUiState(
     val connectionState: ClientConnectionState = ClientConnectionState.NoDefaultServer,
-    val availableServers: SnapshotStateList<LocalServer> = mutableStateListOf(),
+    val availableServers: SnapshotStateList<LocalServer>? = null,
     val sentPairRequestState: PairRequestState = PairRequestState.Idle,
     val joinedSyncGroups: SnapshotStateList<JoinedSyncGroup> = mutableStateListOf(),
     val defaultSyncGroup: JoinedSyncGroup? = null,

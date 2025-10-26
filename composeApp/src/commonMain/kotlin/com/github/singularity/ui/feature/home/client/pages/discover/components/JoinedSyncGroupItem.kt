@@ -1,8 +1,10 @@
-package com.github.singularity.ui.feature.home.client.components
+package com.github.singularity.ui.feature.home.client.pages.discover.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,36 +26,33 @@ import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete
 import singularity.composeapp.generated.resources.delete_group
-import singularity.composeapp.generated.resources.set_group_as_default
 
 @Composable
-fun JoinedSyncGroupItem(
+fun LazyGridItemScope.JoinedSyncGroupItem(
 	joinedSyncGroup: JoinedSyncGroup,
 	execute: ClientIntent.() -> Unit,
 ) {
-	var showSetAsDefaultDialog by remember { mutableStateOf(false) }
 	var showDeletionDialog by remember { mutableStateOf(false) }
 
 	Box(
 		modifier = Modifier
-			.padding(4.dp)
+			.animateItem()
+			.padding(8.dp)
 			.clip(RoundedCornerShape(16.dp))
 			.background(MaterialTheme.colorScheme.secondary)
-			.padding(vertical = 4.dp, horizontal = 8.dp),
+			.combinedClickable(
+				onClick = { ClientIntent.SetAsDefault(joinedSyncGroup).execute() },
+				onLongClick = { showDeletionDialog = true },
+			)
+			.padding(16.dp),
 		contentAlignment = Alignment.Center,
 	) {
 		Text(
 			fontSize = 16.sp,
 			text = joinedSyncGroup.syncGroupName,
+			color = MaterialTheme.colorScheme.onSecondary,
 		)
 	}
-
-	ConfirmationDialog(
-		visible = showSetAsDefaultDialog,
-		message = Res.string.set_group_as_default.getString(joinedSyncGroup.syncGroupName),
-		onConfirm = { ClientIntent.SetAsDefault(joinedSyncGroup).execute() },
-		onDismiss = { showSetAsDefaultDialog = false },
-	)
 
 	ConfirmationDialog(
 		visible = showDeletionDialog,
