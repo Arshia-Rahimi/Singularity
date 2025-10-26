@@ -29,6 +29,7 @@
     <string name="edit">edit</string>
     <string name="pair_requests">Pair requests:</string>
     <string name="hosted_sync_groups">HostedSyncGroups</string>
+    <string name="joined_sync_groups">Joined Sync Groups</string>
     <string name="edit_group_name">Edit group name</string>
     <string name="approve_pair_request">Approve pair request</string>
     <string name="send_pair_request">Send pair request to %1$d?</string>
