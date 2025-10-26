@@ -1,15 +1,17 @@
-package com.github.singularity.ui.feature.home.client.pages.joinedsyncgroup
+package com.github.singularity.ui.feature.home.client.pages.joinedgroup
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.launch
 
-class JoinedSyncGroupViewModel(
-    joinedSyncGroupRepo: JoinedSyncGroupRepository,
+class JoinedGroupViewModel(
+    private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
     private val syncService: SyncService,
 ) : ViewModel() {
 
@@ -24,20 +26,27 @@ class JoinedSyncGroupViewModel(
         connectionState,
         defaultGroup,
     ) { connectionState, defaultGroup ->
-        JoinedSyncGroupUiState(
+        JoinedGroupUiState(
             connectionState = connectionState,
             currentGroup = defaultGroup,
         )
-    }.stateInWhileSubscribed(JoinedSyncGroupUiState())
+    }.stateInWhileSubscribed(JoinedGroupUiState())
 
-    fun execute(intent: JoinedSyncGroupIntent) {
+    fun execute(intent: JoinedGroupIntent) {
         when (intent) {
-            is JoinedSyncGroupIntent.RefreshConnection -> refreshConnection()
+            is JoinedGroupIntent.RefreshConnection -> refreshConnection()
+            is JoinedGroupIntent.RemoveAllDefaults -> removeAllDefaults()
         }
     }
 
     private fun refreshConnection() {
         syncService.refresh()
+    }
+
+    private fun removeAllDefaults() {
+        viewModelScope.launch {
+            joinedSyncGroupRepo.removeAllDefaults()
+        }
     }
 
 }

@@ -22,7 +22,7 @@ import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.home.client.pages.discover.DiscoverPage
-import com.github.singularity.ui.feature.home.client.pages.joinedsyncgroup.JoinedSyncGroupPage
+import com.github.singularity.ui.feature.home.client.pages.joinedgroup.JoinedSyncGroupPage
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.discover
