@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class BroadcastRepositoryImp(
@@ -27,9 +28,10 @@ class BroadcastRepositoryImp(
 
     override val pairRequests = pairRequestRepo.requests
         .map { list -> list.filter { it.status == PairStatus.Awaiting }.map { it.node } }
+        .flowOn(Dispatchers.IO)
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
-    
+
     override fun create(group: HostedSyncGroup) = flow {
         hostedSyncGroupRepo.insert(group)
         emit(Success)

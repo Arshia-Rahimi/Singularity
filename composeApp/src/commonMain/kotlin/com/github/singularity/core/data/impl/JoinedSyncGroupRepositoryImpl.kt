@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class JoinedSyncGroupRepositoryImpl(
@@ -17,10 +18,12 @@ class JoinedSyncGroupRepositoryImpl(
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override val joinedSyncGroups = joinedSyncGroupsLocalDataSource.joinedSyncGroups
+        .flowOn(Dispatchers.IO)
         .shareInWhileSubscribed(scope, 1)
 
     override val defaultJoinedSyncGroup = joinedSyncGroups
         .map { it.firstOrNull { group -> group.isDefault } }
+        .flowOn(Dispatchers.IO)
         .shareInWhileSubscribed(scope, 1)
 
     override suspend fun upsert(group: JoinedSyncGroup) {

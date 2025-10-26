@@ -5,10 +5,13 @@ import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.server.KtorWebSocketServer
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.util.sendPulse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -36,7 +39,7 @@ class ServerConnectionRepositoryImpl(
                 }
         }.onCompletion {
             webSocketServer.stop()
-        }
+        }.flowOn(Dispatchers.IO)
 
     override suspend fun refresh() {
         refreshState.sendPulse()

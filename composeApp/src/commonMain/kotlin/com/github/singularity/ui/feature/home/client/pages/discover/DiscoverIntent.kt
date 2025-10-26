@@ -11,6 +11,5 @@ sealed interface DiscoverIntent {
     data object RemoveAllDefaults : DiscoverIntent
     data object CancelPairRequest : DiscoverIntent
     data object RefreshDiscovery : DiscoverIntent
-    data object OpenDrawer : DiscoverIntent
     data object StartDiscovery : DiscoverIntent
 }

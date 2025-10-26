@@ -10,12 +10,15 @@ import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -68,7 +71,7 @@ class ClientConnectionRepositoryImpl(
                             }.collect { syncEventBridge.incomingEventCallback(it) }
                     }
                 }
-        }
+        }.flowOn(Dispatchers.IO)
 
     override suspend fun refresh() {
         refreshState.sendPulse()

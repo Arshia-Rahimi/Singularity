@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.feature.home.client.pages.discover.components.JoinedSyncGroupItem
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -59,14 +58,7 @@ fun DiscoverPage() {
             }
         }
         items(
-            items = (1..9).map {
-                JoinedSyncGroup(
-                    authToken = "",
-                    isDefault = false,
-                    syncGroupId = it.toString(),
-                    syncGroupName = (1..8).map { ('a'..'z').random() }.joinToString("")
-                )
-            },
+            items = uiState.joinedSyncGroups,
             key = { it.syncGroupId },
             contentType = { it },
         ) {

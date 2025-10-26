@@ -24,15 +24,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiscoverRepositoryImp(
-	private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
-	private val preferencesRepo: PreferencesRepository,
-	private val pairRemoteDataSource: PairRemoteDataSource,
-	private val discoveryService: DeviceDiscoveryService,
+    private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
+    private val preferencesRepo: PreferencesRepository,
+    private val pairRemoteDataSource: PairRemoteDataSource,
+    private val discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
@@ -43,7 +44,7 @@ class DiscoverRepositoryImp(
             discoveryService.discoveredServers()
                 .onStart { emit(emptyList()) }
                 .catch {}
-        }
+        }.flowOn(Dispatchers.IO)
 
     override suspend fun refreshDiscovery() {
         refreshState.sendPulse()
@@ -92,7 +93,9 @@ class DiscoverRepositoryImp(
         } catch (e: IOException) {
             throw Exception("failed to send pair request: ${e.message}")
         }
-    }.asResult(Dispatchers.IO)
+    }
+        .flowOn(Dispatchers.IO)
+        .asResult(Dispatchers.IO)
 
     private suspend fun getCurrentDeviceAsNode() = Node(
         deviceName = deviceName,

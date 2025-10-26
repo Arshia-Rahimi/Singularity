@@ -1,24 +1,49 @@
 package com.github.singularity.ui.feature.home.client
 
 import androidx.lifecycle.ViewModel
-import com.github.singularity.core.shared.model.ClientConnectionState
+import androidx.lifecycle.viewModelScope
+import com.github.singularity.app.navigation.components.AppNavigationController
+import com.github.singularity.core.data.JoinedSyncGroupRepository
+import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
-import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 class ClientViewModel(
     private val syncService: SyncService,
+    private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
 ) : ViewModel() {
 
-    val connectionState = syncService.connectionState.filterIsInstance<ClientConnectionState>()
-        .stateInWhileSubscribed(ClientConnectionState.NoDefaultServer)
+    private val defaultGroup = joinedSyncGroupRepo.defaultJoinedSyncGroup
+        .stateInWhileSubscribed(null)
 
-    fun refreshConnection() {
-        syncService.refresh()
+    val uiState = combine(
+        defaultGroup,
+    ) {
+        ClientUiState(
+            defaultGroup = it[0],
+        )
+    }.stateInWhileSubscribed(ClientUiState())
+
+    fun execute(intent: ClientIntent) {
+        when (intent) {
+            is ClientIntent.ToggleSyncMode -> toggleSyncMode()
+            is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
+            is ClientIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
+        }
     }
 
-    fun toggleSyncMode() {
-        syncService.toggleSyncMode()
+    private fun toggleSyncMode() {
+        viewModelScope.launch {
+            syncService.toggleSyncMode()
+        }
+    }
+
+    private fun setAsDefault(group: JoinedSyncGroup) {
+        viewModelScope.launch {
+            joinedSyncGroupRepo.setAsDefault(group)
+        }
     }
 
 }

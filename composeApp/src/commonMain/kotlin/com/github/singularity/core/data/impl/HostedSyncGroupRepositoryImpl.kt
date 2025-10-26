@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class HostedSyncGroupRepositoryImpl(
@@ -19,10 +20,12 @@ class HostedSyncGroupRepositoryImpl(
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override val syncGroups = hostedSyncGroupsLocalDataSource.hostedSyncGroups
+        .flowOn(Dispatchers.IO)
         .shareInWhileSubscribed(scope, 1)
 
     override val defaultSyncGroup = syncGroups.map { it.firstOrNull { group -> group.isDefault } }
         .distinctUntilChanged()
+        .flowOn(Dispatchers.IO)
         .shareInWhileSubscribed(scope, 1)
 
     override suspend fun insert(group: HostedSyncGroup) {
