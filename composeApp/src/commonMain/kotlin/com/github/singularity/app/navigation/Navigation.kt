@@ -43,7 +43,6 @@ import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.app.navigation.components.NavigationDrawerItem
 import com.github.singularity.app.navigation.components.NavigationDrawerItemBottom
 import com.github.singularity.app.navigation.components.NavigationDrawerItemTop
-import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
 import com.github.singularity.core.shared.compose.getString
@@ -52,7 +51,7 @@ import com.github.singularity.core.shared.compose.rememberCanPopBackStack
 import com.github.singularity.ui.designsystem.PainterIconButton
 import com.github.singularity.ui.designsystem.WindowSizeClass
 import com.github.singularity.ui.designsystem.rememberWindowSizeClass
-import com.github.singularity.ui.feature.connection.HomeScreen
+import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.feature.sync.SyncScreen
@@ -64,9 +63,7 @@ import singularity.composeapp.generated.resources.singularity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(
-    syncMode: SyncMode,
-) {
+fun Navigation() {
     val navController = rememberNavController()
     val windowSizeClass by rememberWindowSizeClass()
 
@@ -86,7 +83,6 @@ fun Navigation(
         ) {
             NavigationHost(
                 navController = navController,
-                syncMode = syncMode,
             )
         }
 
@@ -118,7 +114,6 @@ fun Navigation(
         ) {
             NavigationHost(
                 navController = navController,
-                syncMode = syncMode,
             )
         }
     }
@@ -200,7 +195,6 @@ private fun DrawerContent(
 @Composable
 private fun NavigationHost(
     navController: NavHostController,
-    syncMode: SyncMode,
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize()
@@ -224,9 +218,7 @@ private fun NavigationHost(
         startDestination = Route.Home,
     ) {
         composable<Route.Home> {
-            HomeScreen(
-                syncMode = syncMode,
-            )
+            ConnectionScreen()
         }
         composable<Route.Settings> {
             SettingsScreen()

@@ -36,7 +36,7 @@ class ClientViewModel(
     private val availableServers = shouldDiscover.flatMapLatest {
         if (it) discoverRepo.discoveredServers
         else emptyFlow()
-    }.stateInWhileSubscribed(emptyList())
+    }.stateInWhileSubscribed(null)
 
     private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
@@ -53,7 +53,7 @@ class ClientViewModel(
         defaultSyncGroup,
     ) { availableServers, sentPairRequestState, joinedSyncGroups, defaultSyncGroup ->
         ClientUiState(
-            availableServers = availableServers.toMutableStateList(),
+            availableServers = availableServers?.toMutableStateList(),
             joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
             defaultSyncGroup = defaultSyncGroup,

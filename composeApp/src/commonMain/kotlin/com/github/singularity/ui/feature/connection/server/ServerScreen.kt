@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -28,13 +27,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
-import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.connection.server.components.HostedSyncGroupItem
 import com.github.singularity.ui.feature.connection.server.components.NodeItem
@@ -42,11 +39,9 @@ import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.available_sync_groups
 import singularity.composeapp.generated.resources.broadcast
-import singularity.composeapp.generated.resources.client
 import singularity.composeapp.generated.resources.create
 import singularity.composeapp.generated.resources.create_new_sync_group
 import singularity.composeapp.generated.resources.plus
-import singularity.composeapp.generated.resources.switch_to_client
 
 @Composable
 fun ServerScreen() {
@@ -65,7 +60,6 @@ private fun ServerScreen(
     uiState: ServerUiState,
     execute: ServerIntent.() -> Unit,
 ) {
-    var showSwitchModeDialog by remember { mutableStateOf(false) }
     var showCreateGroupDialog by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
@@ -78,16 +72,6 @@ private fun ServerScreen(
                     DrawerIcon { ServerIntent.OpenDrawer.execute() }
                 },
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showSwitchModeDialog = true },
-            ) {
-                Icon(
-                    painter = Res.drawable.client.getPainter(),
-                    contentDescription = Res.string.switch_to_client.getString()
-                )
-            }
         },
     ) { ip ->
        
@@ -108,13 +92,6 @@ private fun ServerScreen(
             confirmText = Res.string.create.getString(),
             title = Res.string.create_new_sync_group.getString(),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        )
-
-        ConfirmationDialog(
-            visible = showSwitchModeDialog && canHostSyncServer,
-            onConfirm = { ServerIntent.ToggleSyncMode.execute() },
-            onDismiss = { showSwitchModeDialog = false },
-            message = Res.string.switch_to_client.getString(),
         )
 
     }

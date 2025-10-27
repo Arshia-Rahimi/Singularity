@@ -12,7 +12,6 @@ class MainViewModel(
     val uiState = preferencesRepo.preferences.map {
         MainUiState(
             theme = it.theme,
-            syncMode = it.syncMode,
             scale = it.scale,
         )
     }.stateInWhileSubscribed(null)

@@ -63,9 +63,7 @@ fun App() {
             )
         ) {
             SingularityTheme(uiState.theme) {
-                Navigation(
-                    syncMode = uiState.syncMode,
-                )
+                Navigation()
             }
         }
     }
