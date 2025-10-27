@@ -47,6 +47,7 @@ fun ClientScreen() {
         uiState = uiState,
         execute = { viewModel.execute(this) },
     )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +73,7 @@ private fun ClientScreen(
                 .padding(ip)
                 .padding(horizontal = 4.dp),
         ) {
+
             stickyHeader(
                 key = "joined_title",
                 contentType = "title",
@@ -86,6 +88,7 @@ private fun ClientScreen(
                     )
                 }
             }
+
             items(
                 items = uiState.joinedSyncGroups,
                 key = { it.syncGroupId },
