@@ -69,9 +69,7 @@ private fun ServerScreen(
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.broadcast.getString()) },
-                navigationIcon = {
-                    DrawerIcon()
-                },
+                navigationIcon = { DrawerIcon() },
             )
         },
     ) { ip ->

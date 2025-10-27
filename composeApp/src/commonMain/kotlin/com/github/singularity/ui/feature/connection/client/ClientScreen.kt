@@ -60,9 +60,7 @@ private fun ClientScreen(
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.discover.getString()) },
-                navigationIcon = {
-                    DrawerIcon()
-                },
+                navigationIcon = { DrawerIcon() },
             )
         },
     ) { ip ->

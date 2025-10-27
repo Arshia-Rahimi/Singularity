@@ -63,9 +63,7 @@ private fun SettingsScreen(
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.settings.getString()) },
-                navigationIcon = {
-                    DrawerIcon()
-                },
+                navigationIcon = { DrawerIcon() },
             )
         }
     ) { ip ->

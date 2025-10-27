@@ -49,9 +49,7 @@ fun LogScreen() {
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.logs.getString()) },
-                navigationIcon = {
-                    DrawerIcon()
-                },
+                navigationIcon = { DrawerIcon() },
             )
         },
     ) { ip ->

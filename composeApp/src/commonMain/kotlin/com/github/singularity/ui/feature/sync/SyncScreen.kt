@@ -49,9 +49,7 @@ private fun SyncScreen(
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.sync.getString()) },
-                navigationIcon = {
-                    DrawerIcon()
-                },
+                navigationIcon = { DrawerIcon() },
             )
         },
     ) { ip ->
