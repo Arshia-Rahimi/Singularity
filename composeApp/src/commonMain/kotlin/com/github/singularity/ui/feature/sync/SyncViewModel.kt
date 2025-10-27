@@ -1,6 +1,7 @@
 package com.github.singularity.ui.feature.sync
 
 import androidx.lifecycle.ViewModel
+import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
@@ -23,7 +24,8 @@ class SyncViewModel(
 
     fun execute(intent: SyncIntent) {
         when (intent) {
-            else -> Unit
+            is SyncIntent.RefreshConnection -> syncService.refresh()
+            is SyncIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
         }
     }
 
