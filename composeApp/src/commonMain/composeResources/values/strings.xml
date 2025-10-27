@@ -29,6 +29,7 @@
     <string name="delete">delete</string>
     <string name="options">options</string>
     <string name="edit">edit</string>
+    <string name="stop">Stop</string>
     <string name="pair_requests">Pair requests:</string>
     <string name="available_sync_groups">Available Sync Groups</string>
     <string name="joined_sync_groups">Joined Sync Groups</string>

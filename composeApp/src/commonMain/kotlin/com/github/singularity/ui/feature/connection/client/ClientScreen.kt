@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,7 +25,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
+import com.github.singularity.ui.designsystem.components.NoRippleTextButton
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
+import com.github.singularity.ui.designsystem.components.animations.PulseAnimation
 import com.github.singularity.ui.feature.connection.client.components.JoinedSyncGroupItem
 import com.github.singularity.ui.feature.connection.client.components.ServerItem
 import org.koin.compose.viewmodel.koinViewModel
@@ -33,6 +36,7 @@ import singularity.composeapp.generated.resources.available_servers
 import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
 import singularity.composeapp.generated.resources.plus
+import singularity.composeapp.generated.resources.stop
 
 @Composable
 fun ClientScreen() {
@@ -41,7 +45,7 @@ fun ClientScreen() {
 
     ClientScreen(
         uiState = uiState,
-        execute = { viewModel.execute(this) }
+        execute = { viewModel.execute(this) },
     )
 }
 
@@ -98,7 +102,7 @@ private fun ClientScreen(
                 contentType = "title",
             ) {
                 AnimatedContent(uiState.availableServers) {
-                    if (it != null) {
+                    if (uiState.isDiscovering) {
                         Row(
                             modifier = Modifier
                                 .animateItem()
@@ -133,7 +137,7 @@ private fun ClientScreen(
             }
 
             items(
-                items = uiState.availableServers ?: emptyList(),
+                items = uiState.availableServers,
                 key = { it.syncGroupId },
                 contentType = { it },
             ) {
@@ -142,6 +146,32 @@ private fun ClientScreen(
                     execute = execute,
                 )
             }
+
+            stickyHeader(
+                key = "pulse_animation",
+                contentType = "animation",
+            ) {
+                if (uiState.isDiscovering) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        PulseAnimation(
+                            modifier = Modifier.size(100.dp)
+                        ) {
+                            NoRippleTextButton(
+                                onClick = { ClientIntent.StopDiscovery.execute() },
+                            ) {
+                                Text(
+                                    text = Res.string.stop.getString(),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
     }

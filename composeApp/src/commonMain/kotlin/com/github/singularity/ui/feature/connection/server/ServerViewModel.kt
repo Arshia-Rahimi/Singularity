@@ -58,7 +58,6 @@ class ServerViewModel(
             is ServerIntent.DeleteGroup -> delete(intent.group)
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
             is ServerIntent.RefreshConnection -> syncService.refresh()
-            is ServerIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is ServerIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
             is ServerIntent.StartBroadcast -> shouldBroadcast.value = true
             is ServerIntent.StopBroadcast -> shouldBroadcast.value = false
