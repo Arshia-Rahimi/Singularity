@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
@@ -52,36 +51,24 @@ class ServerViewModel(
 
     fun execute(intent: ServerIntent) {
         when (intent) {
-            is ServerIntent.Approve -> approve(intent.node)
-            is ServerIntent.Reject -> reject(intent.node)
+            is ServerIntent.Approve -> broadcastRepo.approvePairRequest(intent.node)
+            is ServerIntent.Reject -> broadcastRepo.rejectPairRequest(intent.node)
             is ServerIntent.CreateGroup -> create(intent.groupName)
             is ServerIntent.EditGroupName -> editName(intent.groupName, intent.group)
             is ServerIntent.DeleteGroup -> delete(intent.group)
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
-            is ServerIntent.RefreshConnection -> refreshConnection()
+            is ServerIntent.RefreshConnection -> syncService.refresh()
             is ServerIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is ServerIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
-            is ServerIntent.StartBroadcast -> startBroadcast()
-            is ServerIntent.StopBroadcast -> stopBroadcast()
+            is ServerIntent.StartBroadcast -> shouldBroadcast.value = true
+            is ServerIntent.StopBroadcast -> shouldBroadcast.value = false
         }
-    }
-
-    private fun refreshConnection() {
-        syncService.refresh()
     }
 
     private fun setAsDefault(group: HostedSyncGroup) {
         viewModelScope.launch {
             broadcastRepo.setAsDefault(group)
         }
-    }
-
-    private fun approve(node: Node) {
-        broadcastRepo.approvePairRequest(node)
-    }
-
-    private fun reject(node: Node) {
-        broadcastRepo.rejectPairRequest(node)
     }
 
     private fun create(groupName: String) {
@@ -94,14 +81,6 @@ class ServerViewModel(
 
     private fun delete(group: HostedSyncGroup) {
         broadcastRepo.delete(group).launchIn(viewModelScope)
-    }
-
-    private fun startBroadcast() {
-        shouldBroadcast.value = true
-    }
-
-    private fun stopBroadcast() {
-        shouldBroadcast.value = false
     }
 
 }

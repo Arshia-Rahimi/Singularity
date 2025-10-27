@@ -17,8 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -35,7 +35,7 @@ class ClientViewModel(
 
     private val availableServers = shouldDiscover.flatMapLatest {
         if (it) discoverRepo.discoveredServers
-        else flowOf(null)
+        else emptyFlow()
     }.stateInWhileSubscribed(emptyList())
 
     private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
@@ -53,7 +53,7 @@ class ClientViewModel(
         defaultSyncGroup,
     ) { availableServers, sentPairRequestState, joinedSyncGroups, defaultSyncGroup ->
         ClientUiState(
-            availableServers = availableServers?.toMutableStateList(),
+            availableServers = availableServers.toMutableStateList(),
             joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
             defaultSyncGroup = defaultSyncGroup,
@@ -69,9 +69,9 @@ class ClientViewModel(
             is ClientIntent.RefreshDiscovery -> refreshDiscovery()
             is ClientIntent.DeleteGroup -> delete(intent.group)
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
-            is ClientIntent.StartDiscovery -> startDiscovery()
             is ClientIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
-            is ClientIntent.StopDiscovery -> stopDiscovery()
+            is ClientIntent.StartDiscovery -> shouldDiscover.value = true
+            is ClientIntent.StopDiscovery -> shouldDiscover.value = false
             is ClientIntent.ToggleSyncMode -> toggleSyncMode()
         }
     }
@@ -110,14 +110,6 @@ class ClientViewModel(
         viewModelScope.launch {
             discoverRepo.refreshDiscovery()
         }
-    }
-
-    private fun startDiscovery() {
-        shouldDiscover.value = true
-    }
-
-    private fun stopDiscovery() {
-        shouldDiscover.value = false
     }
 
     private fun toggleSyncMode() {

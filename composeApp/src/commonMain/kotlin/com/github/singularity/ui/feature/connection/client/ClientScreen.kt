@@ -155,7 +155,7 @@ private fun ClientScreen(
             }
 
             items(
-                items = uiState.availableServers ?: emptyList(),
+                items = uiState.availableServers,
                 key = { it.syncGroupId },
                 contentType = { it },
             ) {
