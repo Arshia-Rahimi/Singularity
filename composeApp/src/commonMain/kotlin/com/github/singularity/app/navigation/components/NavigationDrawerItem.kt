@@ -34,7 +34,7 @@ import com.github.singularity.core.shared.compose.getString
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.home
+import singularity.composeapp.generated.resources.connection
 import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
 import singularity.composeapp.generated.resources.settings
@@ -53,8 +53,8 @@ enum class NavigationDrawerItemTop(
 ) : NavigationDrawerItem {
 
     Connection(
-        icon = Res.drawable.home,
-        label = Res.string.home,
+        icon = Res.drawable.connection,
+        label = Res.string.connection,
         route = Route.Home,
     ),
 
