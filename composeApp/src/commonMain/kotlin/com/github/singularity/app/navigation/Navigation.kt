@@ -47,6 +47,7 @@ import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.compose.ObserveForEvents
 import com.github.singularity.core.shared.compose.currentRoute
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.compose.rememberCanPopBackStack
 import com.github.singularity.ui.designsystem.PainterIconButton
 import com.github.singularity.ui.designsystem.WindowSizeClass
@@ -161,6 +162,9 @@ private fun DrawerContent(
                     text = Res.string.singularity.getString(),
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.onCondition(windowSizeClass != WindowSizeClass.Expanded) {
+                        padding(start = 12.dp)
+                    }
                 )
             }
 
