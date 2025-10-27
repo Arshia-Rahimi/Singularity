@@ -15,6 +15,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -34,7 +35,6 @@ import com.github.singularity.core.shared.compose.select
 import com.github.singularity.core.shared.getScaleLabel
 import com.github.singularity.core.shared.scaleOptions
 import com.github.singularity.ui.designsystem.components.DrawerIcon
-import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_down
@@ -58,7 +58,8 @@ private fun SettingsScreen(
     uiState: SettingsUiState,
     execute: SettingsIntent.() -> Unit,
 ) {
-    ScreenScaffold(
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.settings.getString()) },

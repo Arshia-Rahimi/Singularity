@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -31,7 +32,6 @@ import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.components.DrawerIcon
-import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.connection.server.components.HostedSyncGroupItem
 import com.github.singularity.ui.feature.connection.server.components.NodeItem
@@ -64,7 +64,8 @@ private fun ServerScreen(
 
     val focusManager = LocalFocusManager.current
 
-    ScreenScaffold(
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.broadcast.getString()) },

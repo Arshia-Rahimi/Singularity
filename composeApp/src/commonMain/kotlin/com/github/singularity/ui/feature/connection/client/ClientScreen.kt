@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -26,8 +27,7 @@ import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.NoRippleTextButton
-import com.github.singularity.ui.designsystem.components.ScreenScaffold
-import com.github.singularity.ui.designsystem.components.animations.PulseAnimation
+import com.github.singularity.ui.designsystem.components.PulseAnimation
 import com.github.singularity.ui.feature.connection.client.components.JoinedSyncGroupItem
 import com.github.singularity.ui.feature.connection.client.components.ServerItem
 import org.koin.compose.viewmodel.koinViewModel
@@ -55,7 +55,7 @@ private fun ClientScreen(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
 ) {
-    ScreenScaffold(
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.discover.getString()) },

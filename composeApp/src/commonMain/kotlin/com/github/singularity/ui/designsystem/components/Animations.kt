@@ -1,4 +1,4 @@
-package com.github.singularity.ui.designsystem.components.animations
+package com.github.singularity.ui.designsystem.components
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
