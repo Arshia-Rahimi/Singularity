@@ -1,14 +1,14 @@
 package com.github.singularity.ui.feature.connection.server
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.ScreenScaffold
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
@@ -39,14 +40,12 @@ import com.github.singularity.ui.feature.connection.server.components.HostedSync
 import com.github.singularity.ui.feature.connection.server.components.NodeItem
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.available_sync_groups
 import singularity.composeapp.generated.resources.broadcast
 import singularity.composeapp.generated.resources.client
 import singularity.composeapp.generated.resources.create
 import singularity.composeapp.generated.resources.create_new_sync_group
-import singularity.composeapp.generated.resources.hosted_sync_groups
-import singularity.composeapp.generated.resources.pair_requests
 import singularity.composeapp.generated.resources.plus
-import singularity.composeapp.generated.resources.refresh
 import singularity.composeapp.generated.resources.switch_to_client
 
 @Composable
@@ -78,16 +77,6 @@ private fun ServerScreen(
                 navigationIcon = {
                     DrawerIcon { ServerIntent.OpenDrawer.execute() }
                 },
-                actions = {
-                    IconButton(
-                        onClick = { showCreateGroupDialog = true },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.plus.getPainter(),
-                            contentDescription = Res.string.create_new_sync_group.getString(),
-                        )
-                    }
-                },
             )
         },
         floatingActionButton = {
@@ -106,6 +95,7 @@ private fun ServerScreen(
             ip = ip,
             uiState = uiState,
             execute = execute,
+            showCreateGroupDialog = { showCreateGroupDialog = true },
         )
 
         InputDialog(
@@ -132,73 +122,25 @@ private fun ServerScreen(
 
 @Composable
 private fun Content(
+    showCreateGroupDialog: () -> Unit,
     ip: PaddingValues,
     uiState: ServerUiState,
     execute: ServerIntent.() -> Unit,
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(200.dp),
         modifier = Modifier.fillMaxSize()
             .padding(ip)
-            .padding(4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(horizontal = 4.dp),
     ) {
-        stickyHeader {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                AnimatedContent(
-                    targetState = uiState.connectionState.message,
-                ) {
-                    Text(it)
-                }
-
-                IconButton(
-                    onClick = { ServerIntent.RefreshConnection.execute() },
-                ) {
-                    Icon(
-                        painter = Res.drawable.refresh.getPainter(),
-                        contentDescription = Res.string.refresh.getString(),
-                    )
-                }
-            }
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = Res.string.hosted_sync_groups.getString(),
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-                )
-            }
-        }
-
-        items(
-            items = uiState.hostedSyncGroups,
-            key = { it.hostedSyncGroupId },
+        stickyHeader(
+            key = "current_title",
+            contentType = HostedSyncGroup::class,
         ) {
-            HostedSyncGroupItem(
-                hostedSyncGroup = it,
-                execute = execute,
-            )
-        }
-
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = Res.string.pair_requests.getString(),
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+            uiState.hostedSyncGroups.find { it.isDefault }?.let {
+                HostedSyncGroupItem(
+                    hostedSyncGroup = it,
+                    execute = execute,
                 )
             }
         }
@@ -206,8 +148,60 @@ private fun Content(
         items(
             items = uiState.receivedPairRequests,
             key = { it.deviceId },
-        ) {
-            NodeItem(it, execute)
+            contentType = { it::class },
+        ) { node ->
+            NodeItem(
+                node = node,
+                execute = execute,
+            )
         }
+
+        stickyHeader(
+            key = "available_title",
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 12.dp),
+            ) {
+                Text(
+                    text = Res.string.available_sync_groups.getString(),
+                    fontSize = 20.sp,
+                )
+            }
+        }
+        items(
+            items = uiState.hostedSyncGroups.filter { !it.isDefault },
+            key = { it.hostedSyncGroupId },
+            contentType = { it::class },
+        ) {
+            HostedSyncGroupItem(
+                hostedSyncGroup = it,
+                execute = execute,
+            )
+        }
+
+        stickyHeader(
+            key = "createGroup_title",
+            contentType = "title"
+        ) {
+            Row(
+                modifier = Modifier
+                    .animateItem()
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                IconButton(
+                    onClick = showCreateGroupDialog,
+                ) {
+                    Icon(
+                        painter = Res.drawable.plus.getPainter(),
+                        contentDescription = "discover"
+                    )
+                }
+            }
+        }
+
     }
 }

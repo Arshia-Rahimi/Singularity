@@ -87,6 +87,7 @@ private fun ClientScreen(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(200.dp),
             modifier = Modifier.fillMaxSize()
+                .padding(ip)
                 .padding(horizontal = 4.dp),
         ) {
             stickyHeader(

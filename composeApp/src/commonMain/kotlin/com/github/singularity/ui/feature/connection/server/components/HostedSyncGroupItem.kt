@@ -1,13 +1,15 @@
 package com.github.singularity.ui.feature.connection.server.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -20,15 +22,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
@@ -44,9 +46,8 @@ import singularity.composeapp.generated.resources.options
 import singularity.composeapp.generated.resources.set_group_as_default
 
 @Composable
-fun LazyItemScope.HostedSyncGroupItem(
+fun LazyGridItemScope.HostedSyncGroupItem(
     hostedSyncGroup: HostedSyncGroup,
-    modifier: Modifier = Modifier,
     execute: ServerIntent.() -> Unit,
 ) {
     var showSetAsDefaultDialog by remember { mutableStateOf(false) }
@@ -56,75 +57,88 @@ fun LazyItemScope.HostedSyncGroupItem(
 
     val focusManager = LocalFocusManager.current
 
-    Row(
-        modifier = modifier.fillMaxWidth()
+    val containerColor = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.secondary
+    else MaterialTheme.colorScheme.secondaryContainer
+
+    val textColor = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.onSecondary
+    else MaterialTheme.colorScheme.onSecondaryContainer
+
+    Box(
+        modifier = Modifier
             .animateItem()
-            .onCondition(hostedSyncGroup.isDefault) {
-                background(MaterialTheme.colorScheme.secondaryContainer)
-            }
-            .onCondition(!hostedSyncGroup.isDefault) {
-                clickable { showSetAsDefaultDialog = true }
-            }
-            .padding(vertical = 4.dp, horizontal = 8.dp),
+            .padding(8.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(containerColor)
+            .combinedClickable(
+                onClick = { showSetAsDefaultDialog = true },
+                onLongClick = { showDeletionDialog = true },
+            )
+            .padding(16.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        Column(
-            modifier = Modifier.weight(1f),
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                fontSize = 16.sp,
-                text = hostedSyncGroup.name,
-                color = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.onSecondaryContainer else Color.Unspecified,
-            )
+            Column {
+                Text(
+                    fontSize = 16.sp,
+                    text = hostedSyncGroup.name,
+                    color = textColor,
+                )
 
-            Text(
-                text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_paired.getString()}",
-                fontSize = 12.sp,
-                color = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.onSecondaryContainer else Color.Unspecified,
-            )
-        }
-
-        Box {
-            IconButton(
-                onClick = { showDropDownMenu = true },
-            ) {
-                Icon(
-                    painter = Res.drawable.options.getPainter(),
-                    contentDescription = Res.string.options.getString(),
+                Text(
+                    text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_paired.getString()}",
+                    fontSize = 12.sp,
+                    color = textColor,
                 )
             }
-            DropdownMenu(
-                expanded = showDropDownMenu,
-                onDismissRequest = { showDropDownMenu = false },
-            ) {
-                DropdownMenuItem(
-                    text = { Text(Res.string.delete.getString()) },
-                    onClick = {
-                        showDeletionDialog = true
-                        showDropDownMenu = false
-                    },
-                    trailingIcon = {
-                        Icon(
-                            painter = Res.drawable.delete.getPainter(),
-                            contentDescription = Res.string.delete.getString(),
+
+            Box {
+                IconButton(
+                    onClick = { showDropDownMenu = true },
+                ) {
+                    Icon(
+                        painter = Res.drawable.options.getPainter(),
+                        contentDescription = Res.string.options.getString(),
+                        tint = textColor,
+                    )
+                }
+                DropdownMenu(
+                    expanded = showDropDownMenu,
+                    onDismissRequest = { showDropDownMenu = false },
+                ) {
+                    if (!hostedSyncGroup.isDefault) {
+                        DropdownMenuItem(
+                            text = { Text(Res.string.delete.getString()) },
+                            onClick = {
+                                showDeletionDialog = true
+                                showDropDownMenu = false
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    painter = Res.drawable.delete.getPainter(),
+                                    contentDescription = Res.string.delete.getString(),
+                                )
+                            },
                         )
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text(Res.string.edit.getString()) },
-                    onClick = {
-                        showEditDialog = true
-                        showDropDownMenu = false
-                    },
-                    trailingIcon = {
-                        Icon(
-                            painter = Res.drawable.edit.getPainter(),
-                            contentDescription = Res.string.edit.getString(),
-                        )
-                    },
-                )
+                    }
+                    DropdownMenuItem(
+                        text = { Text(Res.string.edit.getString()) },
+                        onClick = {
+                            showEditDialog = true
+                            showDropDownMenu = false
+                        },
+                        trailingIcon = {
+                            Icon(
+                                painter = Res.drawable.edit.getPainter(),
+                                contentDescription = Res.string.edit.getString(),
+                            )
+                        },
+                    )
+                }
             }
         }
-
     }
 
     ConfirmationDialog(
