@@ -64,7 +64,7 @@ private fun SettingsScreen(
             TopAppBar(
                 title = { Text(Res.string.settings.getString()) },
                 navigationIcon = {
-                    DrawerIcon { SettingsIntent.OpenDrawer.execute() }
+                    DrawerIcon()
                 },
             )
         }

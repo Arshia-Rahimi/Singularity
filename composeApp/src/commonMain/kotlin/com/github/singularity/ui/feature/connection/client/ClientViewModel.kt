@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.shared.model.JoinedSyncGroup
@@ -69,7 +68,6 @@ class ClientViewModel(
             is ClientIntent.RefreshDiscovery -> refreshDiscovery()
             is ClientIntent.DeleteGroup -> delete(intent.group)
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
-            is ClientIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
             is ClientIntent.StartDiscovery -> shouldDiscover.value = true
             is ClientIntent.StopDiscovery -> shouldDiscover.value = false
         }

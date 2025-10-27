@@ -61,7 +61,7 @@ private fun ClientScreen(
             TopAppBar(
                 title = { Text(Res.string.discover.getString()) },
                 navigationIcon = {
-                    DrawerIcon { ClientIntent.OpenDrawer.execute() }
+                    DrawerIcon()
                 },
             )
         },

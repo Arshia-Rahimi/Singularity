@@ -50,7 +50,7 @@ private fun SyncScreen(
             TopAppBar(
                 title = { Text(Res.string.sync.getString()) },
                 navigationIcon = {
-                    DrawerIcon { SyncIntent.OpenDrawer.execute() }
+                    DrawerIcon()
                 },
             )
         },

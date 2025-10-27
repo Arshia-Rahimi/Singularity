@@ -70,7 +70,7 @@ private fun ServerScreen(
             TopAppBar(
                 title = { Text(Res.string.broadcast.getString()) },
                 navigationIcon = {
-                    DrawerIcon { ServerIntent.OpenDrawer.execute() }
+                    DrawerIcon()
                 },
             )
         },

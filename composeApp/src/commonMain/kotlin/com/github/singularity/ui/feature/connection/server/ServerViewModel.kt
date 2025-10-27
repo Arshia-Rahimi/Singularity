@@ -3,7 +3,6 @@ package com.github.singularity.ui.feature.connection.server
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.app.navigation.components.AppNavigationController
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.ServerConnectionState
@@ -58,7 +57,6 @@ class ServerViewModel(
             is ServerIntent.DeleteGroup -> delete(intent.group)
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
             is ServerIntent.RefreshConnection -> syncService.refresh()
-            is ServerIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
             is ServerIntent.StartBroadcast -> shouldBroadcast.value = true
             is ServerIntent.StopBroadcast -> shouldBroadcast.value = false
         }
