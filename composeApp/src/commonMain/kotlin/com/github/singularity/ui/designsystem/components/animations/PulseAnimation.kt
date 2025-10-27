@@ -24,7 +24,7 @@ fun PulseAnimation(
     color: Color = MaterialTheme.colorScheme.primary,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "pulse_animation")
+    val infiniteTransition = rememberInfiniteTransition(label = "loading_animation")
 
     val progress by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -32,7 +32,7 @@ fun PulseAnimation(
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1000),
         ),
-        label = "progress animation"
+        label = "pulse_animation"
     )
 
     Box(
