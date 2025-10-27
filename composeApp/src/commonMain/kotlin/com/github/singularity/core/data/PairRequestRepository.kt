@@ -19,4 +19,6 @@ interface PairRequestRepository {
 
     fun get(id: Int): PairCheck?
 
+    fun clear()
+
 }

@@ -41,4 +41,8 @@ class PairRequestRepositoryImpl : PairRequestRepository {
 
     override fun get(id: Int) = requests.value.firstOrNull { it.requestId == id }
 
+    override fun clear() {
+        _requests.value = emptyList()
+    }
+
 }

@@ -18,4 +18,6 @@ sealed interface ServerIntent {
     data object RefreshConnection : ServerIntent
     data object ToggleSyncMode : ServerIntent
     data object OpenDrawer : ServerIntent
+    data object StartBroadcast : ServerIntent
+    data object StopBroadcast : ServerIntent
 }

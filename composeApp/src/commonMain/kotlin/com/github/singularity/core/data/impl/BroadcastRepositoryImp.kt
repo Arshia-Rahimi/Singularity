@@ -11,24 +11,23 @@ import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BroadcastRepositoryImp(
     private val broadcastService: DeviceBroadcastService,
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
     private val pairRequestRepo: PairRequestRepository,
     private val httpServer: KtorHttpServer,
 ) : BroadcastRepository {
-            
-    override val isBroadcasting = httpServer.isServerRunning
 
-    override val pairRequests = pairRequestRepo.requests
-        .map { list -> list.filter { it.status == PairStatus.Awaiting }.map { it.node } }
-        .flowOn(Dispatchers.IO)
+    override val isBroadcasting = httpServer.isServerRunning
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
 
@@ -50,9 +49,7 @@ class BroadcastRepositoryImp(
     override suspend fun setAsDefault(group: HostedSyncGroup) {
         hostedSyncGroupRepo.setAsDefault(group)
         if (isBroadcasting.value) {
-            stopBroadcast()
             httpServer.stop()
-            startBroadcast()
             httpServer.start(group)
         }
     }
@@ -65,15 +62,20 @@ class BroadcastRepositoryImp(
         pairRequestRepo.reject(node)
     }
 
-    override suspend fun startBroadcast() {
-        val defaultGroup = hostedSyncGroupRepo.defaultSyncGroup.first() ?: return
-        httpServer.start(defaultGroup)
-        broadcastService.startBroadcast(defaultGroup)
-    }
-
-    override suspend fun stopBroadcast() {
+    override suspend fun broadcast() = hostedSyncGroupRepo.defaultSyncGroup.flatMapLatest { group ->
+        pairRequestRepo.clear()
         broadcastService.stopBroadcast()
         httpServer.stop()
-    }
+
+        if (group == null) flowOf(emptyList())
+        else {
+            httpServer.start(group)
+            broadcastService.startBroadcast(group)
+            pairRequestRepo.requests.map { list ->
+                list.filter { it.status == PairStatus.Awaiting }.map { it.node }
+            }
+        }
+
+    }.flowOn(Dispatchers.IO)
 
 }

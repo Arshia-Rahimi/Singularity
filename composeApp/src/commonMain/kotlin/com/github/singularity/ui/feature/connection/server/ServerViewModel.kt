@@ -10,11 +10,16 @@ import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ServerViewModel(
     private val broadcastRepo: BroadcastRepository,
     private val syncService: SyncService,
@@ -26,8 +31,12 @@ class ServerViewModel(
     private val hostedSyncGroups = broadcastRepo.syncGroups
         .stateInWhileSubscribed(emptyList())
 
-    private val receivedPairRequests = broadcastRepo.pairRequests
-        .stateInWhileSubscribed(emptyList())
+    private val shouldBroadcast = MutableStateFlow(false)
+
+    private val receivedPairRequests = shouldBroadcast.flatMapLatest { shouldBroadcast ->
+        if (shouldBroadcast) broadcastRepo.broadcast()
+        else emptyFlow()
+    }.stateInWhileSubscribed(emptyList())
 
     val uiState = combine(
         connectionState,
@@ -52,6 +61,8 @@ class ServerViewModel(
             is ServerIntent.RefreshConnection -> refreshConnection()
             is ServerIntent.ToggleSyncMode -> syncService.toggleSyncMode()
             is ServerIntent.OpenDrawer -> AppNavigationController.toggleDrawer()
+            is ServerIntent.StartBroadcast -> startBroadcast()
+            is ServerIntent.StopBroadcast -> stopBroadcast()
         }
     }
 
@@ -85,11 +96,12 @@ class ServerViewModel(
         broadcastRepo.delete(group).launchIn(viewModelScope)
     }
 
-    override fun onCleared() {
-        viewModelScope.launch {
-            broadcastRepo.stopBroadcast()
-            super.onCleared()
-        }
+    private fun startBroadcast() {
+        shouldBroadcast.value = true
+    }
+
+    private fun stopBroadcast() {
+        shouldBroadcast.value = false
     }
 
 }
