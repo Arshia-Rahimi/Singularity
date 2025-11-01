@@ -6,6 +6,7 @@ import com.github.singularity.ui.feature.connection.server.ServerViewModel
 import com.github.singularity.ui.feature.log.LogViewModel
 import com.github.singularity.ui.feature.settings.SettingsViewModel
 import com.github.singularity.ui.feature.sync.SyncViewModel
+import com.github.singularity.ui.feature.test.TestViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -16,4 +17,7 @@ val ViewmodelModule = module {
     viewModelOf(::SyncViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::LogViewModel)
+
+    //
+    viewModelOf(::TestViewModel)
 }

@@ -55,6 +55,7 @@ import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.feature.sync.SyncScreen
+import com.github.singularity.ui.feature.test.TestScreen
 import kotlinx.coroutines.launch
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_back
@@ -228,6 +229,9 @@ private fun NavigationHost(
         }
         composable<Route.Sync> {
             SyncScreen()
+        }
+        composable<Route.Test> {
+            TestScreen()
         }
     }
 

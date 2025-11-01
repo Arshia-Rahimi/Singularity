@@ -1,6 +1,7 @@
 package com.github.singularity.core.shared.serialization
 
 import com.github.singularity.core.sync.plugin.clipboard.ClipboardPlugin
+import com.github.singularity.ui.feature.test.TestEvent
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -14,6 +15,7 @@ val jsonConverter = Json {
     serializersModule = SerializersModule {
         polymorphic(SyncEvent::class) {
             subclass(ClipboardPlugin.Events.Copied::class)
+            subclass(TestEvent::class)
         }
     }
 }

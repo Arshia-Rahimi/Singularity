@@ -56,4 +56,5 @@
     <string name="minimize">minimize</string>
     <string name="window">window</string>
     <string name="fullscreen">fullscreen</string>
+    <string name="test">test</string>
 </resources>
