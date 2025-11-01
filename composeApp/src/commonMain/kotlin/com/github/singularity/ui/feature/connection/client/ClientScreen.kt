@@ -1,6 +1,5 @@
 package com.github.singularity.ui.feature.connection.client
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -100,40 +99,43 @@ private fun ClientScreen(
                 )
             }
 
-            stickyHeader(
-                key = "available_title",
-                contentType = "title",
-            ) {
-                AnimatedContent(uiState.availableServers) {
-                    if (uiState.isDiscovering) {
-                        Row(
-                            modifier = Modifier
-                                .animateItem()
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp, horizontal = 12.dp),
+            if (uiState.isDiscovering) {
+                stickyHeader(
+                    key = "available_title",
+                    contentType = "title",
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .animateItem()
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp, horizontal = 12.dp),
+                    ) {
+                        Text(
+                            text = Res.string.available_servers.getString(),
+                            fontSize = 20.sp,
+                        )
+                    }
+                }
+            } else {
+                stickyHeader(
+                    key = "discover_title",
+                    contentType = "title",
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .animateItem()
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        IconButton(
+                            onClick = { ClientIntent.StartDiscovery.execute() },
                         ) {
-                            Text(
-                                text = Res.string.available_servers.getString(),
-                                fontSize = 20.sp,
+                            Icon(
+                                painter = Res.drawable.plus.getPainter(),
+                                contentDescription = "discover",
                             )
-                        }
-                    } else {
-                        Row(
-                            modifier = Modifier
-                                .animateItem()
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            IconButton(
-                                onClick = { ClientIntent.StartDiscovery.execute() },
-                            ) {
-                                Icon(
-                                    painter = Res.drawable.plus.getPainter(),
-                                    contentDescription = "discover"
-                                )
-                            }
                         }
                     }
                 }
@@ -150,11 +152,11 @@ private fun ClientScreen(
                 )
             }
 
-            stickyHeader(
-                key = "pulse_animation",
-                contentType = "animation",
-            ) {
-                if (uiState.isDiscovering) {
+            if (uiState.isDiscovering) {
+                stickyHeader(
+                    key = "pulse_animation",
+                    contentType = "animation",
+                ) {
                     Column(
                         modifier = Modifier.fillMaxWidth()
                             .padding(vertical = 8.dp),
