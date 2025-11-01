@@ -2,6 +2,7 @@ package com.github.singularity.ui.feature.connection.client
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +37,7 @@ import singularity.composeapp.generated.resources.available_servers
 import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
 import singularity.composeapp.generated.resources.plus
+import singularity.composeapp.generated.resources.searching_dotted
 import singularity.composeapp.generated.resources.stop
 
 @Composable
@@ -153,21 +155,25 @@ private fun ClientScreen(
                 contentType = "animation",
             ) {
                 if (uiState.isDiscovering) {
-                    Row(
+                    Column(
                         modifier = Modifier.fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         PulseAnimation(
-                            modifier = Modifier.size(100.dp)
+                            modifier = Modifier.size(150.dp)
                         ) {
-                            NoRippleTextButton(
-                                onClick = { ClientIntent.StopDiscovery.execute() },
-                            ) {
-                                Text(
-                                    text = Res.string.stop.getString(),
-                                )
-                            }
+                            Text(
+                                text = Res.string.searching_dotted.getString(),
+                            )
+                        }
+
+                        NoRippleTextButton(
+                            onClick = { ClientIntent.StopDiscovery.execute() },
+                        ) {
+                            Text(
+                                text = Res.string.stop.getString(),
+                            )
                         }
                     }
                 }
