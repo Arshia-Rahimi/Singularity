@@ -78,7 +78,9 @@ private fun ClientScreen(
                 contentType = "title",
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .animateItem()
+                        .fillMaxWidth()
                         .padding(vertical = 8.dp, horizontal = 12.dp),
                 ) {
                     Text(
@@ -158,7 +160,9 @@ private fun ClientScreen(
                     contentType = "animation",
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .animateItem()
+                            .fillMaxWidth()
                             .padding(vertical = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
