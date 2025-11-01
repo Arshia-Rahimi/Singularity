@@ -36,9 +36,10 @@ class SqlitePreferencesRepository(
                     appSecret = Random.Default.nextBytes(32).let { secret ->
                         Base64.Default.withPadding(Base64.PaddingOption.ABSENT)
                             .encodeToByteArray(secret)
-                    })
+                    }
+                )
             )
-           
+
         }
         .filterNotNull()
         .distinctUntilChanged()
