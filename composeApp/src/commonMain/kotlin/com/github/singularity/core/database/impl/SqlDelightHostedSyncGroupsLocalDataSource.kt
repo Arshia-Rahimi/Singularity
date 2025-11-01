@@ -76,11 +76,11 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
     }
 
     override fun delete(syncGroupNode: HostedSyncGroupNode) {
-        queries.delete(syncGroupNode.deviceId)
+        nodesQueries.delete(syncGroupNode.deviceId)
     }
 
     override fun delete(syncGroup: HostedSyncGroup) {
-        nodesQueries.delete(syncGroup.hostedSyncGroupId)
+        queries.delete(syncGroup.hostedSyncGroupId)
     }
 
     override suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup) {
