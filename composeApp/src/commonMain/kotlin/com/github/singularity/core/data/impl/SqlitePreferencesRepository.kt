@@ -32,9 +32,9 @@ class SqlitePreferencesRepository(
 
             preferencesLocalDataSource.insert(
                 PreferencesModel(
-                    deviceId = Uuid.Companion.random().toString(),
-                    appSecret = Random.Default.nextBytes(32).let { secret ->
-                        Base64.Default.withPadding(Base64.PaddingOption.ABSENT)
+                    deviceId = Uuid.random().toString(),
+                    appSecret = Random.nextBytes(32).let { secret ->
+                        Base64.withPadding(Base64.PaddingOption.ABSENT)
                             .encodeToByteArray(secret)
                     }
                 )
