@@ -53,8 +53,8 @@ import com.github.singularity.ui.designsystem.WindowSizeClass
 import com.github.singularity.ui.designsystem.rememberWindowSizeClass
 import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
+import com.github.singularity.ui.feature.permissions.PermissionsScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
-import com.github.singularity.ui.feature.sync.SyncScreen
 import com.github.singularity.ui.feature.test.TestScreen
 import kotlinx.coroutines.launch
 import singularity.composeapp.generated.resources.Res
@@ -212,13 +212,11 @@ private fun NavigationHost(
                 animationSpec = spring(stiffness = Spring.StiffnessMedium),
             )
         },
-        exitTransition = {
-            fadeOut()
-        },
+	    exitTransition = { fadeOut() },
         navController = navController,
-        startDestination = Route.Home,
+	    startDestination = Route.Connection,
     ) {
-        composable<Route.Home> {
+	    composable<Route.Connection> {
             ConnectionScreen()
         }
         composable<Route.Settings> {
@@ -227,12 +225,12 @@ private fun NavigationHost(
         composable<Route.Log> {
             LogScreen()
         }
-        composable<Route.Sync> {
-            SyncScreen()
-        }
-        composable<Route.Test> {
-            TestScreen()
-        }
+	    composable<Route.Permissions> {
+		    PermissionsScreen()
+	    }
+	    composable<Route.Test> {
+		    TestScreen()
+	    }
     }
 
     val canPopBackStack by navController.rememberCanPopBackStack()

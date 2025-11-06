@@ -65,6 +65,7 @@ sealed interface ServerConnectionState : ConnectionState {
     data class Running(
         val group: HostedSyncGroup,
         val connectedNodes: List<HostedSyncGroupNode>,
+        val pairRequests: List<Node>,
     ) : ServerConnectionState {
         override val message: String
             @Composable get() = Res.string.server_running.getString(connectedNodes.size, group.name)

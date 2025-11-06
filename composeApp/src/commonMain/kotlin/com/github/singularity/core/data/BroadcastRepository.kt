@@ -26,6 +26,4 @@ interface BroadcastRepository {
 
     fun rejectPairRequest(node: Node)
 
-    suspend fun broadcast(): Flow<List<Node>>
-
 }

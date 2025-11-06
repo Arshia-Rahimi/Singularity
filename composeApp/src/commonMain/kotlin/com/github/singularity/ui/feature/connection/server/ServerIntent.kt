@@ -16,6 +16,4 @@ sealed interface ServerIntent {
     ) : ServerIntent
 
     data object RefreshConnection : ServerIntent
-    data object StartBroadcast : ServerIntent
-    data object StopBroadcast : ServerIntent
 }

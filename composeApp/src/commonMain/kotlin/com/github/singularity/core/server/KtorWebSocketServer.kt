@@ -33,102 +33,102 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class KtorWebSocketServer(
-    private val syncEventBridge: SyncEventBridge,
-    private val authTokenRepo: AuthTokenRepository,
+	private val syncEventBridge: SyncEventBridge,
+	private val authTokenRepo: AuthTokenRepository,
 ) {
 
-    private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
-    val connectedNodes = _connectedNodes.asStateFlow()
+	private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
+	val connectedNodes = _connectedNodes.asStateFlow()
 
-    private var isRunning = false
+	private var isRunning = false
 
-    private val server = embeddedServer(
-        factory = CIO,
-        port = WEBSOCKET_SERVER_PORT,
-        host = "0.0.0.0"
-    ) {
-        install(WebSockets) {
-            contentConverter = KotlinxWebsocketSerializationConverter(jsonConverter)
-        }
+	private val server = embeddedServer(
+		factory = CIO,
+		port = WEBSOCKET_SERVER_PORT,
+		host = "0.0.0.0"
+	) {
+		install(WebSockets) {
+			contentConverter = KotlinxWebsocketSerializationConverter(jsonConverter)
+		}
 
-        install(Authentication) {
-            bearer("auth") {
-                authenticate {
-                    authTokenRepo.getNode(it.token)
-                }
-            }
-        }
+		install(Authentication) {
+			bearer("auth") {
+				authenticate {
+					authTokenRepo.getNode(it.token)
+				}
+			}
+		}
 
-        registerRoutes()
-    }.apply {
-        monitor.subscribe(ApplicationStarted) {
-            isRunning = true
-        }
-        monitor.subscribe(ApplicationStopped) {
-            isRunning = false
-        }
-    }
+		registerRoutes()
+	}.apply {
+		monitor.subscribe(ApplicationStarted) {
+			isRunning = true
+		}
+		monitor.subscribe(ApplicationStopped) {
+			isRunning = false
+		}
+	}
 
-    fun start() {
-        if (isRunning) {
-            server.stop()
-        }
-        _connectedNodes.value = emptyList()
-        server.start()
-    }
+	fun start() {
+		if (isRunning) {
+			server.stop()
+		}
+		_connectedNodes.value = emptyList()
+		server.start()
+	}
 
-    fun stop() {
-        server.stop()
-        _connectedNodes.value = emptyList()
-    }
+	fun stop() {
+		server.stop()
+		_connectedNodes.value = emptyList()
+	}
 
-    private fun Application.registerRoutes() {
-        routing {
-            authenticate("auth", strategy = AuthenticationStrategy.Required) {
-                webSocket("/sync") {
-                    try {
-                        val converter = converter ?: return@webSocket
+	private fun Application.registerRoutes() {
+		routing {
+			authenticate("auth", strategy = AuthenticationStrategy.Required) {
+				webSocket("/sync") {
+					try {
+						val converter = converter ?: return@webSocket
 
-                        _connectedNodes.value = _connectedNodes.value + node()
+						_connectedNodes.value += node()
 
-                        coroutineScope {
-                            launch {
-                                try {
-                                    incoming.consumeAsFlow()
-                                        .filterIsInstance<Frame.Text>()
-                                        .map { converter.deserialize<SyncEvent>(it) }
-                                        .collect { syncEventBridge.incomingEventCallback(it) }
-                                } catch (e: Exception) {
-                                    println(e.message)
-                                    e.printStackTrace()
-                                }
-                            }
+						coroutineScope {
+							launch {
+								try {
+									incoming.consumeAsFlow()
+										.filterIsInstance<Frame.Text>()
+										.map { converter.deserialize<SyncEvent>(it) }
+										.collect { syncEventBridge.incomingEventCallback(it) }
+								} catch (e: Exception) {
+									println(e.message)
+									e.printStackTrace()
+								}
+							}
 
-                            launch {
-                                try {
-                                    syncEventBridge.outgoingSyncEvents
-                                        .map { converter.serialize<SyncEvent>(it) }
-                                        .collect {
-                                            try {
-                                                send(it)
-                                            } catch (e: Exception) {
-                                                println(e.message)
-                                                e.printStackTrace()
-                                            }
-                                        }
-                                } catch (e: Exception) {
-                                    println(e.message)
-                                    e.printStackTrace()
-                                }
-                            }
-                        }
+							launch {
+								try {
+									syncEventBridge.outgoingSyncEvents
+										.map { converter.serialize<SyncEvent>(it) }
+										.collect {
+											try {
+												send(it)
+											} catch (e: Exception) {
+												println(e.message)
+												e.printStackTrace()
+											}
+										}
+								} catch (e: Exception) {
+									println(e.message)
+									e.printStackTrace()
+								}
+							}
+						}
 
-                    } finally {
-                        _connectedNodes.value = _connectedNodes.value - node()
-                    }
-                }
-            }
-        }
-    }
+					} finally {
+						_connectedNodes.value -= node()
+					}
+				}
+			}
+		}
+	}
 
 }

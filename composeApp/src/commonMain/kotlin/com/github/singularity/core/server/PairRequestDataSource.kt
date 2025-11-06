@@ -1,11 +1,11 @@
-package com.github.singularity.core.data
+package com.github.singularity.core.server
 
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.PairCheck
 import com.github.singularity.core.shared.model.http.PairRequest
 import kotlinx.coroutines.flow.StateFlow
 
-interface PairRequestRepository {
+interface PairRequestDataSource {
 
     val requests: StateFlow<List<PairCheck>>
 

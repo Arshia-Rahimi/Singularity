@@ -9,11 +9,8 @@ import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
@@ -29,22 +26,13 @@ class ServerViewModel(
     private val hostedSyncGroups = broadcastRepo.syncGroups
         .stateInWhileSubscribed(emptyList())
 
-    private val shouldBroadcast = MutableStateFlow(false)
-
-    private val receivedPairRequests = shouldBroadcast.flatMapLatest { shouldBroadcast ->
-        if (shouldBroadcast) broadcastRepo.broadcast()
-        else emptyFlow()
-    }.stateInWhileSubscribed(emptyList())
-
     val uiState = combine(
         connectionState,
         hostedSyncGroups,
-        receivedPairRequests,
-    ) { connectionState, hostedSyncGroups, receivedPairRequests ->
+    ) { connectionState, hostedSyncGroups ->
         ServerUiState(
             connectionState = connectionState,
             hostedSyncGroups = hostedSyncGroups.toMutableStateList(),
-            receivedPairRequests = receivedPairRequests.toMutableStateList(),
         )
     }.stateInWhileSubscribed(ServerUiState())
 
@@ -57,8 +45,6 @@ class ServerViewModel(
             is ServerIntent.DeleteGroup -> delete(intent.group)
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
             is ServerIntent.RefreshConnection -> syncService.refresh()
-            is ServerIntent.StartBroadcast -> shouldBroadcast.value = true
-            is ServerIntent.StopBroadcast -> shouldBroadcast.value = false
         }
     }
 

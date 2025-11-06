@@ -1,7 +1,6 @@
 package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthTokenRepository
-import com.github.singularity.core.data.PairRequestRepository
 import com.github.singularity.core.shared.HTTP_SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.http.PairCheckRequest
@@ -29,8 +28,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlin.random.Random
 
 class KtorHttpServer(
-    private val authTokenRepo: AuthTokenRepository,
-    private val pairRequestRepo: PairRequestRepository,
+	private val authTokenRepo: AuthTokenRepository,
+	private val pairRequestRepo: PairRequestDataSource,
 ) {
 
     private var syncGroupId: String? = null

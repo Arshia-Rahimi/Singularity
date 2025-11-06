@@ -57,7 +57,7 @@ enum class NavigationDrawerItemTop(
     Connection(
         icon = Res.drawable.connection,
         label = Res.string.connection,
-        route = Route.Home,
+	    route = Route.Connection,
     ),
 
     Sync(
