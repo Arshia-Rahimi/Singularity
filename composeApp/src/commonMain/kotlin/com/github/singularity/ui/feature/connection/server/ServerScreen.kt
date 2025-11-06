@@ -98,9 +98,9 @@ private fun ServerScreen(
 
 @Composable
 private fun Content(
-    showCreateGroupDialog: () -> Unit,
     ip: PaddingValues,
     uiState: ServerUiState,
+    showCreateGroupDialog: () -> Unit,
     execute: ServerIntent.() -> Unit,
 ) {
     LazyVerticalGrid(

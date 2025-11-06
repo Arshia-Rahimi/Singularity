@@ -8,7 +8,9 @@ import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TestEvent(
     val name: String,
     override val plugin: String = "test",

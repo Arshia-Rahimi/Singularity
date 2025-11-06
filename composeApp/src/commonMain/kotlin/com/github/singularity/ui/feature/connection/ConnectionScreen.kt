@@ -35,14 +35,16 @@ fun ConnectionScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showSwitchModeDialog = true },
-            ) {
-                Icon(
-                    painter = Res.drawable.client.getPainter(),
-                    contentDescription = Res.string.switch_to_client.getString()
-                )
-            }
+	        if (canHostSyncServer) {
+		        FloatingActionButton(
+			        onClick = { showSwitchModeDialog = true },
+		        ) {
+			        Icon(
+				        painter = Res.drawable.client.getPainter(),
+				        contentDescription = Res.string.switch_to_client.getString()
+			        )
+		        }
+	        }
         },
     ) { ip ->
 
