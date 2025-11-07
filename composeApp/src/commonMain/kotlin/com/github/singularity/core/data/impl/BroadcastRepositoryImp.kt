@@ -2,7 +2,6 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.server.KtorHttpServer
 import com.github.singularity.core.server.PairRequestDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
@@ -17,10 +16,7 @@ import kotlinx.coroutines.flow.flow
 class BroadcastRepositoryImp(
 	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
 	private val pairRequestRepo: PairRequestDataSource,
-	private val httpServer: KtorHttpServer,
 ) : BroadcastRepository {
-
-    override val isBroadcasting = httpServer.isServerRunning
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups
 
@@ -41,10 +37,6 @@ class BroadcastRepositoryImp(
 
     override suspend fun setAsDefault(group: HostedSyncGroup) {
         hostedSyncGroupRepo.setAsDefault(group)
-        if (isBroadcasting.value) {
-            httpServer.stop()
-            httpServer.start(group)
-        }
     }
 
     override fun approvePairRequest(node: Node) {
