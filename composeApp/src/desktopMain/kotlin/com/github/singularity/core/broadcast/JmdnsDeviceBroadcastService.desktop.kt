@@ -1,7 +1,7 @@
 package com.github.singularity.core.broadcast
 
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.shared.HTTP_SERVER_PORT
+import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.os
@@ -21,7 +21,7 @@ class JmdnsDeviceBroadcastService(
         val service = ServiceInfo.create(
             MDNS_SERVICE_TYPE,
             getServiceName(group),
-            HTTP_SERVER_PORT,
+	        SERVER_PORT,
             0,
             0,
             mapOf(

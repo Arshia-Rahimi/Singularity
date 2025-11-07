@@ -1,5 +1,6 @@
-package com.github.singularity.core.server
+package com.github.singularity.core.server.impl
 
+import com.github.singularity.core.server.PairRequestDataSource
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.PairCheck
 import com.github.singularity.core.shared.model.http.PairRequest
@@ -8,13 +9,13 @@ import com.github.singularity.core.shared.util.replaceFirstWith
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class InMemoryPairRequestDataSourceImpl : PairRequestDataSource {
+class InMemoryPairRequestDataSource : PairRequestDataSource {
 
 	private val _requests = MutableStateFlow<List<PairCheck>>(emptyList())
 	override val requests = _requests.asStateFlow()
 
 	override fun add(id: Int, pairRequest: PairRequest) {
-		_requests.value += PairCheck(
+		_requests.value + PairCheck(
 			requestId = id,
 			node = pairRequest.toNode(),
 		)

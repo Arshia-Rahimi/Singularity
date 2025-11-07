@@ -3,7 +3,7 @@ package com.github.singularity.core.broadcast
 import com.bfo.zeroconf.Service
 import com.bfo.zeroconf.Zeroconf
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.shared.HTTP_SERVER_PORT
+import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.os
@@ -24,7 +24,7 @@ class ZeroconfDeviceBroadcastService(
 		service = Service.Builder()
 			.setName(getServiceName(group))
 			.setType(MDNS_SERVICE_TYPE)
-			.setPort(HTTP_SERVER_PORT)
+			.setPort(SERVER_PORT)
 			.put("deviceName", deviceName)
 			.put("deviceId", deviceId)
 			.put("devicePlatform", platform)

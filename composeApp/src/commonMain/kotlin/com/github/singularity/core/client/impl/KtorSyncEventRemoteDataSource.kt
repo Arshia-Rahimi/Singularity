@@ -1,7 +1,7 @@
 package com.github.singularity.core.client.impl
 
 import com.github.singularity.core.client.SyncEventRemoteDataSource
-import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
+import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.serialization.jsonConverter
@@ -53,7 +53,7 @@ class KtorSyncEventRemoteDataSource : SyncEventRemoteDataSource {
             authToken = token
             wsSession = client.webSocketSession(
                 host = server.ip,
-                port = WEBSOCKET_SERVER_PORT,
+	            port = SERVER_PORT,
                 path = "/sync",
             )
         } finally {

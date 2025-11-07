@@ -2,12 +2,20 @@ package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.SyncEventBridge
-import com.github.singularity.core.shared.WEBSOCKET_SERVER_PORT
+import com.github.singularity.core.shared.SERVER_PORT
+import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
+import com.github.singularity.core.shared.model.http.PairCheckRequest
+import com.github.singularity.core.shared.model.http.PairCheckResponse
+import com.github.singularity.core.shared.model.http.PairRequest
+import com.github.singularity.core.shared.model.http.PairResponse
+import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.serialization.jsonConverter
+import io.ktor.http.ContentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.serialization.serialize
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted
@@ -19,6 +27,12 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.contentType
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.converter
@@ -31,11 +45,15 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
-class KtorWebSocketServer(
+class KtorServer(
 	private val syncEventBridge: SyncEventBridge,
 	private val authTokenRepo: AuthTokenRepository,
+	private val pairRequestRepo: PairRequestDataSource,
 ) {
+
+	private var syncGroupId: String? = null
 
 	private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
 	val connectedNodes = _connectedNodes.asStateFlow()
@@ -44,11 +62,15 @@ class KtorWebSocketServer(
 
 	private val server = embeddedServer(
 		factory = CIO,
-		port = WEBSOCKET_SERVER_PORT,
+		port = SERVER_PORT,
 		host = "0.0.0.0"
 	) {
 		install(WebSockets) {
 			contentConverter = KotlinxWebsocketSerializationConverter(jsonConverter)
+		}
+
+		install(ContentNegotiation) {
+			json()
 		}
 
 		install(Authentication) {
@@ -69,21 +91,24 @@ class KtorWebSocketServer(
 		}
 	}
 
-	fun start() {
+	fun start(group: HostedSyncGroup) {
 		if (isRunning) {
 			server.stop()
 		}
 		_connectedNodes.value = emptyList()
+		syncGroupId = group.hostedSyncGroupId
 		server.start()
 	}
 
 	fun stop() {
 		server.stop()
 		_connectedNodes.value = emptyList()
+		syncGroupId = null
 	}
 
 	private fun Application.registerRoutes() {
 		routing {
+			// websocket
 			authenticate("auth", strategy = AuthenticationStrategy.Required) {
 				webSocket("/sync") {
 					try {
@@ -126,6 +151,59 @@ class KtorWebSocketServer(
 					} finally {
 						_connectedNodes.value -= node()
 					}
+				}
+			}
+
+			// http
+			contentType(ContentType.Application.Json) {
+				post("/pair") {
+					val groupId = syncGroupId
+					val pairRequest = call.receive<PairRequest>()
+
+					if (groupId == null || pairRequest.syncGroupId != groupId) {
+						call.respond(PairResponse(false))
+						return@post
+					}
+
+					val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
+					pairRequestRepo.add(requestId, pairRequest)
+
+					call.respond(PairResponse(true, requestId))
+
+				}
+
+				get("/pairCheck") {
+					val groupId = syncGroupId
+					val request = call.receive<PairCheckRequest>()
+					val pairCheck = pairRequestRepo.get(request.pairRequestId)
+
+					if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
+						call.respond(PairCheckResponse(PairStatus.Error))
+						return@get
+					}
+
+
+					if (pairCheck.status != PairStatus.Approved) {
+						call.respond(PairCheckResponse(pairCheck.status))
+						return@get
+					}
+
+					val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
+
+					if (hostedNode == null) {
+						call.respond(PairCheckResponse(PairStatus.Error))
+						return@get
+					}
+
+					pairRequestRepo.remove(request.pairRequestId)
+
+					call.respond(
+						PairCheckResponse(
+							pairStatus = pairCheck.status,
+							node = hostedNode,
+						)
+					)
+
 				}
 			}
 		}
