@@ -48,4 +48,8 @@ class HostedSyncGroupRepositoryImpl(
         hostedSyncGroupsLocalDataSource.setAsDefault(group)
     }
 
+    override suspend fun removeAllDefaults() {
+        hostedSyncGroupsLocalDataSource.removeAllDefaults()
+    }
+
 }

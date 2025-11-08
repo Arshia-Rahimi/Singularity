@@ -20,4 +20,6 @@ interface HostedSyncGroupsLocalDataSource {
 
     suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup)
 
+    suspend fun removeAllDefaults()
+
 }

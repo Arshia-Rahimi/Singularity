@@ -39,7 +39,6 @@ import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
 import singularity.composeapp.generated.resources.plus
 import singularity.composeapp.generated.resources.settings
-import singularity.composeapp.generated.resources.sync
 import singularity.composeapp.generated.resources.test
 
 interface NavigationDrawerItem {
@@ -58,12 +57,6 @@ enum class NavigationDrawerItemTop(
         icon = Res.drawable.connection,
         label = Res.string.connection,
 	    route = Route.Connection,
-    ),
-
-    Sync(
-        icon = Res.drawable.sync,
-        label = Res.string.sync,
-        route = Route.Sync,
     ),
 
     Test(

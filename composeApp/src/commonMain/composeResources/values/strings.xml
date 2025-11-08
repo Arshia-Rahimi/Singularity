@@ -57,4 +57,5 @@
     <string name="window">window</string>
     <string name="fullscreen">fullscreen</string>
     <string name="test">test</string>
+    <string name="select_hosted_sync_groups">Select a sync group to host</string>
 </resources>

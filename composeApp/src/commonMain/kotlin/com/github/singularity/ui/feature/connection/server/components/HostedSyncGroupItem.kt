@@ -44,14 +44,12 @@ import singularity.composeapp.generated.resources.edit
 import singularity.composeapp.generated.resources.edit_group_name
 import singularity.composeapp.generated.resources.nodes_paired
 import singularity.composeapp.generated.resources.options
-import singularity.composeapp.generated.resources.set_group_as_default
 
 @Composable
 fun LazyGridItemScope.HostedSyncGroupItem(
 	hostedSyncGroup: HostedSyncGroup,
 	execute: ServerIntent.() -> Unit,
 ) {
-	var showSetAsDefaultDialog by remember { mutableStateOf(false) }
 	var showDropDownMenu by remember { mutableStateOf(false) }
 	var showDeletionDialog by remember { mutableStateOf(false) }
 	var showEditDialog by remember { mutableStateOf(false) }
@@ -72,7 +70,7 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 			.background(containerColor)
 			.onCondition(!hostedSyncGroup.isDefault) {
 				combinedClickable(
-					onClick = { showSetAsDefaultDialog = true },
+                    onClick = { ServerIntent.SetAsDefault(hostedSyncGroup).execute() },
 					onLongClick = { showDeletionDialog = true },
 				)
 			}
@@ -143,13 +141,6 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 			}
 		}
 	}
-
-	ConfirmationDialog(
-		visible = showSetAsDefaultDialog,
-		message = Res.string.set_group_as_default.getString(hostedSyncGroup.name),
-		onConfirm = { ServerIntent.SetAsDefault(hostedSyncGroup).execute() },
-		onDismiss = { showSetAsDefaultDialog = false },
-	)
 
 	ConfirmationDialog(
 		visible = showDeletionDialog,

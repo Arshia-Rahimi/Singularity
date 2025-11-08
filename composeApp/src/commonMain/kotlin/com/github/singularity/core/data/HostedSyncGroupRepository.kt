@@ -20,4 +20,6 @@ interface HostedSyncGroupRepository {
 
     suspend fun setAsDefault(group: HostedSyncGroup)
 
+    suspend fun removeAllDefaults()
+
 }

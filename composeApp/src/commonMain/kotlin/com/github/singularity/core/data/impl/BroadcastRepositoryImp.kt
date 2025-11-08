@@ -39,6 +39,10 @@ class BroadcastRepositoryImp(
         hostedSyncGroupRepo.setAsDefault(group)
     }
 
+    override suspend fun removeAllDefaults() {
+        hostedSyncGroupRepo.removeAllDefaults()
+    }
+
     override fun approvePairRequest(node: Node) {
         pairRequestRepo.approve(node)
     }

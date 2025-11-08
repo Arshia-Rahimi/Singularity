@@ -19,6 +19,8 @@ interface BroadcastRepository {
 
     suspend fun setAsDefault(group: HostedSyncGroup)
 
+    suspend fun removeAllDefaults()
+
     fun approvePairRequest(node: Node)
 
     fun rejectPairRequest(node: Node)

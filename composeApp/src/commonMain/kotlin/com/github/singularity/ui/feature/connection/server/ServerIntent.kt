@@ -16,4 +16,5 @@ sealed interface ServerIntent {
     ) : ServerIntent
 
     data object RefreshConnection : ServerIntent
+    data object RemoveAllDefaults : ServerIntent
 }
