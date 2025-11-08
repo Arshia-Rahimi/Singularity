@@ -37,16 +37,21 @@ import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
 import singularity.composeapp.generated.resources.plus
 import singularity.composeapp.generated.resources.searching_dotted
+import singularity.composeapp.generated.resources.server
 import singularity.composeapp.generated.resources.stop
+import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
-fun ClientScreen() {
+fun ClientScreen(
+    toggleSyncMode: () -> Unit,
+) {
     val viewModel = koinViewModel<ClientViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ClientScreen(
         uiState = uiState,
         execute = { viewModel.execute(this) },
+        toggleSyncMode = toggleSyncMode,
     )
 
 }
@@ -56,12 +61,23 @@ fun ClientScreen() {
 private fun ClientScreen(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
+    toggleSyncMode: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(Res.string.discover.getString()) },
                 navigationIcon = { DrawerIcon() },
+                actions = {
+                    IconButton(
+                        onClick = toggleSyncMode,
+                    ) {
+                        Icon(
+                            painter = Res.drawable.server.getPainter(),
+                            contentDescription = Res.string.switch_to_server.getString(),
+                        )
+                    }
+                }
             )
         },
     ) { ip ->

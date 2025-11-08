@@ -59,6 +59,6 @@ fun SyncGroupDetails(
             )
         },
     ) { ip ->
-
+        Text(uiState.hostedSyncGroups.first { it.isDefault }.name)
     }
 }

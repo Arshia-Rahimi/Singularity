@@ -9,7 +9,7 @@ SELECT *
     FROM HostedSyncGroups
     LEFT JOIN HostedSyncGroupNodes
     ON HostedSyncGroups.id= HostedSyncGroupNodes.hosted_sync_group_id
-    ORDER BY is_default DESC, HostedSyncGroups.name DESC;
+    ORDER BY HostedSyncGroups.name DESC;
 
 insert:
 INSERT INTO HostedSyncGroups (id, name, is_default)

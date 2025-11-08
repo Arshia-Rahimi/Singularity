@@ -56,11 +56,8 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 
 	val focusManager = LocalFocusManager.current
 
-	val containerColor = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.secondary
-	else MaterialTheme.colorScheme.secondaryContainer
-
-	val textColor = if (hostedSyncGroup.isDefault) MaterialTheme.colorScheme.onSecondary
-	else MaterialTheme.colorScheme.onSecondaryContainer
+    val containerColor = MaterialTheme.colorScheme.secondaryContainer
+    val textColor = MaterialTheme.colorScheme.onSecondaryContainer
 
 	Box(
 		modifier = Modifier
