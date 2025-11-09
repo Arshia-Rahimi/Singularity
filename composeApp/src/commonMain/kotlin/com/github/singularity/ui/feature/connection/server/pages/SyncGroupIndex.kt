@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.connection.server.ServerIntent
@@ -55,24 +55,24 @@ fun SyncGroupIndex(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = Res.string.select_hosted_sync_groups.getString(),
-                        fontSize = 16.sp,
-                    )
-                },
-                actions = {
-                    IconButton(
-                        onClick = { showSwitchModeDialog = true },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.client.getPainter(),
-                            contentDescription = Res.string.switch_to_client.getString(),
-                        )
-                    }
-                }
-            )
+	        TopBar(
+		        title = {
+			        Text(
+				        text = Res.string.select_hosted_sync_groups.getString(),
+				        fontSize = 20.sp,
+			        )
+		        },
+		        actions = {
+			        IconButton(
+				        onClick = { showSwitchModeDialog = true },
+			        ) {
+				        Icon(
+					        painter = Res.drawable.client.getPainter(),
+					        contentDescription = Res.string.switch_to_client.getString(),
+				        )
+			        }
+		        }
+	        )
         },
     ) { ip ->
 

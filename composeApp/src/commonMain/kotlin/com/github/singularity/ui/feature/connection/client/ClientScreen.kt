@@ -16,7 +16,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +28,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.PulseAnimation
+import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.connection.client.components.JoinedSyncGroupItem
 import com.github.singularity.ui.feature.connection.client.components.ServerItem
@@ -74,9 +73,8 @@ private fun ClientScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+	        TopBar(
                 title = { Text(Res.string.discover.getString()) },
-                navigationIcon = { DrawerIcon() },
                 actions = {
                     IconButton(
                         onClick = { showSwitchModeDialog = true },

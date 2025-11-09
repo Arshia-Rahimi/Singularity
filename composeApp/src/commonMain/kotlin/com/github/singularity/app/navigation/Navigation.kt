@@ -222,7 +222,7 @@ private fun NavigationHost(
         composable<Route.Settings> {
             SettingsScreen()
         }
-        composable<Route.Log> {
+	    composable<Route.Log> {
             LogScreen()
         }
 	    composable<Route.Permissions> {

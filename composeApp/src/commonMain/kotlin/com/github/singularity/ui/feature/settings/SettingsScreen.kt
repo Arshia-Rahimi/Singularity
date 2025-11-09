@@ -17,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +33,7 @@ import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.compose.select
 import com.github.singularity.core.shared.getScaleLabel
 import com.github.singularity.core.shared.scaleOptions
-import com.github.singularity.ui.designsystem.components.DrawerIcon
+import com.github.singularity.ui.designsystem.components.TopBar
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_down
@@ -61,10 +60,9 @@ private fun SettingsScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text(Res.string.settings.getString()) },
-                navigationIcon = { DrawerIcon() },
-            )
+	        TopBar(
+		        title = { Text(Res.string.settings.getString()) },
+	        )
         }
     ) { ip ->
         LazyColumn(

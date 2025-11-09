@@ -49,7 +49,7 @@ private fun ServerScreen(
             )
 
             is ServerConnectionState.Running -> SyncGroupDetails(
-                connectionState = uiState.connectionState as ServerConnectionState.Running,
+	            connectionState = it,
                 execute = execute,
             )
         }
