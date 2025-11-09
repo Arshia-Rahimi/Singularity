@@ -1,34 +1,39 @@
-package com.github.singularity.ui.designsystem.components.dialogs
+package com.github.singularity.ui.designsystem.shared.components.dialogs
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.github.singularity.ui.designsystem.shared.getString
+import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.cancel
+import singularity.composeapp.generated.resources.confirm
+import singularity.composeapp.generated.resources.confirm_action
 
 @Composable
-fun ErrorDialog(
-    visible: Boolean,
-    title: String,
-    message: String,
-    errorIcon: Painter,
-    dismissText: String = "Dismiss",
-    onDismiss: () -> Unit
+fun ConfirmationDialog(
+	visible: Boolean,
+	title: String = Res.string.confirm_action.getString(),
+	message: String,
+	confirmText: String = Res.string.confirm.getString(),
+	cancelText: String = Res.string.cancel.getString(),
+	onConfirm: () -> Unit,
+	onDismiss: () -> Unit
 ) {
     if (visible) {
         Dialog(onDismissRequest = onDismiss) {
@@ -37,18 +42,8 @@ fun ErrorDialog(
                 color = MaterialTheme.colorScheme.surface
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(24.dp)
                 ) {
-                    Icon(
-                        painter = errorIcon,
-                        contentDescription = "Error",
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(48.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         text = title,
                         style = MaterialTheme.typography.headlineSmall,
@@ -66,14 +61,27 @@ fun ErrorDialog(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Button(
-                        onClick = onDismiss,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        ),
-                        modifier = Modifier.fillMaxWidth()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Text(dismissText)
+                        TextButton(onClick = onDismiss) {
+                            Text(
+                                cancelText,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Button(
+                            onClick = {
+                                onConfirm()
+                                onDismiss()
+                            }
+                        ) {
+                            Text(confirmText)
+                        }
                     }
                 }
             }

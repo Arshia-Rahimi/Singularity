@@ -1,7 +1,7 @@
 package com.github.singularity.core.shared.model
 
 import androidx.compose.runtime.Composable
-import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.shared.getString
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.connected
 import singularity.composeapp.generated.resources.connection_dropped

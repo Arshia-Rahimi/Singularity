@@ -29,12 +29,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.compose.getPainter
-import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.compose.onCondition
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
-import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
+import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
+import com.github.singularity.ui.designsystem.shared.components.dialogs.InputDialog
+import com.github.singularity.ui.designsystem.shared.getPainter
+import com.github.singularity.ui.designsystem.shared.getString
+import com.github.singularity.ui.designsystem.shared.onCondition
 import com.github.singularity.ui.feature.connection.server.ServerIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action

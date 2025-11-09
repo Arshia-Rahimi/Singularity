@@ -1,4 +1,4 @@
-package com.github.singularity.ui.designsystem.components.dialogs
+package com.github.singularity.ui.designsystem.shared.components.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,21 +19,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.shared.getString
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.cancel
-import singularity.composeapp.generated.resources.confirm
-import singularity.composeapp.generated.resources.confirm_action
+import singularity.composeapp.generated.resources.approve
+import singularity.composeapp.generated.resources.reject
+
 
 @Composable
-fun ConfirmationDialog(
-    visible: Boolean,
-    title: String = Res.string.confirm_action.getString(),
-    message: String,
-    confirmText: String = Res.string.confirm.getString(),
-    cancelText: String = Res.string.cancel.getString(),
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+fun ApprovalDialog(
+	visible: Boolean,
+	title: String,
+	message: String,
+	approveText: String = Res.string.approve.getString(),
+	rejectText: String = Res.string.reject.getString(),
+	onApprove: () -> Unit,
+	onReject: () -> Unit,
+	onDismiss: () -> Unit,
 ) {
     if (visible) {
         Dialog(onDismissRequest = onDismiss) {
@@ -63,11 +64,16 @@ fun ConfirmationDialog(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.Center,
                     ) {
-                        TextButton(onClick = onDismiss) {
+                        TextButton(
+                            onClick = {
+                                onReject()
+                                onDismiss()
+                            }
+                        ) {
                             Text(
-                                cancelText,
+                                rejectText,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         }
@@ -76,11 +82,11 @@ fun ConfirmationDialog(
 
                         Button(
                             onClick = {
-                                onConfirm()
+                                onApprove()
                                 onDismiss()
                             }
                         ) {
-                            Text(confirmText)
+                            Text(approveText)
                         }
                     }
                 }

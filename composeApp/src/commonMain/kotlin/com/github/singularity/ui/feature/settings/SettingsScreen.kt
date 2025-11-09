@@ -27,13 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.compose.getPainter
-import com.github.singularity.core.shared.compose.getString
-import com.github.singularity.core.shared.compose.onCondition
-import com.github.singularity.core.shared.compose.select
 import com.github.singularity.core.shared.getScaleLabel
 import com.github.singularity.core.shared.scaleOptions
 import com.github.singularity.ui.designsystem.components.TopBar
+import com.github.singularity.ui.designsystem.shared.getPainter
+import com.github.singularity.ui.designsystem.shared.getString
+import com.github.singularity.ui.designsystem.shared.onCondition
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_down
@@ -86,10 +85,7 @@ private fun SettingsScreen(
 						onClick = { expanded = true },
 					) {
 						Icon(
-							painter = expanded.select(
-								Res.drawable.arrow_down,
-								Res.drawable.arrow_up,
-							).getPainter(),
+							painter = if (expanded) Res.drawable.arrow_down.getPainter() else Res.drawable.arrow_up.getPainter(),
 							contentDescription = "",
 						)
 

@@ -26,11 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.compose.getPainter
-import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.PulseAnimation
 import com.github.singularity.ui.designsystem.components.TopBar
-import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
+import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
+import com.github.singularity.ui.designsystem.shared.getPainter
+import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.components.JoinedSyncGroupItem
 import com.github.singularity.ui.feature.connection.client.components.ServerItem
 import org.koin.compose.viewmodel.koinViewModel

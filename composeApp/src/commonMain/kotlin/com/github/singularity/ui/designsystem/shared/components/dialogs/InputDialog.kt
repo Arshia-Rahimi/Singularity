@@ -1,4 +1,4 @@
-package com.github.singularity.ui.designsystem.components.dialogs
+package com.github.singularity.ui.designsystem.shared.components.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,21 +36,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.shared.getString
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.cancel
 
 @Composable
 fun InputDialog(
-    visible: Boolean,
-    title: String,
-    confirmText: String,
-    cancelText: String = Res.string.cancel.getString(),
-    placeholder: String = "",
-    initialValue: String = "",
-    onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+	visible: Boolean,
+	title: String,
+	confirmText: String,
+	cancelText: String = Res.string.cancel.getString(),
+	placeholder: String = "",
+	initialValue: String = "",
+	onConfirm: (String) -> Unit,
+	onDismiss: () -> Unit,
+	keyboardOptions: KeyboardOptions = KeyboardOptions(),
 ) {
     val confirm = { input: String ->
         onConfirm(input)

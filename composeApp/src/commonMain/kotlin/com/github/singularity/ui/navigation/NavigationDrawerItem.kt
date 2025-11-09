@@ -1,4 +1,4 @@
-package com.github.singularity.app.navigation.components
+package com.github.singularity.ui.navigation
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -28,9 +28,8 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.app.navigation.Route
-import com.github.singularity.core.shared.compose.getPainter
-import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.shared.getPainter
+import com.github.singularity.ui.designsystem.shared.getString
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import singularity.composeapp.generated.resources.Res

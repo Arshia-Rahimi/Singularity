@@ -1,4 +1,4 @@
-package com.github.singularity.ui.designsystem.components.dialogs
+package com.github.singularity.ui.designsystem.shared.components.dialogs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,13 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun WarningDialog(
+fun ErrorDialog(
     visible: Boolean,
     title: String,
     message: String,
-    warningIcon: Painter,
-    confirmText: String,
-    onDismiss: () -> Unit,
+    errorIcon: Painter,
+    dismissText: String = "Dismiss",
+    onDismiss: () -> Unit
 ) {
     if (visible) {
         Dialog(onDismissRequest = onDismiss) {
@@ -41,9 +41,9 @@ fun WarningDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        painter = warningIcon,
-                        contentDescription = "Warning",
-                        tint = MaterialTheme.colorScheme.tertiary,
+                        painter = errorIcon,
+                        contentDescription = "Error",
+                        tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(48.dp)
                     )
 
@@ -69,11 +69,11 @@ fun WarningDialog(
                     Button(
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
+                            containerColor = MaterialTheme.colorScheme.error
                         ),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(confirmText)
+                        Text(dismissText)
                     }
                 }
             }

@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.app.navigation.Navigation
 import com.github.singularity.core.broadcast.di.BroadcastModule
 import com.github.singularity.core.client.di.ClientModule
 import com.github.singularity.core.data.di.DataModule
@@ -16,6 +15,7 @@ import com.github.singularity.core.server.di.ServerModule
 import com.github.singularity.core.sync.di.SyncModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
+import com.github.singularity.ui.navigation.Navigation
 import org.koin.compose.koinInject
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin

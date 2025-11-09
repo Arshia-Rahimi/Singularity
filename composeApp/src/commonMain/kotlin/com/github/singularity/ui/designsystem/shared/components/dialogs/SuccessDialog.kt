@@ -1,4 +1,4 @@
-package com.github.singularity.ui.designsystem.components.dialogs
+package com.github.singularity.ui.designsystem.shared.components.dialogs
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon

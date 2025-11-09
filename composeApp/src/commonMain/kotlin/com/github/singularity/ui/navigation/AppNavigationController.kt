@@ -1,4 +1,4 @@
-package com.github.singularity.app.navigation.components
+package com.github.singularity.ui.navigation
 
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.channels.Channel

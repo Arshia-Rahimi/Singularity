@@ -1,39 +1,33 @@
-package com.github.singularity.ui.designsystem.components.dialogs
+package com.github.singularity.ui.designsystem.shared.components.dialogs
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.github.singularity.core.shared.compose.getString
-import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.approve
-import singularity.composeapp.generated.resources.reject
-
 
 @Composable
-fun ApprovalDialog(
+fun WarningDialog(
     visible: Boolean,
     title: String,
     message: String,
-    approveText: String = Res.string.approve.getString(),
-    rejectText: String = Res.string.reject.getString(),
-    onApprove: () -> Unit,
-    onReject: () -> Unit,
+    warningIcon: Painter,
+    confirmText: String,
     onDismiss: () -> Unit,
 ) {
     if (visible) {
@@ -43,8 +37,18 @@ fun ApprovalDialog(
                 color = MaterialTheme.colorScheme.surface
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Icon(
+                        painter = warningIcon,
+                        contentDescription = "Warning",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(48.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
                         text = title,
                         style = MaterialTheme.typography.headlineSmall,
@@ -62,32 +66,14 @@ fun ApprovalDialog(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        TextButton(
-                            onClick = {
-                                onReject()
-                                onDismiss()
-                            }
-                        ) {
-                            Text(
-                                rejectText,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Button(
-                            onClick = {
-                                onApprove()
-                                onDismiss()
-                            }
-                        ) {
-                            Text(approveText)
-                        }
+                        Text(confirmText)
                     }
                 }
             }

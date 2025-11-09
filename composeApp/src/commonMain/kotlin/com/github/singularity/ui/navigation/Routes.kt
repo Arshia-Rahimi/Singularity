@@ -1,4 +1,4 @@
-package com.github.singularity.app.navigation
+package com.github.singularity.ui.navigation
 
 import kotlinx.serialization.Serializable
 

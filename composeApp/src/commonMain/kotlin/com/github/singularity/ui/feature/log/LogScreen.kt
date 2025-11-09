@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.TopBar
+import com.github.singularity.ui.designsystem.shared.getString
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.logs

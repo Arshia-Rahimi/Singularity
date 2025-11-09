@@ -1,4 +1,4 @@
-package com.github.singularity.ui.designsystem
+package com.github.singularity.ui.designsystem.shared
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
