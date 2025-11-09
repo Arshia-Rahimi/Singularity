@@ -23,7 +23,7 @@ fun TestScreen() {
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
-		topBar = { TopBar() },
+		topBar = { TopBar("test") },
 	) {
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),

@@ -42,111 +42,107 @@ import singularity.composeapp.generated.resources.settings
 
 @Composable
 fun SettingsScreen() {
-    val viewModel = koinViewModel<SettingsViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val viewModel = koinViewModel<SettingsViewModel>()
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    SettingsScreen(
-        uiState = uiState,
-        execute = { viewModel.execute(this) },
-    )
+	SettingsScreen(
+		uiState = uiState,
+		execute = { viewModel.execute(this) },
+	)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
-    uiState: SettingsUiState,
-    execute: SettingsIntent.() -> Unit,
+	uiState: SettingsUiState,
+	execute: SettingsIntent.() -> Unit,
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-	        TopBar(
-		        title = { Text(Res.string.settings.getString()) },
-	        )
-        }
-    ) { ip ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-                .padding(ip),
-        ) {
-            settingsItem(
-                onClick = { SettingsIntent.ToggleTheme.execute() },
-            ) {
-                SettingsItemText("Theme: ")
-                SettingsItemText(uiState.theme.title.getString())
-            }
+	Scaffold(
+		modifier = Modifier.fillMaxSize(),
+		topBar = { TopBar(Res.string.settings.getString()) },
+	) { ip ->
+		LazyColumn(
+			modifier = Modifier.fillMaxSize()
+				.padding(ip),
+		) {
+			settingsItem(
+				onClick = { SettingsIntent.ToggleTheme.execute() },
+			) {
+				SettingsItemText("Theme: ")
+				SettingsItemText(uiState.theme.title.getString())
+			}
 
-            settingsItem {
-                var expanded by remember { mutableStateOf(false) }
-                SettingsItemText("Scale:")
+			settingsItem {
+				var expanded by remember { mutableStateOf(false) }
+				SettingsItemText("Scale:")
 
-                Row(
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    SettingsItemText(uiState.scale.getScaleLabel())
-                    IconButton(
-                        onClick = { expanded = true },
-                    ) {
-                        Icon(
-                            painter = expanded.select(
-                                Res.drawable.arrow_down,
-                                Res.drawable.arrow_up,
-                            ).getPainter(),
-                            contentDescription = "",
-                        )
+				Row(
+					modifier = Modifier.padding(vertical = 4.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceBetween,
+				) {
+					SettingsItemText(uiState.scale.getScaleLabel())
+					IconButton(
+						onClick = { expanded = true },
+					) {
+						Icon(
+							painter = expanded.select(
+								Res.drawable.arrow_down,
+								Res.drawable.arrow_up,
+							).getPainter(),
+							contentDescription = "",
+						)
 
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false },
-                        ) {
-                            scaleOptions.forEach {
-                                DropdownMenuItem(
-                                    text = { Text(it.getScaleLabel()) },
-                                    onClick = {
-                                        SettingsIntent.ChangeScale(it).execute()
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
+						DropdownMenu(
+							expanded = expanded,
+							onDismissRequest = { expanded = false },
+						) {
+							scaleOptions.forEach {
+								DropdownMenuItem(
+									text = { Text(it.getScaleLabel()) },
+									onClick = {
+										SettingsIntent.ChangeScale(it).execute()
+										expanded = false
+									}
+								)
+							}
+						}
+					}
+				}
 
-            }
-        }
-    }
+			}
+		}
+	}
 }
 
 
 private fun LazyListScope.settingsItem(
-    onClick: (() -> Unit)? = null,
-    content: @Composable RowScope.() -> Unit,
+	onClick: (() -> Unit)? = null,
+	content: @Composable RowScope.() -> Unit,
 ) {
-    item {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .onCondition(onClick != null) {
-                    clickable { onClick?.invoke() }
-                }
-                .padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            content()
-        }
-    }
+	item {
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(50.dp)
+				.onCondition(onClick != null) {
+					clickable { onClick?.invoke() }
+				}
+				.padding(horizontal = 20.dp),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.SpaceBetween,
+		) {
+			content()
+		}
+	}
 }
 
 @Composable
 private fun SettingsItemText(
-    text: String,
+	text: String,
 ) {
-    Text(
-        text = text,
-        fontSize = 16.sp,
-    )
+	Text(
+		text = text,
+		fontSize = 16.sp,
+	)
 }

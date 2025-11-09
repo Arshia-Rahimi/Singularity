@@ -29,42 +29,38 @@ import singularity.composeapp.generated.resources.logs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogScreen() {
-    val viewModel = koinViewModel<LogViewModel>()
-    val log by viewModel.logStream.collectAsStateWithLifecycle()
-    val scrollState = rememberScrollState()
-    var isFirstScroll by remember { mutableStateOf(true) }
+	val viewModel = koinViewModel<LogViewModel>()
+	val log by viewModel.logStream.collectAsStateWithLifecycle()
+	val scrollState = rememberScrollState()
+	var isFirstScroll by remember { mutableStateOf(true) }
 
-    LaunchedEffect(log) {
-        if (isFirstScroll) {
-            scrollState.scrollTo(scrollState.maxValue)
-            isFirstScroll = false
-        } else {
-            scrollState.animateScrollTo(scrollState.maxValue)
-        }
-    }
+	LaunchedEffect(log) {
+		if (isFirstScroll) {
+			scrollState.scrollTo(scrollState.maxValue)
+			isFirstScroll = false
+		} else {
+			scrollState.animateScrollTo(scrollState.maxValue)
+		}
+	}
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-	        TopBar(
-                title = { Text(Res.string.logs.getString()) },
-            )
-        },
-    ) { ip ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(ip)
-                .padding(4.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(scrollState),
-                text = log,
-                fontSize = 12.sp,
-                lineHeight = TextUnit(16f, TextUnitType.Sp),
-            )
-        }
-    }
+	Scaffold(
+		modifier = Modifier.fillMaxSize(),
+		topBar = { TopBar(Res.string.logs.getString()) },
+	) { ip ->
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(ip)
+				.padding(4.dp),
+		) {
+			Text(
+				modifier = Modifier
+					.weight(1f)
+					.verticalScroll(scrollState),
+				text = log,
+				fontSize = 12.sp,
+				lineHeight = TextUnit(16f, TextUnitType.Sp),
+			)
+		}
+	}
 }

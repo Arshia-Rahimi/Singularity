@@ -56,12 +56,7 @@ fun SyncGroupIndex(
         modifier = Modifier.fillMaxSize(),
         topBar = {
 	        TopBar(
-		        title = {
-			        Text(
-				        text = Res.string.select_hosted_sync_groups.getString(),
-				        fontSize = 20.sp,
-			        )
-		        },
+		        title = Res.string.select_hosted_sync_groups.getString(),
 		        actions = {
 			        IconButton(
 				        onClick = { showSwitchModeDialog = true },

@@ -74,7 +74,7 @@ private fun ClientScreen(
     Scaffold(
         topBar = {
 	        TopBar(
-                title = { Text(Res.string.discover.getString()) },
+		        title = Res.string.discover.getString(),
                 actions = {
                     IconButton(
                         onClick = { showSwitchModeDialog = true },
