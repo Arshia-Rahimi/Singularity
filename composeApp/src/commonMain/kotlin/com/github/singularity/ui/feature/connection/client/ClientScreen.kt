@@ -19,6 +19,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,7 @@ import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
 import com.github.singularity.ui.designsystem.components.DrawerIcon
 import com.github.singularity.ui.designsystem.components.PulseAnimation
+import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.connection.client.components.JoinedSyncGroupItem
 import com.github.singularity.ui.feature.connection.client.components.ServerItem
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,8 +54,12 @@ fun ClientScreen(
 
     ClientScreen(
         uiState = uiState,
-        execute = { viewModel.execute(this) },
-        toggleSyncMode = toggleSyncMode,
+        execute = {
+            when (this) {
+                is ClientIntent.ToggleSyncMode -> toggleSyncMode()
+                else -> viewModel.execute(this)
+            }
+        },
     )
 
 }
@@ -61,8 +69,9 @@ fun ClientScreen(
 private fun ClientScreen(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
-    toggleSyncMode: () -> Unit,
 ) {
+    var showSwitchModeDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,7 +79,7 @@ private fun ClientScreen(
                 navigationIcon = { DrawerIcon() },
                 actions = {
                     IconButton(
-                        onClick = toggleSyncMode,
+                        onClick = { showSwitchModeDialog = true },
                     ) {
                         Icon(
                             painter = Res.drawable.server.getPainter(),
@@ -202,6 +211,13 @@ private fun ClientScreen(
             }
 
         }
+
+        ConfirmationDialog(
+            visible = showSwitchModeDialog,
+            message = Res.string.switch_to_server.getString(),
+            onDismiss = { showSwitchModeDialog = false },
+            onConfirm = { ClientIntent.ToggleSyncMode.execute() },
+        )
 
     }
 }

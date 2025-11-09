@@ -8,18 +8,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.connection.server.ServerIntent
 import com.github.singularity.ui.feature.connection.server.ServerUiState
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
+import singularity.composeapp.generated.resources.client
 import singularity.composeapp.generated.resources.list
 import singularity.composeapp.generated.resources.select_hosted_sync_groups
-import singularity.composeapp.generated.resources.server
-import singularity.composeapp.generated.resources.switch_to_server
+import singularity.composeapp.generated.resources.switch_to_client
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +32,7 @@ fun SyncGroupDetails(
     uiState: ServerUiState,
     execute: ServerIntent.() -> Unit,
 ) {
+    var showSwitchModeDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -40,11 +46,11 @@ fun SyncGroupDetails(
                 },
                 actions = {
                     IconButton(
-                        onClick = { },
+                        onClick = { showSwitchModeDialog = true },
                     ) {
                         Icon(
-                            painter = Res.drawable.server.getPainter(),
-                            contentDescription = Res.string.switch_to_server.getString(),
+                            painter = Res.drawable.client.getPainter(),
+                            contentDescription = Res.string.switch_to_client.getString(),
                         )
                     }
                     IconButton(
@@ -60,5 +66,13 @@ fun SyncGroupDetails(
         },
     ) { ip ->
         Text(uiState.hostedSyncGroups.first { it.isDefault }.name)
+
+
+        ConfirmationDialog(
+            visible = showSwitchModeDialog,
+            message = Res.string.switch_to_client.getString(),
+            onDismiss = { showSwitchModeDialog = false },
+            onConfirm = { ServerIntent.ToggleSyncMode.execute() },
+        )
     }
 }

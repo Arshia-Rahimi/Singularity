@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.components.dialogs.InputDialog
 import com.github.singularity.ui.feature.connection.server.ServerIntent
 import com.github.singularity.ui.feature.connection.server.ServerUiState
@@ -47,6 +48,7 @@ fun SyncGroupIndex(
     uiState: ServerUiState,
     execute: ServerIntent.() -> Unit,
 ) {
+    var showSwitchModeDialog by remember { mutableStateOf(false) }
     var showCreateGroupDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
@@ -62,7 +64,7 @@ fun SyncGroupIndex(
                 },
                 actions = {
                     IconButton(
-                        onClick = {},
+                        onClick = { showSwitchModeDialog = true },
                     ) {
                         Icon(
                             painter = Res.drawable.client.getPainter(),
@@ -143,6 +145,13 @@ fun SyncGroupIndex(
             confirmText = Res.string.create.getString(),
             title = Res.string.create_new_sync_group.getString(),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        )
+
+        ConfirmationDialog(
+            visible = showSwitchModeDialog,
+            message = Res.string.switch_to_client.getString(),
+            onDismiss = { showSwitchModeDialog = false },
+            onConfirm = { ServerIntent.ToggleSyncMode.execute() },
         )
     }
 }

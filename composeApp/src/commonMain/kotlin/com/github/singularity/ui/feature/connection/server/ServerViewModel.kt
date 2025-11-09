@@ -46,6 +46,7 @@ class ServerViewModel(
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
             is ServerIntent.RefreshConnection -> syncService.refresh()
             is ServerIntent.RemoveAllDefaults -> removeAllDefaults()
+            is ServerIntent.ToggleSyncMode -> Unit
         }
     }
 
