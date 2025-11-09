@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.compose.getPainter
 import com.github.singularity.core.shared.compose.getString
+import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.ui.designsystem.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.feature.connection.server.ServerIntent
-import com.github.singularity.ui.feature.connection.server.ServerUiState
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.client
@@ -29,7 +29,7 @@ import singularity.composeapp.generated.resources.switch_to_client
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SyncGroupDetails(
-    uiState: ServerUiState,
+    connectionState: ServerConnectionState.Running,
     execute: ServerIntent.() -> Unit,
 ) {
     var showSwitchModeDialog by remember { mutableStateOf(false) }
@@ -65,7 +65,7 @@ fun SyncGroupDetails(
             )
         },
     ) { ip ->
-        Text(uiState.hostedSyncGroups.first { it.isDefault }.name)
+        Text(connectionState.group.name)
 
 
         ConfirmationDialog(

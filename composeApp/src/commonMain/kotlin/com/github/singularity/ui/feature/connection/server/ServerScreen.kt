@@ -43,13 +43,13 @@ private fun ServerScreen(
             .fillMaxSize(),
     ) {
         when (it) {
-            ServerConnectionState.NoDefaultServer -> SyncGroupIndex(
+            is ServerConnectionState.NoDefaultServer -> SyncGroupIndex(
                 uiState = uiState,
                 execute = execute,
             )
 
-            else -> SyncGroupDetails(
-                uiState = uiState,
+            is ServerConnectionState.Running -> SyncGroupDetails(
+                connectionState = uiState.connectionState as ServerConnectionState.Running,
                 execute = execute,
             )
         }
