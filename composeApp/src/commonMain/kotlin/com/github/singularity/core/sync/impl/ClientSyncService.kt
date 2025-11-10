@@ -1,11 +1,12 @@
-package com.github.singularity.core.sync
+package com.github.singularity.core.sync.impl
 
 import com.github.singularity.core.data.ClientConnectionRepository
-import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.ConnectionState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.core.sync.SyncEventBridge
+import com.github.singularity.core.sync.SyncService
 import com.github.singularity.core.sync.plugin.Plugin
 import com.github.singularity.core.sync.plugin.PluginManager
 import com.github.singularity.core.sync.plugin.PluginManagerImpl

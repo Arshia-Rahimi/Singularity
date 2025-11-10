@@ -1,7 +1,6 @@
 package com.github.singularity.core.server
 
 import com.github.singularity.core.data.AuthTokenRepository
-import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
@@ -12,6 +11,7 @@ import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.serialization.jsonConverter
+import com.github.singularity.core.sync.SyncEventBridge
 import io.ktor.http.ContentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter

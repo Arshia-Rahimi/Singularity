@@ -4,12 +4,12 @@ import com.github.singularity.core.broadcast.DeviceDiscoveryService
 import com.github.singularity.core.client.SyncEventRemoteDataSource
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
-import com.github.singularity.core.data.SyncEventBridge
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
+import com.github.singularity.core.sync.SyncEventBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO

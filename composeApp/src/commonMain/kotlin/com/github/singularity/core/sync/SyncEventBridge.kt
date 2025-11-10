@@ -1,4 +1,4 @@
-package com.github.singularity.core.data
+package com.github.singularity.core.sync
 
 import com.github.singularity.core.shared.serialization.SyncEvent
 import kotlinx.coroutines.flow.Flow

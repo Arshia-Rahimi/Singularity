@@ -1,9 +1,11 @@
 package com.github.singularity.core.sync.di
 
 import com.github.singularity.core.shared.canHostSyncServer
-import com.github.singularity.core.sync.ClientSyncService
-import com.github.singularity.core.sync.ServerSyncService
+import com.github.singularity.core.sync.SyncEventBridge
 import com.github.singularity.core.sync.SyncService
+import com.github.singularity.core.sync.impl.ClientSyncService
+import com.github.singularity.core.sync.impl.ServerSyncService
+import com.github.singularity.core.sync.impl.SyncEventBridgeImpl
 import com.github.singularity.core.sync.plugin.Plugin
 import com.github.singularity.core.sync.plugin.clipboard.ClipboardPlugin
 import org.koin.core.module.dsl.singleOf
@@ -15,6 +17,8 @@ val SyncModule = module {
         if (canHostSyncServer) ServerSyncService(get(), get(), get(), getKoin().getAll(), get())
         else ClientSyncService(get(), getKoin().getAll(), get())
     } bind SyncService::class
+    singleOf(::SyncEventBridgeImpl) bind SyncEventBridge::class
 
+    // plugins
     singleOf(::ClipboardPlugin) bind Plugin::class
 }
