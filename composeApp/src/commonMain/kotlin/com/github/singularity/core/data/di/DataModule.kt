@@ -25,7 +25,7 @@ val DataModule = module {
     singleOf(::SqlitePreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
     singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
-	singleOf(::JoinedSyncGroupRepositoryImpl) bind JoinedSyncGroupRepository::class
+    singleOf(::JoinedSyncGroupRepositoryImpl) bind JoinedSyncGroupRepository::class
     singleOf(::BroadcastRepositoryImpl) bind BroadcastRepository::class
 	singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
     singleOf(::RandomTokenAuthRepository) bind AuthTokenRepository::class

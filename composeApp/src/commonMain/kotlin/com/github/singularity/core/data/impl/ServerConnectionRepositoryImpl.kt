@@ -3,8 +3,8 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.broadcast.DeviceBroadcastService
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.server.KtorServer
 import com.github.singularity.core.server.PairRequestDataSource
+import com.github.singularity.core.server.SyncGroupServer
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.sendPulse
@@ -21,10 +21,10 @@ import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerConnectionRepositoryImpl(
-	private val server: KtorServer,
-	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
-	private val pairRequestDataSource: PairRequestDataSource,
-	private val broadcastService: DeviceBroadcastService,
+    private val server: SyncGroupServer,
+    private val hostedSyncGroupRepo: HostedSyncGroupRepository,
+    private val pairRequestDataSource: PairRequestDataSource,
+    private val broadcastService: DeviceBroadcastService,
 ) : ServerConnectionRepository {
 
 	private val refreshState = MutableSharedFlow<Unit>()
