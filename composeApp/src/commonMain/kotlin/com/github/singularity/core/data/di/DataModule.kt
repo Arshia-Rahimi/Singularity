@@ -8,7 +8,7 @@ import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.data.impl.BroadcastRepositoryImp
+import com.github.singularity.core.data.impl.BroadcastRepositoryImpl
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImp
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
@@ -26,7 +26,7 @@ val DataModule = module {
     singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
     singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
 	singleOf(::JoinedSyncGroupRepositoryImpl) bind JoinedSyncGroupRepository::class
-	singleOf(::BroadcastRepositoryImp) bind BroadcastRepository::class
+    singleOf(::BroadcastRepositoryImpl) bind BroadcastRepository::class
 	singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
     singleOf(::RandomTokenAuthRepository) bind AuthTokenRepository::class
 }

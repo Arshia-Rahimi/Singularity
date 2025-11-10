@@ -13,7 +13,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class BroadcastRepositoryImp(
+class BroadcastRepositoryImpl(
 	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
 	private val pairRequestRepo: PairRequestDataSource,
 ) : BroadcastRepository {
