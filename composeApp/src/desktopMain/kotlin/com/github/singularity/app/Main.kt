@@ -7,8 +7,6 @@ import androidx.compose.ui.window.rememberWindowState
 import java.awt.Dimension
 
 fun main() = application {
-	initKoin()
-
 	Window(
 		onCloseRequest = ::exitApplication,
 		state = rememberWindowState(width = 1000.dp, height = 800.dp),

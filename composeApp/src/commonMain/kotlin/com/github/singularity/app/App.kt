@@ -16,18 +16,18 @@ import com.github.singularity.core.sync.di.SyncModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
 import com.github.singularity.ui.navigation.Navigation
+import org.koin.compose.KoinMultiplatformApplication
 import org.koin.compose.koinInject
-import org.koin.core.KoinApplication
-import org.koin.core.context.startKoin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.module
 
 private val AppModule = module {
     viewModelOf(::MainViewModel)
 }
 
-val CommonModules = listOf(
+val Modules = listOf(
     AppModule,
     ViewmodelModule,
     DataModule,
@@ -39,35 +39,32 @@ val CommonModules = listOf(
     LoggerModule,
 )
 
-private var koinApp: KoinApplication? = null
-
-fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
-    if (koinApp != null) return
-    koinApp = startKoin {
-        appDeclaration()
-        modules(CommonModules)
-    }
-}
-
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App() {
-    val viewModel = koinInject<MainViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	KoinMultiplatformApplication(
+		config = KoinConfiguration {
+			modules(Modules)
+		}
+	) {
+		val viewModel = koinInject<MainViewModel>()
+		val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    uiState?.let { uiState ->
-        val density = LocalDensity.current
-        CompositionLocalProvider(
-            LocalDensity provides Density(
-                density.density * uiState.scale,
-                density.fontScale * uiState.scale,
-            )
-        ) {
-            SingularityTheme(uiState.theme) {
-	            Navigation(
-		            uiState = uiState,
-		            toggleSyncMode = viewModel::toggleSyncMode,
-	            )
-            }
-        }
-    }
+		uiState?.let { uiState ->
+			val density = LocalDensity.current
+			CompositionLocalProvider(
+				LocalDensity provides Density(
+					density.density * uiState.scale,
+					density.fontScale * uiState.scale,
+				)
+			) {
+				SingularityTheme(uiState.theme) {
+					Navigation(
+						uiState = uiState,
+						toggleSyncMode = viewModel::toggleSyncMode,
+					)
+				}
+			}
+		}
+	}
 }
