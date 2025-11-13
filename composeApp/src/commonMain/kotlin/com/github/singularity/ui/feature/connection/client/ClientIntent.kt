@@ -8,7 +8,6 @@ sealed interface ClientIntent {
     data class DeleteGroup(val group: JoinedSyncGroup) : ClientIntent
     data class SetAsDefault(val group: JoinedSyncGroup) : ClientIntent
     data object CancelPairRequest : ClientIntent
-    data object RefreshDiscovery : ClientIntent
     data object StartDiscovery : ClientIntent
     data object StopDiscovery : ClientIntent
 }

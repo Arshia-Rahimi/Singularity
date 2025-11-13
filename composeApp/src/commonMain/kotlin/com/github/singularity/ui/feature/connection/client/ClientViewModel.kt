@@ -65,7 +65,6 @@ class ClientViewModel(
         when (intent) {
             is ClientIntent.SendPairRequest -> sendPairRequest(intent.server)
             is ClientIntent.CancelPairRequest -> cancelPairRequest()
-            is ClientIntent.RefreshDiscovery -> refreshDiscovery()
             is ClientIntent.DeleteGroup -> delete(intent.group)
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
             is ClientIntent.StartDiscovery -> shouldDiscover.value = true
@@ -100,12 +99,6 @@ class ClientViewModel(
         viewModelScope.launch {
             joinedSyncGroupRepo.setAsDefault(group)
             shouldDiscover.value = false
-        }
-    }
-
-    private fun refreshDiscovery() {
-        viewModelScope.launch {
-            discoverRepo.refreshDiscovery()
         }
     }
 

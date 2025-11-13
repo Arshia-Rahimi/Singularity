@@ -17,7 +17,7 @@ import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
 import com.github.singularity.ui.navigation.Navigation
 import org.koin.compose.KoinMultiplatformApplication
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.KoinConfiguration
@@ -27,27 +27,27 @@ private val AppModule = module {
     viewModelOf(::MainViewModel)
 }
 
-val Modules = listOf(
-    AppModule,
-    ViewmodelModule,
-    DataModule,
-    DatabaseModule,
-    ClientModule,
-    SyncModule,
-    BroadcastModule,
-    ServerModule,
-    LoggerModule,
-)
+val koinConfig = KoinConfiguration {
+	modules(
+		AppModule,
+		ViewmodelModule,
+		DataModule,
+		DatabaseModule,
+		ClientModule,
+		SyncModule,
+		BroadcastModule,
+		ServerModule,
+		LoggerModule,
+	)
+}
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App() {
 	KoinMultiplatformApplication(
-		config = KoinConfiguration {
-			modules(Modules)
-		}
+		config = koinConfig,
 	) {
-		val viewModel = koinInject<MainViewModel>()
+		val viewModel = koinViewModel<MainViewModel>()
 		val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 		uiState?.let { uiState ->

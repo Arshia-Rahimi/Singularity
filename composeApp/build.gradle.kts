@@ -83,7 +83,6 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
-                implementation(libs.koin.startup)
             }
         }
         val iosMain by getting {
@@ -137,6 +136,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+	    isCoreLibraryDesugaringEnabled = true
     }
 
     testOptions {
@@ -147,6 +147,7 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
     testImplementation(libs.junit)
+	coreLibraryDesugaring(libs.desugaring)
 }
 
 compose.desktop {

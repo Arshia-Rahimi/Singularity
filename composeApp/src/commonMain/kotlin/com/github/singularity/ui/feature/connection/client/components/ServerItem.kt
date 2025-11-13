@@ -1,6 +1,7 @@
 package com.github.singularity.ui.feature.connection.client.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +39,7 @@ fun LazyGridItemScope.ServerItem(
             .animateItem()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
+	        .clickable { showPairRequestDialog = true }
             .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(16.dp),
         contentAlignment = Alignment.Center,
