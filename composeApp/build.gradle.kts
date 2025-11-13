@@ -97,7 +97,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutinesSwing)
                 implementation(libs.appdirs)
                 implementation(libs.sqldelight.driver.sqlite)
-                implementation(libs.jmdns)
                 implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
             }
         }
@@ -138,7 +137,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
     }
 
     testOptions {
@@ -148,7 +146,6 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
-    coreLibraryDesugaring(libs.desugaring)
     testImplementation(libs.junit)
 }
 

@@ -5,7 +5,7 @@ androidx-activity = "1.11.0"
 androidx-espresso = "3.7.0"
 androidx-lifecycle = "2.9.6"
 androidx-testExt = "1.3.0"
-composeHotReload = "1.0.0-rc02"
+composeHotReload = "1.0.0-rc03"
 composeMultiplatform = "1.9.3"
 junit = "4.13.2"
 kotlinx-coroutines = "1.10.2"
@@ -53,15 +53,12 @@ koin-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 ## appdirs
 appdirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }
-## desugaring
-desugaring = { module = "com.android.tools:desugar_jdk_libs_nio", version.ref = "desugaring" }
 ## sqldelight
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-driver-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 ##mdns
-jmdns = { module = "org.jmdns:jmdns", version.ref = "jmdns" }
 dns-sd = { module = "com.appstractive:dns-sd-kt", version.ref = "dns-sd" }
 
 [plugins]
