@@ -43,6 +43,10 @@
     <string name="connection_failed">Failed to connect to %1$d</string>
     <string name="connection_dropped">Connection to %1$d was dropped</string>
     <string name="connected">Connected to %1$d</string>
+    <string name="connected_nodes">Connected nodes</string>
+    <string name="no_connected_nodes">No nodes connected</string>
+    <string name="paired_nodes">Paired nodes</string>
+    <string name="no_paired_nodes">No paired nodes</string>
     <string name="stopped">Stopped</string>
     <string name="server_not_found">Server %1$d Not Found</string>
     <string name="await_pair_request_approval">Waiting for %1$d to approve request</string>

@@ -27,6 +27,7 @@ import singularity.composeapp.generated.resources.reject_or_approve
 
 @Composable
 fun LazyGridItemScope.NodeItem(
+	isPairRequest: Boolean = false,
 	node: Node,
 	execute: ServerIntent.() -> Unit,
 ) {
@@ -37,7 +38,7 @@ fun LazyGridItemScope.NodeItem(
             .animateItem()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
-            .clickable { showApproveNodeDialog = true }
+	        .clickable(enabled = isPairRequest) { showApproveNodeDialog = true }
             .padding(16.dp),
     ) {
         Column(

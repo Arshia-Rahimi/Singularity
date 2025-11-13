@@ -180,7 +180,7 @@ private fun SyncModeSwitch(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.Center,
 		) {
-			SingleChoiceSegmentedButtonRow() {
+			SingleChoiceSegmentedButtonRow {
 				SyncMode.entries.forEachIndexed { index, mode ->
 					SegmentedButton(
 						selected = uiState.syncMode == mode,

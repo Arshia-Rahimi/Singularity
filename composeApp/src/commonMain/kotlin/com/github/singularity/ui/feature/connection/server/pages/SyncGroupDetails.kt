@@ -1,20 +1,35 @@
 package com.github.singularity.ui.feature.connection.server.pages
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.singularity.core.shared.model.ServerConnectionState
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.server.ServerIntent
+import com.github.singularity.ui.feature.connection.server.components.NodeItem
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
+import singularity.composeapp.generated.resources.connected_nodes
 import singularity.composeapp.generated.resources.list
+import singularity.composeapp.generated.resources.no_connected_nodes
+import singularity.composeapp.generated.resources.no_paired_nodes
+import singularity.composeapp.generated.resources.pair_requests
+import singularity.composeapp.generated.resources.paired_nodes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,24 +38,104 @@ fun SyncGroupDetails(
 	execute: ServerIntent.() -> Unit,
 ) {
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-	        TopBar(
-		        title = connectionState.group.name,
-		        actions = {
-			        IconButton(
-				        onClick = { ServerIntent.RemoveAllDefaults.execute() }
-			        ) {
-				        Icon(
-					        painter = Res.drawable.list.getPainter(),
-					        contentDescription = Res.string.back.getString(),
-				        )
-			        }
-		        }
-	        )
-        },
-    ) { ip ->
+	Scaffold(
+		modifier = Modifier.fillMaxSize(),
+		topBar = {
+			TopBar(
+				title = connectionState.group.name,
+				actions = {
+					IconButton(
+						onClick = { ServerIntent.RemoveAllDefaults.execute() }
+					) {
+						Icon(
+							painter = Res.drawable.list.getPainter(),
+							contentDescription = Res.string.back.getString(),
+						)
+					}
+				}
+			)
+		},
+	) { ip ->
+		LazyVerticalGrid(
+			columns = GridCells.Adaptive(200.dp),
+			modifier = Modifier.fillMaxSize()
+				.padding(ip)
+				.padding(horizontal = 4.dp),
+		) {
+			if (!connectionState.pairRequests.isEmpty()) {
+				stickyHeader(
+					key = "pair_requests_title",
+				) {
+					Row(
+						modifier = Modifier
+							.animateItem()
+							.fillMaxWidth()
+							.padding(vertical = 8.dp, horizontal = 12.dp),
+					) {
+						Text(
+							text = Res.string.pair_requests.getString(),
+							fontSize = 12.sp,
+						)
+					}
+				}
+				items(connectionState.pairRequests) {
+					NodeItem(
+						node = it,
+						execute = execute,
+						isPairRequest = true,
+					)
+				}
+			}
 
-    }
+			stickyHeader(
+				key = "connected_title",
+			) {
+				Row(
+					modifier = Modifier
+						.animateItem()
+						.fillMaxWidth()
+						.padding(vertical = 8.dp, horizontal = 12.dp),
+				) {
+					Text(
+						text = if (connectionState.connectedNodes.isEmpty()) Res.string.no_connected_nodes.getString() else Res.string.connected_nodes.getString(),
+						fontSize = 12.sp,
+					)
+				}
+			}
+			items(connectionState.connectedNodes) {
+				NodeItem(
+					node = it.toNode(),
+					execute = execute
+				)
+			}
+
+			val pairedAndNotConnectedNodes =
+				connectionState.group.nodes.filter { it !in connectionState.connectedNodes }
+			if (!pairedAndNotConnectedNodes.isEmpty()) {
+				stickyHeader(
+					key = "not_connected_title",
+				) {
+					Row(
+						modifier = Modifier
+							.animateItem()
+							.fillMaxWidth()
+							.padding(vertical = 8.dp, horizontal = 12.dp),
+					) {
+						Text(
+							text = if (connectionState.group.nodes.isEmpty()) Res.string.no_paired_nodes.getString() else Res.string.paired_nodes.getString(),
+							fontSize = 12.sp,
+						)
+					}
+				}
+
+				items(pairedAndNotConnectedNodes) {
+					NodeItem(
+						node = it.toNode(),
+						execute = execute
+					)
+				}
+
+			}
+		}
+	}
 }
