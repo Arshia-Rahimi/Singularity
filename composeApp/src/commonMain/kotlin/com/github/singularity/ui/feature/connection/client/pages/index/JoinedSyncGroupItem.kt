@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.connection.client.components
+package com.github.singularity.ui.feature.connection.client.pages.index
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable

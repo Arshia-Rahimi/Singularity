@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.connection.server.pages
+package com.github.singularity.ui.feature.connection.server.pages.details
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,6 @@ import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.server.ServerIntent
-import com.github.singularity.ui.feature.connection.server.components.NodeItem
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.connected_nodes
@@ -33,7 +32,7 @@ import singularity.composeapp.generated.resources.paired_nodes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SyncGroupDetails(
+fun HostedSyncGroupDetailsPage(
 	connectionState: ServerConnectionState.Running,
 	execute: ServerIntent.() -> Unit,
 ) {

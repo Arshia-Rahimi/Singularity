@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.connection.server.pages
+package com.github.singularity.ui.feature.connection.server.pages.index
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -31,7 +31,6 @@ import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.server.ServerIntent
 import com.github.singularity.ui.feature.connection.server.ServerUiState
-import com.github.singularity.ui.feature.connection.server.components.HostedSyncGroupItem
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.available_sync_groups
 import singularity.composeapp.generated.resources.create
@@ -41,7 +40,7 @@ import singularity.composeapp.generated.resources.plus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SyncGroupIndex(
+fun HostedSyncGroupIndexPage(
 	uiState: ServerUiState,
 	execute: ServerIntent.() -> Unit,
 ) {

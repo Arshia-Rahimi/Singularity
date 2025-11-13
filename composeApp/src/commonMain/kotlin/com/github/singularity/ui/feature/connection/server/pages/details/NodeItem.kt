@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.connection.server.components
+package com.github.singularity.ui.feature.connection.server.pages.details
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

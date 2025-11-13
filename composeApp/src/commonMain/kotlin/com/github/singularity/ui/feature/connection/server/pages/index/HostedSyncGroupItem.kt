@@ -1,4 +1,4 @@
-package com.github.singularity.ui.feature.connection.server.components
+package com.github.singularity.ui.feature.connection.server.pages.index
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -57,7 +57,7 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 	val focusManager = LocalFocusManager.current
 
     val containerColor = MaterialTheme.colorScheme.secondaryContainer
-    val textColor = MaterialTheme.colorScheme.onSecondaryContainer
+	val textColor = MaterialTheme.colorScheme.onSecondaryContainer
 
 	Box(
 		modifier = Modifier

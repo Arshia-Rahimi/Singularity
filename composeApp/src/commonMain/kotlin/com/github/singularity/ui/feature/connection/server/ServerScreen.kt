@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.model.ServerConnectionState
-import com.github.singularity.ui.feature.connection.server.pages.SyncGroupDetails
-import com.github.singularity.ui.feature.connection.server.pages.SyncGroupIndex
+import com.github.singularity.ui.feature.connection.server.pages.details.HostedSyncGroupDetailsPage
+import com.github.singularity.ui.feature.connection.server.pages.index.HostedSyncGroupIndexPage
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -43,12 +43,12 @@ private fun ServerScreen(
 		        LinearProgressIndicator()
 	        }
 
-            is ServerConnectionState.NoDefaultServer -> SyncGroupIndex(
+	        is ServerConnectionState.NoDefaultServer -> HostedSyncGroupIndexPage(
                 uiState = uiState,
                 execute = execute,
             )
 
-            is ServerConnectionState.Running -> SyncGroupDetails(
+	        is ServerConnectionState.Running -> HostedSyncGroupDetailsPage(
 	            connectionState = it,
                 execute = execute,
             )
