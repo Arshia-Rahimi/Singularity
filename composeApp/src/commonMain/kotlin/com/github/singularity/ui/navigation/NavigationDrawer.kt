@@ -2,7 +2,6 @@ package com.github.singularity.ui.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,14 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.github.singularity.app.MainUiState
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.ui.designsystem.shared.ObserveForEvents
-import com.github.singularity.ui.designsystem.shared.PainterIconButton
 import com.github.singularity.ui.designsystem.shared.WindowSizeClass
 import com.github.singularity.ui.designsystem.shared.currentRoute
 import com.github.singularity.ui.designsystem.shared.getString
@@ -45,8 +42,6 @@ import com.github.singularity.ui.designsystem.shared.onCondition
 import com.github.singularity.ui.designsystem.shared.rememberWindowSizeClass
 import kotlinx.coroutines.launch
 import singularity.composeapp.generated.resources.Res
-import singularity.composeapp.generated.resources.arrow_back
-import singularity.composeapp.generated.resources.back
 import singularity.composeapp.generated.resources.singularity
 
 @Composable
@@ -132,28 +127,14 @@ private fun DrawerContent(
 			verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
 			modifier = Modifier.fillMaxWidth(),
 		) {
-			Row(
-				modifier = Modifier.fillMaxWidth(),
-				verticalAlignment = Alignment.CenterVertically,
-			) {
-				if (windowSizeClass == WindowSizeClass.Expanded) {
-					val enabled by AppNavigationController.canPopBackStack.collectAsStateWithLifecycle()
-					PainterIconButton(
-						onClick = AppNavigationController::popBackStack,
-						image = Res.drawable.arrow_back,
-						contentDescription = Res.string.back,
-						enabled = enabled,
-					)
+			Text(
+				text = Res.string.singularity.getString(),
+				fontSize = 24.sp,
+				color = MaterialTheme.colorScheme.primary,
+				modifier = Modifier.onCondition(windowSizeClass != WindowSizeClass.Expanded) {
+					padding(start = 12.dp)
 				}
-				Text(
-					text = Res.string.singularity.getString(),
-					fontSize = 24.sp,
-					color = MaterialTheme.colorScheme.primary,
-					modifier = Modifier.onCondition(windowSizeClass != WindowSizeClass.Expanded) {
-						padding(start = 12.dp)
-					}
-				)
-			}
+			)
 
 			HorizontalDivider(Modifier.padding(vertical = 4.dp))
 
@@ -190,7 +171,7 @@ private fun DrawerContent(
 }
 
 @Composable
-private fun ColumnScope.SyncModeSwitch(
+private fun SyncModeSwitch(
 	uiState: MainUiState,
 	toggleSyncMode: () -> Unit,
 ) {
@@ -203,7 +184,7 @@ private fun ColumnScope.SyncModeSwitch(
 				SyncMode.entries.forEachIndexed { index, mode ->
 					SegmentedButton(
 						selected = uiState.syncMode == mode,
-						label = { Text(text = mode.toString()) },
+						label = { Text(text = mode.title.getString()) },
 						onClick = {
 							if (mode == uiState.syncMode) return@SegmentedButton
 							toggleSyncMode()

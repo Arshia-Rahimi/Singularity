@@ -58,4 +58,6 @@
     <string name="window">window</string>
     <string name="fullscreen">fullscreen</string>
     <string name="test">test</string>
+    <string name="server">Server</string>
+    <string name="client">Client</string>
 </resources>

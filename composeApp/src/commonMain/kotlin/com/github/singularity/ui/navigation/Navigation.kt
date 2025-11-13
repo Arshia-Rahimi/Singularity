@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.singularity.app.MainUiState
-import com.github.singularity.ui.designsystem.shared.ObserveForEvents
-import com.github.singularity.ui.designsystem.shared.rememberCanPopBackStack
 import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.permissions.PermissionsScreen
@@ -80,15 +76,6 @@ private fun NavigationHost(
 		composable<Route.Test> {
 			TestScreen()
 		}
-	}
-
-	val canPopBackStack by navController.rememberCanPopBackStack()
-	LaunchedEffect(canPopBackStack) {
-		AppNavigationController.setCanPopBackStack(canPopBackStack)
-	}
-
-	ObserveForEvents(AppNavigationController.popStackEvent) {
-		navController.popBackStack()
 	}
 
 }
