@@ -2,6 +2,7 @@ package com.github.singularity.ui.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,9 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -29,6 +33,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.github.singularity.app.MainUiState
+import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.canHostSyncServer
 import com.github.singularity.ui.designsystem.shared.ObserveForEvents
 import com.github.singularity.ui.designsystem.shared.PainterIconButton
 import com.github.singularity.ui.designsystem.shared.WindowSizeClass
@@ -45,6 +52,8 @@ import singularity.composeapp.generated.resources.singularity
 @Composable
 fun NavigationDrawer(
 	navController: NavHostController,
+	uiState: MainUiState,
+	toggleSyncMode: () -> Unit,
 	navHost: @Composable () -> Unit,
 ) {
 	val windowSizeClass by rememberWindowSizeClass()
@@ -57,6 +66,8 @@ fun NavigationDrawer(
 				) {
 					DrawerContent(
 						navController = navController,
+						uiState = uiState,
+						toggleSyncMode = toggleSyncMode,
 						closeDrawer = {},
 					)
 				}
@@ -87,6 +98,8 @@ fun NavigationDrawer(
 					DrawerContent(
 						navController = navController,
 						closeDrawer = closeDrawer,
+						uiState = uiState,
+						toggleSyncMode = toggleSyncMode,
 					)
 				}
 			}
@@ -98,7 +111,12 @@ fun NavigationDrawer(
 }
 
 @Composable
-private fun DrawerContent(navController: NavController, closeDrawer: () -> Unit) {
+private fun DrawerContent(
+	navController: NavController,
+	uiState: MainUiState,
+	toggleSyncMode: () -> Unit,
+	closeDrawer: () -> Unit,
+) {
 	val windowSizeClass by rememberWindowSizeClass()
 	val currentRoute by navController.currentRoute
 
@@ -139,6 +157,11 @@ private fun DrawerContent(navController: NavController, closeDrawer: () -> Unit)
 
 			HorizontalDivider(Modifier.padding(vertical = 4.dp))
 
+			SyncModeSwitch(
+				uiState = uiState,
+				toggleSyncMode = toggleSyncMode,
+			)
+
 			NavigationDrawerItemTop.entries.forEach { item ->
 				NavigationDrawerItem(
 					item = item,
@@ -161,6 +184,36 @@ private fun DrawerContent(navController: NavController, closeDrawer: () -> Unit)
 					closeDrawer = closeDrawer,
 					navigateTo = { navController.navigate(it) },
 				)
+			}
+		}
+	}
+}
+
+@Composable
+private fun ColumnScope.SyncModeSwitch(
+	uiState: MainUiState,
+	toggleSyncMode: () -> Unit,
+) {
+	if (canHostSyncServer) {
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.Center,
+		) {
+			SingleChoiceSegmentedButtonRow() {
+				SyncMode.entries.forEachIndexed { index, mode ->
+					SegmentedButton(
+						selected = uiState.syncMode == mode,
+						label = { Text(text = mode.toString()) },
+						onClick = {
+							if (mode == uiState.syncMode) return@SegmentedButton
+							toggleSyncMode()
+						},
+						shape = SegmentedButtonDefaults.itemShape(
+							index = index,
+							count = SyncMode.entries.size,
+						)
+					)
+				}
 			}
 		}
 	}

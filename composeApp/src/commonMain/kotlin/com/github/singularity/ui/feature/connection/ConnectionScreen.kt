@@ -22,12 +22,8 @@ fun ConnectionScreen() {
         modifier = Modifier.fillMaxSize(),
     ) {
         when (it) {
-            SyncMode.Server -> ServerScreen(
-                toggleSyncMode = viewModel::toggleSyncMode,
-            )
-            SyncMode.Client -> ClientScreen(
-                toggleSyncMode = viewModel::toggleSyncMode,
-            )
+	        SyncMode.Server -> ServerScreen()
+	        SyncMode.Client -> ClientScreen()
         }
     }
 

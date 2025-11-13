@@ -70,7 +70,6 @@ class ClientViewModel(
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
             is ClientIntent.StartDiscovery -> shouldDiscover.value = true
             is ClientIntent.StopDiscovery -> shouldDiscover.value = false
-            is ClientIntent.ToggleSyncMode -> Unit
         }
     }
 

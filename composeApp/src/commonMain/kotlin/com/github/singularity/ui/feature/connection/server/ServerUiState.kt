@@ -8,6 +8,6 @@ import com.github.singularity.core.shared.model.ServerConnectionState
 
 @Immutable
 data class ServerUiState(
-    val connectionState: ServerConnectionState = ServerConnectionState.NoDefaultServer,
+	val connectionState: ServerConnectionState? = null,
     val hostedSyncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
 )

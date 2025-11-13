@@ -63,7 +63,10 @@ fun App() {
             )
         ) {
             SingularityTheme(uiState.theme) {
-                Navigation()
+	            Navigation(
+		            uiState = uiState,
+		            toggleSyncMode = viewModel::toggleSyncMode,
+	            )
             }
         }
     }

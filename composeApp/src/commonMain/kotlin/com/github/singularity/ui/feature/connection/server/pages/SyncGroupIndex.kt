@@ -26,7 +26,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.ui.designsystem.components.TopBar
-import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.shared.components.dialogs.InputDialog
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
@@ -35,118 +34,101 @@ import com.github.singularity.ui.feature.connection.server.ServerUiState
 import com.github.singularity.ui.feature.connection.server.components.HostedSyncGroupItem
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.available_sync_groups
-import singularity.composeapp.generated.resources.client
 import singularity.composeapp.generated.resources.create
 import singularity.composeapp.generated.resources.create_new_sync_group
+import singularity.composeapp.generated.resources.no_sync_groups
 import singularity.composeapp.generated.resources.plus
-import singularity.composeapp.generated.resources.select_hosted_sync_groups
-import singularity.composeapp.generated.resources.switch_to_client
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SyncGroupIndex(
-    uiState: ServerUiState,
-    execute: ServerIntent.() -> Unit,
+	uiState: ServerUiState,
+	execute: ServerIntent.() -> Unit,
 ) {
-    var showSwitchModeDialog by remember { mutableStateOf(false) }
-    var showCreateGroupDialog by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
+	var showCreateGroupDialog by remember { mutableStateOf(false) }
+	val focusManager = LocalFocusManager.current
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-	        TopBar(
-		        title = Res.string.select_hosted_sync_groups.getString(),
-		        actions = {
-			        IconButton(
-				        onClick = { showSwitchModeDialog = true },
-			        ) {
-				        Icon(
-					        painter = Res.drawable.client.getPainter(),
-					        contentDescription = Res.string.switch_to_client.getString(),
-				        )
-			        }
-		        }
-	        )
-        },
-    ) { ip ->
+	Scaffold(
+		modifier = Modifier.fillMaxSize(),
+		topBar = {
+			TopBar(
+				title = Res.string.available_sync_groups.getString(),
+			)
+		},
+	) { ip ->
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(200.dp),
-            modifier = Modifier.fillMaxSize()
-                .padding(ip)
-                .padding(horizontal = 4.dp),
-        ) {
-            stickyHeader(
-                key = "available_title",
-            ) {
-                Row(
-                    modifier = Modifier
-                        .animateItem()
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 12.dp),
-                ) {
-                    Text(
-                        text = Res.string.available_sync_groups.getString(),
-                        fontSize = 20.sp,
-                    )
-                }
-            }
+		LazyVerticalGrid(
+			columns = GridCells.Adaptive(200.dp),
+			modifier = Modifier.fillMaxSize()
+				.padding(ip)
+				.padding(horizontal = 4.dp),
+		) {
+			if (uiState.hostedSyncGroups.isEmpty()) {
+				stickyHeader(
+					key = "no_sync_group_title",
+				) {
+					Row(
+						modifier = Modifier
+							.animateItem()
+							.fillMaxWidth()
+							.padding(vertical = 8.dp, horizontal = 12.dp),
+						horizontalArrangement = Arrangement.Center,
+					) {
+						Text(
+							text = Res.string.no_sync_groups.getString(),
+							fontSize = 12.sp,
+						)
+					}
+				}
+			}
 
-            items(
-                items = uiState.hostedSyncGroups,
-                key = { it.hostedSyncGroupId },
-                contentType = { it::class },
-            ) {
-                HostedSyncGroupItem(
-                    hostedSyncGroup = it,
-                    execute = execute,
-                )
-            }
+			items(
+				items = uiState.hostedSyncGroups,
+				key = { it.hostedSyncGroupId },
+				contentType = { it::class },
+			) {
+				HostedSyncGroupItem(
+					hostedSyncGroup = it,
+					execute = execute,
+				)
+			}
 
-            stickyHeader(
-                key = "createGroup_title",
-                contentType = "title"
-            ) {
-                Row(
-                    modifier = Modifier
-                        .animateItem()
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .padding(bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    IconButton(
-                        onClick = { showCreateGroupDialog = true },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.plus.getPainter(),
-                            contentDescription = "discover"
-                        )
-                    }
-                }
-            }
+			stickyHeader(
+				key = "createGroup_title",
+				contentType = "title"
+			) {
+				Row(
+					modifier = Modifier
+						.animateItem()
+						.fillMaxWidth()
+						.padding(vertical = 8.dp)
+						.padding(bottom = 8.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.Center,
+				) {
+					IconButton(
+						onClick = { showCreateGroupDialog = true },
+					) {
+						Icon(
+							painter = Res.drawable.plus.getPainter(),
+							contentDescription = "discover"
+						)
+					}
+				}
+			}
 
-        }
+		}
 
-        InputDialog(
-            visible = showCreateGroupDialog,
-            onConfirm = { ServerIntent.CreateGroup(it).execute() },
-            onDismiss = {
-                showCreateGroupDialog = false
-                focusManager.clearFocus()
-            },
-            confirmText = Res.string.create.getString(),
-            title = Res.string.create_new_sync_group.getString(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        )
-
-        ConfirmationDialog(
-            visible = showSwitchModeDialog,
-            message = Res.string.switch_to_client.getString(),
-            onDismiss = { showSwitchModeDialog = false },
-            onConfirm = { ServerIntent.ToggleSyncMode.execute() },
-        )
-    }
+		InputDialog(
+			visible = showCreateGroupDialog,
+			onConfirm = { ServerIntent.CreateGroup(it).execute() },
+			onDismiss = {
+				showCreateGroupDialog = false
+				focusManager.clearFocus()
+			},
+			confirmText = Res.string.create.getString(),
+			title = Res.string.create_new_sync_group.getString(),
+			keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+		)
+	}
 }

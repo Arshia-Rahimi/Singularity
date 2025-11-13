@@ -22,6 +22,7 @@ class ServerViewModel(
 
     private val connectionState = syncService.connectionState
         .filterIsInstance<ServerConnectionState>()
+	    .stateInWhileSubscribed(null)
 
     private val hostedSyncGroups = broadcastRepo.syncGroups
         .stateInWhileSubscribed(emptyList())
@@ -46,7 +47,6 @@ class ServerViewModel(
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
             is ServerIntent.RefreshConnection -> syncService.refresh()
             is ServerIntent.RemoveAllDefaults -> removeAllDefaults()
-            is ServerIntent.ToggleSyncMode -> Unit
         }
     }
 

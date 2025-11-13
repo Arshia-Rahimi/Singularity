@@ -18,9 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.ui.designsystem.components.PulseAnimation
 import com.github.singularity.ui.designsystem.components.TopBar
-import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.components.JoinedSyncGroupItem
@@ -40,25 +36,16 @@ import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
 import singularity.composeapp.generated.resources.plus
 import singularity.composeapp.generated.resources.searching_dotted
-import singularity.composeapp.generated.resources.server
 import singularity.composeapp.generated.resources.stop
-import singularity.composeapp.generated.resources.switch_to_server
 
 @Composable
-fun ClientScreen(
-    toggleSyncMode: () -> Unit,
-) {
+fun ClientScreen() {
     val viewModel = koinViewModel<ClientViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ClientScreen(
         uiState = uiState,
-        execute = {
-            when (this) {
-                is ClientIntent.ToggleSyncMode -> toggleSyncMode()
-                else -> viewModel.execute(this)
-            }
-        },
+	    execute = { viewModel.execute(this) },
     )
 
 }
@@ -69,22 +56,11 @@ private fun ClientScreen(
     uiState: ClientUiState,
     execute: ClientIntent.() -> Unit,
 ) {
-    var showSwitchModeDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
 	        TopBar(
 		        title = Res.string.discover.getString(),
-                actions = {
-                    IconButton(
-                        onClick = { showSwitchModeDialog = true },
-                    ) {
-                        Icon(
-                            painter = Res.drawable.server.getPainter(),
-                            contentDescription = Res.string.switch_to_server.getString(),
-                        )
-                    }
-                }
             )
         },
     ) { ip ->
@@ -209,13 +185,6 @@ private fun ClientScreen(
             }
 
         }
-
-        ConfirmationDialog(
-            visible = showSwitchModeDialog,
-            message = Res.string.switch_to_server.getString(),
-            onDismiss = { showSwitchModeDialog = false },
-            onConfirm = { ClientIntent.ToggleSyncMode.execute() },
-        )
 
     }
 }

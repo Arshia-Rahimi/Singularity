@@ -27,7 +27,7 @@ class SqlitePreferencesRepository(
 
     override val preferences = preferencesLocalDataSource.preferences
         .onFirst {
-	        if (it == null) return@onFirst
+	        if (it != null) return@onFirst
 
             preferencesLocalDataSource.insert(
                 PreferencesModel(

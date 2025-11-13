@@ -33,6 +33,7 @@
     <string name="searching_dotted">Searching...</string>
     <string name="pair_requests">Pair requests:</string>
     <string name="available_sync_groups">Available Sync Groups</string>
+    <string name="no_sync_groups">Create a sync group to host</string>
     <string name="joined_sync_groups">Joined Sync Groups</string>
     <string name="edit_group_name">Edit group name</string>
     <string name="approve_pair_request">Approve pair request</string>
@@ -57,5 +58,4 @@
     <string name="window">window</string>
     <string name="fullscreen">fullscreen</string>
     <string name="test">test</string>
-    <string name="select_hosted_sync_groups">Select a sync group to host</string>
 </resources>

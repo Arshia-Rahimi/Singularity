@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.github.singularity.app.MainUiState
 import com.github.singularity.ui.designsystem.shared.ObserveForEvents
 import com.github.singularity.ui.designsystem.shared.rememberCanPopBackStack
 import com.github.singularity.ui.feature.connection.ConnectionScreen
@@ -26,11 +27,16 @@ import com.github.singularity.ui.feature.test.TestScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation() {
+fun Navigation(
+	uiState: MainUiState,
+	toggleSyncMode: () -> Unit,
+) {
 	val navController = rememberNavController()
 
 	NavigationDrawer(
 		navController = navController,
+		uiState = uiState,
+		toggleSyncMode = toggleSyncMode,
 	) {
 		NavigationHost(navController)
 	}
@@ -38,51 +44,51 @@ fun Navigation() {
 
 @Composable
 private fun NavigationHost(
-    navController: NavHostController,
+	navController: NavHostController,
 ) {
-    NavHost(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        enterTransition = {
-            slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = spring(stiffness = Spring.StiffnessMedium),
-            )
-        },
-        popEnterTransition = {
-            slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = spring(stiffness = Spring.StiffnessMedium),
-            )
-        },
-	    exitTransition = { fadeOut() },
-        navController = navController,
-	    startDestination = Route.Connection,
-    ) {
-	    composable<Route.Connection> {
-            ConnectionScreen()
-        }
-        composable<Route.Settings> {
-            SettingsScreen()
-        }
-	    composable<Route.Log> {
-            LogScreen()
-        }
-	    composable<Route.Permissions> {
-		    PermissionsScreen()
-	    }
-	    composable<Route.Test> {
-		    TestScreen()
-	    }
-    }
+	NavHost(
+		modifier = Modifier.fillMaxSize()
+			.background(MaterialTheme.colorScheme.surface),
+		enterTransition = {
+			slideInVertically(
+				initialOffsetY = { it },
+				animationSpec = spring(stiffness = Spring.StiffnessMedium),
+			)
+		},
+		popEnterTransition = {
+			slideInVertically(
+				initialOffsetY = { it },
+				animationSpec = spring(stiffness = Spring.StiffnessMedium),
+			)
+		},
+		exitTransition = { fadeOut() },
+		navController = navController,
+		startDestination = Route.Connection,
+	) {
+		composable<Route.Connection> {
+			ConnectionScreen()
+		}
+		composable<Route.Settings> {
+			SettingsScreen()
+		}
+		composable<Route.Log> {
+			LogScreen()
+		}
+		composable<Route.Permissions> {
+			PermissionsScreen()
+		}
+		composable<Route.Test> {
+			TestScreen()
+		}
+	}
 
-    val canPopBackStack by navController.rememberCanPopBackStack()
-    LaunchedEffect(canPopBackStack) {
-        AppNavigationController.setCanPopBackStack(canPopBackStack)
-    }
+	val canPopBackStack by navController.rememberCanPopBackStack()
+	LaunchedEffect(canPopBackStack) {
+		AppNavigationController.setCanPopBackStack(canPopBackStack)
+	}
 
-    ObserveForEvents(AppNavigationController.popStackEvent) {
-        navController.popBackStack()
-    }
+	ObserveForEvents(AppNavigationController.popStackEvent) {
+		navController.popBackStack()
+	}
 
 }

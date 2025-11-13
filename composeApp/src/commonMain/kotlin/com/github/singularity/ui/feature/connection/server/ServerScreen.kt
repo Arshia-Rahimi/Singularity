@@ -13,20 +13,13 @@ import com.github.singularity.ui.feature.connection.server.pages.SyncGroupIndex
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ServerScreen(
-    toggleSyncMode: () -> Unit,
-) {
+fun ServerScreen() {
     val viewModel = koinViewModel<ServerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ServerScreen(
         uiState = uiState,
-        execute = {
-            when (this) {
-                is ServerIntent.ToggleSyncMode -> toggleSyncMode()
-                else -> viewModel.execute(this)
-            }
-        },
+	    execute = { viewModel.execute(this) },
     )
 }
 
@@ -43,6 +36,8 @@ private fun ServerScreen(
             .fillMaxSize(),
     ) {
         when (it) {
+	        null -> Unit
+
             is ServerConnectionState.NoDefaultServer -> SyncGroupIndex(
                 uiState = uiState,
                 execute = execute,
