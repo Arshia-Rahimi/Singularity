@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.singularity.ui.designsystem.components.Grid
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.components.dialogs.InputDialog
 import com.github.singularity.ui.designsystem.shared.getPainter
@@ -56,65 +56,11 @@ fun HostedSyncGroupIndexPage(
 		},
 	) { ip ->
 
-		LazyVerticalGrid(
-			columns = GridCells.Adaptive(200.dp),
-			modifier = Modifier.fillMaxSize()
-				.padding(ip)
-				.padding(horizontal = 4.dp),
-		) {
-			if (uiState.hostedSyncGroups.isEmpty()) {
-				stickyHeader(
-					key = "no_sync_group_title",
-				) {
-					Row(
-						modifier = Modifier
-							.animateItem()
-							.fillMaxWidth()
-							.padding(vertical = 8.dp, horizontal = 12.dp),
-						horizontalArrangement = Arrangement.Center,
-					) {
-						Text(
-							text = Res.string.no_sync_groups.getString(),
-							fontSize = 12.sp,
-						)
-					}
-				}
-			}
+		Grid(ip) {
 
-			items(
-				items = uiState.hostedSyncGroups,
-				key = { it.hostedSyncGroupId },
-				contentType = { it::class },
-			) {
-				HostedSyncGroupItem(
-					hostedSyncGroup = it,
-					execute = execute,
-				)
-			}
+			hostedSyncGroupItems(uiState, execute)
 
-			stickyHeader(
-				key = "createGroup_title",
-				contentType = "title"
-			) {
-				Row(
-					modifier = Modifier
-						.animateItem()
-						.fillMaxWidth()
-						.padding(vertical = 8.dp)
-						.padding(bottom = 8.dp),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.Center,
-				) {
-					IconButton(
-						onClick = { showCreateGroupDialog = true },
-					) {
-						Icon(
-							painter = Res.drawable.plus.getPainter(),
-							contentDescription = "discover"
-						)
-					}
-				}
-			}
+			createGroupItem(execute) { showCreateGroupDialog = true }
 
 		}
 
@@ -129,5 +75,70 @@ fun HostedSyncGroupIndexPage(
 			title = Res.string.create_new_sync_group.getString(),
 			keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
 		)
+	}
+}
+
+private fun LazyGridScope.hostedSyncGroupItems(
+	uiState: ServerUiState,
+	execute: ServerIntent.() -> Unit,
+) {
+	if (uiState.hostedSyncGroups.isEmpty()) {
+		stickyHeader(
+			key = "no_sync_group_title",
+		) {
+			Row(
+				modifier = Modifier
+					.animateItem()
+					.fillMaxWidth()
+					.padding(vertical = 8.dp, horizontal = 12.dp),
+				horizontalArrangement = Arrangement.Center,
+			) {
+				Text(
+					text = Res.string.no_sync_groups.getString(),
+					fontSize = 12.sp,
+				)
+			}
+		}
+	} else {
+
+		items(
+			items = uiState.hostedSyncGroups,
+			key = { it.hostedSyncGroupId },
+			contentType = { it::class },
+		) {
+			HostedSyncGroupItem(
+				hostedSyncGroup = it,
+				execute = execute,
+			)
+		}
+	}
+}
+
+private fun LazyGridScope.createGroupItem(
+	execute: ServerIntent.() -> Unit,
+	showCreateGroupDialog: () -> Unit,
+) {
+	stickyHeader(
+		key = "createGroup_title",
+		contentType = "title"
+	) {
+		Row(
+			modifier = Modifier
+				.animateItem()
+				.fillMaxWidth()
+				.padding(vertical = 8.dp)
+				.padding(bottom = 8.dp),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.Center,
+		) {
+			IconButton(
+				onClick = showCreateGroupDialog,
+			) {
+				Icon(
+					painter = Res.drawable.plus.getPainter(),
+					contentDescription = "discover"
+				)
+			}
+		}
 	}
 }

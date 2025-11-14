@@ -21,10 +21,10 @@ import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerConnectionRepositoryImpl(
-    private val server: SyncGroupServer,
-    private val hostedSyncGroupRepo: HostedSyncGroupRepository,
-    private val pairRequestDataSource: PairRequestDataSource,
-    private val broadcastService: DeviceBroadcastService,
+	private val server: SyncGroupServer,
+	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
+	private val pairRequestDataSource: PairRequestDataSource,
+	private val broadcastService: DeviceBroadcastService,
 ) : ServerConnectionRepository {
 
 	private val refreshState = MutableSharedFlow<Unit>()
@@ -51,11 +51,11 @@ class ServerConnectionRepositoryImpl(
 							)
 						}
 					}
+				}.onCompletion {
+					server.stop()
+					broadcastService.stopBroadcast()
+					pairRequestDataSource.clear()
 				}
-		}.onCompletion {
-			server.stop()
-			broadcastService.stopBroadcast()
-			pairRequestDataSource.clear()
 		}.flowOn(Dispatchers.IO)
 
 	override suspend fun refresh() {
