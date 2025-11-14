@@ -10,4 +10,5 @@ sealed interface ClientIntent {
     data object CancelPairRequest : ClientIntent
     data object StartDiscovery : ClientIntent
     data object StopDiscovery : ClientIntent
+	data object RefreshConnection : ClientIntent
 }

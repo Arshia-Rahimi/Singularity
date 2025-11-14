@@ -6,16 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
+import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.core.sync.SyncService
 import com.github.singularity.ui.feature.connection.client.pages.index.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
@@ -27,7 +30,12 @@ import kotlinx.coroutines.launch
 class ClientViewModel(
     private val discoverRepo: DiscoverRepository,
     private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
+    private val syncService: SyncService,
 ) : ViewModel() {
+
+	private val connectionState = syncService.connectionState
+		.filterIsInstance<ClientConnectionState>()
+		.stateInWhileSubscribed(null)
 
     private val shouldDiscover = MutableStateFlow(false)
 
@@ -41,20 +49,17 @@ class ClientViewModel(
     private val joinedSyncGroups =
         joinedSyncGroupRepo.joinedSyncGroups.stateInWhileSubscribed(emptyList())
 
-    private val defaultSyncGroup =
-        joinedSyncGroupRepo.defaultJoinedSyncGroup.stateInWhileSubscribed(null)
-
     val uiState = combine(
         availableServers,
         sentPairRequestState,
         joinedSyncGroups,
-        defaultSyncGroup,
-    ) { availableServers, sentPairRequestState, joinedSyncGroups, defaultSyncGroup ->
+	    connectionState,
+    ) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
         ClientUiState(
+	        connectionState = connectionState,
             availableServers = availableServers?.toMutableStateList() ?: mutableStateListOf(),
             joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
-            defaultSyncGroup = defaultSyncGroup,
             isDiscovering = availableServers != null,
         )
     }.stateInWhileSubscribed(ClientUiState())
@@ -69,6 +74,7 @@ class ClientViewModel(
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
             is ClientIntent.StartDiscovery -> shouldDiscover.value = true
             is ClientIntent.StopDiscovery -> shouldDiscover.value = false
+	        is ClientIntent.RefreshConnection -> syncService.refresh()
         }
     }
 

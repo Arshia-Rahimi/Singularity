@@ -1,16 +1,14 @@
 package com.github.singularity.ui.feature.connection.server
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.ui.designsystem.components.LinearLoader
 import com.github.singularity.ui.feature.connection.server.pages.details.HostedSyncGroupDetailsPage
 import com.github.singularity.ui.feature.connection.server.pages.index.HostedSyncGroupIndexPage
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,9 +37,7 @@ private fun ServerScreen(
             .fillMaxSize(),
     ) {
         when (it) {
-	        null -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-		        LinearProgressIndicator()
-	        }
+	        null -> LinearLoader()
 
 	        is ServerConnectionState.NoDefaultServer -> HostedSyncGroupIndexPage(
                 uiState = uiState,
