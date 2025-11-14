@@ -68,7 +68,7 @@ sealed interface ServerConnectionState : ConnectionState {
         val pairRequests: List<Node>,
     ) : ServerConnectionState {
         override val message: String
-            @Composable get() = Res.string.server_running.getString(connectedNodes.size, group.name)
+	        @Composable get() = Res.string.server_running.getString(group.name, connectedNodes.size)
     }
 
 }

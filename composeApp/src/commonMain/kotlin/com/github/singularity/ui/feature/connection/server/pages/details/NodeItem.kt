@@ -1,5 +1,6 @@
 package com.github.singularity.ui.feature.connection.server.pages.details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,11 +35,15 @@ fun LazyGridItemScope.NodeItem(
 ) {
     var showApproveNodeDialog by remember { mutableStateOf(false) }
 
+	val containerColor = MaterialTheme.colorScheme.secondaryContainer
+	val textColor = MaterialTheme.colorScheme.onSecondaryContainer
+
     Box(
         modifier = Modifier
             .animateItem()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
+	        .background(containerColor)
 	        .clickable(enabled = isPairRequest) { showApproveNodeDialog = true }
             .padding(16.dp),
     ) {
@@ -47,11 +53,13 @@ fun LazyGridItemScope.NodeItem(
             Text(
 	            fontSize = 12.sp,
                 text = node.deviceName,
+	            color = textColor,
             )
 
             Text(
                 text = node.deviceOs,
 	            fontSize = 10.sp,
+	            color = textColor,
             )
         }
     }
