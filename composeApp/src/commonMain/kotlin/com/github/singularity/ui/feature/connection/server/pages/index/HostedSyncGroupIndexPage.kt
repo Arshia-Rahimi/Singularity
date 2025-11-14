@@ -103,7 +103,7 @@ private fun LazyGridScope.hostedSyncGroupItems(
 
 		items(
 			items = uiState.hostedSyncGroups,
-			key = { it.hostedSyncGroupId },
+			key = { "hosted_${it.hostedSyncGroupId}" },
 			contentType = { it::class },
 		) {
 			HostedSyncGroupItem(

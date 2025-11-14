@@ -87,7 +87,10 @@ private fun LazyGridScope.pairRequestItems(
 				)
 			}
 		}
-		items(connectionState.pairRequests) {
+		items(
+			items = connectionState.pairRequests,
+			key = { "pairRequest_${it.deviceId}" },
+		) {
 			NodeItem(
 				node = it,
 				execute = execute,
@@ -116,7 +119,10 @@ private fun LazyGridScope.connectedDevicesItem(
 			)
 		}
 	}
-	items(connectionState.connectedNodes) {
+	items(
+		items = connectionState.connectedNodes,
+		key = { "connected_${it.deviceId}" },
+	) {
 		NodeItem(
 			node = it.toNode(),
 			execute = execute
@@ -147,7 +153,10 @@ private fun LazyGridScope.pairedAndNotConnectedItems(
 			}
 		}
 
-		items(pairedAndNotConnectedNodes) {
+		items(
+			items = pairedAndNotConnectedNodes,
+			key = { "pairedAndNotConnected_${it.deviceId}" },
+		) {
 			NodeItem(
 				node = it.toNode(),
 				execute = execute

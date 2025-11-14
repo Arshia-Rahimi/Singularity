@@ -45,13 +45,13 @@ fun LazyGridItemScope.NodeItem(
             modifier = Modifier.fillMaxSize(),
         ) {
             Text(
-                fontSize = 16.sp,
+	            fontSize = 12.sp,
                 text = node.deviceName,
             )
 
             Text(
                 text = node.deviceOs,
-                fontSize = 12.sp,
+	            fontSize = 10.sp,
             )
         }
     }

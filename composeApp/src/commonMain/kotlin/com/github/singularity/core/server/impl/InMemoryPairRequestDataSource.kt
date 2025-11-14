@@ -15,7 +15,7 @@ class InMemoryPairRequestDataSource : PairRequestDataSource {
 	override val requests = _requests.asStateFlow()
 
 	override fun add(id: Int, pairRequest: PairRequest) {
-		_requests.value + PairCheck(
+		_requests.value += PairCheck(
 			requestId = id,
 			node = pairRequest.toNode(),
 		)

@@ -31,7 +31,7 @@ import singularity.composeapp.generated.resources.available_servers
 import singularity.composeapp.generated.resources.await_pair_request_approval
 import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
-import singularity.composeapp.generated.resources.plus
+import singularity.composeapp.generated.resources.radar
 import singularity.composeapp.generated.resources.rejected_pair_request_approval
 import singularity.composeapp.generated.resources.searching_dotted
 import singularity.composeapp.generated.resources.stop
@@ -116,7 +116,7 @@ private fun LazyGridScope.joinedSyncGroupItems(
 
 		items(
 			items = uiState.joinedSyncGroups,
-			key = { it.syncGroupId },
+			key = { "joined_${it.syncGroupId}" },
 			contentType = { it },
 		) {
 			JoinedSyncGroupItem(
@@ -152,7 +152,7 @@ private fun LazyGridScope.discoveredServerItems(
 
 			items(
 				items = uiState.availableServers,
-				key = { it.syncGroupId },
+				key = { "available${it.syncGroupId}" },
 				contentType = { it },
 			) {
 				ServerItem(
@@ -178,7 +178,7 @@ private fun LazyGridScope.discoveredServerItems(
 					onClick = { ClientIntent.StartDiscovery.execute() },
 				) {
 					Icon(
-						painter = Res.drawable.plus.getPainter(),
+						painter = Res.drawable.radar.getPainter(),
 						contentDescription = "discover",
 					)
 				}

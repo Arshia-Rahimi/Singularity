@@ -16,7 +16,6 @@ koin = "4.1.1"
 appDirs = "1.5.0"
 desugaring = "2.1.5"
 sqldelight = "2.1.0"
-jmdns = "3.6.2"
 dns-sd = "1.0.4"
 
 
