@@ -11,6 +11,7 @@ interface SyncEvent {
     val plugin: String
 }
 
+// todo: make declaration automatic based on pluginsList var
 val jsonConverter = Json {
     serializersModule = SerializersModule {
         polymorphic(SyncEvent::class) {
