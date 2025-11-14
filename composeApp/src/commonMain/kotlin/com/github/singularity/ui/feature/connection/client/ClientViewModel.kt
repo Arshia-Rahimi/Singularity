@@ -57,8 +57,9 @@ class ClientViewModel(
     ) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
         ClientUiState(
 	        connectionState = connectionState,
-            availableServers = availableServers?.toMutableStateList() ?: mutableStateListOf(),
-            joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
+	        availableServers = availableServers?.distinctBy { it.syncGroupId }?.toMutableStateList()
+		        ?: mutableStateListOf(),
+	        joinedSyncGroups = joinedSyncGroups.distinctBy { it.syncGroupId }.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
             isDiscovering = availableServers != null,
         )

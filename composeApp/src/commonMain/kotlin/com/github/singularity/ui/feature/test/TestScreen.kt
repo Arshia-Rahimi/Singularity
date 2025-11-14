@@ -1,6 +1,7 @@
 package com.github.singularity.ui.feature.test
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -19,14 +20,16 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun TestScreen() {
     val viewModel = koinViewModel<TestViewModel>()
-    val events by viewModel.incomingEvents.collectAsStateWithLifecycle()
+	val events by viewModel.incomingEvents.collectAsStateWithLifecycle()
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
 		topBar = { TopBar("test") },
-	) {
+	) { ip ->
 		LazyColumn(
-			modifier = Modifier.fillMaxSize(),
+			modifier = Modifier
+				.padding(ip)
+				.fillMaxSize(),
 		) {
 			stickyHeader {
 				Button(

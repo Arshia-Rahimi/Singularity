@@ -118,7 +118,7 @@ class KtorSyncGroupServer(
                     try {
                         val converter = converter ?: return@webSocket
 
-                        _connectedNodes.value + node()
+	                    _connectedNodes.value += node()
 
                         coroutineScope {
                             launch {

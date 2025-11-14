@@ -33,7 +33,8 @@ class ServerViewModel(
     ) { connectionState, hostedSyncGroups ->
         ServerUiState(
             connectionState = connectionState,
-            hostedSyncGroups = hostedSyncGroups.toMutableStateList(),
+	        hostedSyncGroups = hostedSyncGroups.distinctBy { it.hostedSyncGroupId }
+		        .toMutableStateList(),
         )
     }.stateInWhileSubscribed(ServerUiState())
 

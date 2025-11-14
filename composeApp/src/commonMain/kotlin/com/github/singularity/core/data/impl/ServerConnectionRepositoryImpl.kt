@@ -46,8 +46,10 @@ class ServerConnectionRepositoryImpl(
 							ServerConnectionState.Running(
 								group = group,
 								connectedNodes = connectedNodes,
-								pairRequests = requests.filter { it.status == PairStatus.Awaiting }
+								pairRequests = requests
+									.filter { it.status == PairStatus.Awaiting }
 									.map { it.node }
+									.distinctBy { it.deviceId },
 							)
 						}
 					}
