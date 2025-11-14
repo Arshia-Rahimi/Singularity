@@ -26,11 +26,11 @@ import singularity.composeapp.generated.resources.refresh
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinedSyncGroupDetailsPage(
-	connectionState: ClientConnectionState,
+	connectionState: ClientConnectionState.WithDefaultServer,
 	execute: ClientIntent.() -> Unit,
 ) {
 	Scaffold(
-		topBar = { TopBar("") },
+		topBar = { TopBar(connectionState.joinedSyncGroup.syncGroupName) },
 	) { ip ->
 		Column(
 			modifier = Modifier

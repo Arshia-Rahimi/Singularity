@@ -56,17 +56,24 @@ class ClientConnectionRepositoryImpl(
                         try {
                             syncEventRemoteDataSource.connect(server, defaultServer.authToken)
                         } catch (e: Exception) {
-                            emit(ClientConnectionState.ConnectionFailed(server))
+	                        emit(ClientConnectionState.ConnectionFailed(defaultServer, server))
                             logger.e(this::class.simpleName, "error connecting to server", e)
                             return@flow
                         }
 
                         syncEventRemoteDataSource.incomingEventsFlow()
-                            .onStart { emit(ClientConnectionState.Connected(server)) }
+	                        .onStart {
+		                        emit(
+			                        ClientConnectionState.Connected(
+				                        defaultServer,
+				                        server
+			                        )
+		                        )
+	                        }
                             .catch { e ->
                                 logger.e(this::class.simpleName, "websocket connection timeout", e)
                                 emit(
-                                    ClientConnectionState.ConnectionDropped(server)
+	                                ClientConnectionState.ConnectionDropped(defaultServer, server)
                                 )
                             }.collect { syncEventBridge.incomingEventCallback(it) }
                     }

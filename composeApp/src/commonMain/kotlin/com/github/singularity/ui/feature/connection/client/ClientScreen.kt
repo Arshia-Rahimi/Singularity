@@ -42,8 +42,8 @@ private fun ClientScreen(
 				execute = execute,
 			)
 
-			else -> JoinedSyncGroupDetailsPage(
-				connectionState = uiState.connectionState as ClientConnectionState,
+			is ClientConnectionState.WithDefaultServer -> JoinedSyncGroupDetailsPage(
+				connectionState = it,
 				execute = execute,
 			)
 		}
