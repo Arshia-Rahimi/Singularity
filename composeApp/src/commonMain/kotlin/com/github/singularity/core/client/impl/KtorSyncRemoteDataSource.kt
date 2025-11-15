@@ -12,13 +12,13 @@ import com.github.singularity.core.sync.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.converter
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -40,22 +40,10 @@ import kotlinx.serialization.json.Json
 
 class KtorSyncRemoteDataSource : SyncRemoteDataSource {
 
-    private var authToken: String? = null
-
-    val authPlugin = createClientPlugin("AuthPlugin") {
-        onRequest { request, _ ->
-            authToken?.let {
-                request.headers[HttpHeaders.Authorization] = "Bearer $it"
-            }
-        }
-    }
-
     var wsSession: DefaultClientWebSocketSession? = null
         private set
 
     private val client = HttpClient(CIO) {
-        install(authPlugin)
-
         install(WebSockets) {
             contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
@@ -67,14 +55,14 @@ class KtorSyncRemoteDataSource : SyncRemoteDataSource {
 
     override suspend fun connect(server: LocalServer, token: String) {
         try {
-            authToken = token
             wsSession = client.webSocketSession(
                 host = server.ip,
 	            port = SERVER_PORT,
                 path = "/sync",
-            )
+            ) {
+                header(HttpHeaders.Authorization, "Bearer $token")
+            }
         } finally {
-            authToken = null
             wsSession = null
         }
     }
