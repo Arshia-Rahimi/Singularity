@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.ui.designsystem.components.Grid
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter
@@ -33,8 +33,8 @@ import singularity.composeapp.generated.resources.paired_nodes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HostedSyncGroupDetailsPage(
-	connectionState: ServerConnectionState.Running,
-	execute: ServerIntent.() -> Unit,
+    connectionState: ServerSyncState.Running,
+    execute: ServerIntent.() -> Unit,
 ) {
 
 	Scaffold(
@@ -68,8 +68,8 @@ fun HostedSyncGroupDetailsPage(
 }
 
 private fun LazyGridScope.pairRequestItems(
-	connectionState: ServerConnectionState.Running,
-	execute: ServerIntent.() -> Unit,
+    connectionState: ServerSyncState.Running,
+    execute: ServerIntent.() -> Unit,
 ) {
 	if (!connectionState.pairRequests.isEmpty()) {
 		stickyHeader(
@@ -101,8 +101,8 @@ private fun LazyGridScope.pairRequestItems(
 }
 
 private fun LazyGridScope.connectedDevicesItem(
-	connectionState: ServerConnectionState.Running,
-	execute: ServerIntent.() -> Unit,
+    connectionState: ServerSyncState.Running,
+    execute: ServerIntent.() -> Unit,
 ) {
 	stickyHeader(
 		key = "connected_title",
@@ -131,8 +131,8 @@ private fun LazyGridScope.connectedDevicesItem(
 }
 
 private fun LazyGridScope.pairedAndNotConnectedItems(
-	connectionState: ServerConnectionState.Running,
-	execute: ServerIntent.() -> Unit,
+    connectionState: ServerSyncState.Running,
+    execute: ServerIntent.() -> Unit,
 ) {
 	val pairedAndNotConnectedNodes =
 		connectionState.group.nodes.filter { it !in connectionState.connectedNodes }

@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.ui.designsystem.components.LinearLoader
 import com.github.singularity.ui.feature.connection.server.pages.details.HostedSyncGroupDetailsPage
 import com.github.singularity.ui.feature.connection.server.pages.index.HostedSyncGroupIndexPage
@@ -37,14 +37,14 @@ private fun ServerScreen(
             .fillMaxSize(),
     ) {
         when (it) {
-	        null -> LinearLoader()
+            is ServerSyncState.Loading -> LinearLoader()
 
-	        is ServerConnectionState.NoDefaultServer -> HostedSyncGroupIndexPage(
+            is ServerSyncState.NoDefaultServer -> HostedSyncGroupIndexPage(
                 uiState = uiState,
                 execute = execute,
             )
 
-	        is ServerConnectionState.Running -> HostedSyncGroupDetailsPage(
+            is ServerSyncState.Running -> HostedSyncGroupDetailsPage(
 	            connectionState = it,
                 execute = execute,
             )

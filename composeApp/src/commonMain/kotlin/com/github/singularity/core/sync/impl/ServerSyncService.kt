@@ -4,8 +4,8 @@ import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.shared.SyncMode
-import com.github.singularity.core.shared.model.ClientConnectionState
-import com.github.singularity.core.shared.model.ConnectionState
+import com.github.singularity.core.shared.model.ClientSyncState
+import com.github.singularity.core.shared.model.SyncState
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncEventBridge
@@ -39,10 +39,10 @@ class ServerSyncService(
     override val syncMode = preferencesRepo.preferences.map { it.syncMode }
         .stateInWhileSubscribed(SyncMode.Client, scope)
 
-    override val connectionState: StateFlow<ConnectionState> = syncMode.flatMapLatest {
+    override val syncState: StateFlow<SyncState> = syncMode.flatMapLatest {
         if (it == SyncMode.Client) clientConnectionRepo.connectionState
         else serverConnectionRepo.runServer()
-    }.stateInWhileSubscribed(ClientConnectionState.NoDefaultServer, scope)
+    }.stateInWhileSubscribed(ClientSyncState.NoDefaultServer, scope)
 
     override fun toggleSyncMode() {
         scope.launch {

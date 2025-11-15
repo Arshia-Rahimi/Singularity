@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.ui.designsystem.components.LinearLoader
 import com.github.singularity.ui.feature.connection.client.pages.details.JoinedSyncGroupDetailsPage
 import com.github.singularity.ui.feature.connection.client.pages.index.JoinedSyncGroupIndexPage
@@ -35,15 +35,15 @@ private fun ClientScreen(
 		modifier = Modifier.fillMaxSize(),
 	) {
 		when (it) {
-			null -> LinearLoader()
+            is ClientSyncState.Loading -> LinearLoader()
 
-			is ClientConnectionState.NoDefaultServer -> JoinedSyncGroupIndexPage(
+            is ClientSyncState.NoDefaultServer -> JoinedSyncGroupIndexPage(
 				uiState = uiState,
 				execute = execute,
 			)
 
-			is ClientConnectionState.WithDefaultServer -> JoinedSyncGroupDetailsPage(
-				connectionState = it,
+            is ClientSyncState.WithDefaultServer -> JoinedSyncGroupDetailsPage(
+                syncState = it,
 				execute = execute,
 			)
 		}

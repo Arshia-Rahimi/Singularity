@@ -4,10 +4,10 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.core.shared.model.ServerSyncState
 
 @Immutable
 data class ServerUiState(
-	val connectionState: ServerConnectionState? = null,
+    val connectionState: ServerSyncState = ServerSyncState.Loading,
     val hostedSyncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
 )

@@ -5,7 +5,7 @@ import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.server.PairRequestDataSource
 import com.github.singularity.core.server.SyncGroupServer
-import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ class ServerConnectionRepositoryImpl(
 		.flatMapLatest {
 			hostedSyncGroupRepo.defaultSyncGroup
 				.flatMapLatest { group ->
-					if (group == null) flowOf(ServerConnectionState.NoDefaultServer)
+                    if (group == null) flowOf(ServerSyncState.NoDefaultServer)
 					else {
 						server.start(group)
 						broadcastService.startBroadcast(group)
@@ -43,7 +43,7 @@ class ServerConnectionRepositoryImpl(
 							server.connectedNodes,
 							pairRequestDataSource.requests,
 						) { connectedNodes, requests ->
-							ServerConnectionState.Running(
+                            ServerSyncState.Running(
 								group = group,
 								connectedNodes = connectedNodes,
 								pairRequests = requests

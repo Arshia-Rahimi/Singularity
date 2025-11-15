@@ -7,6 +7,7 @@ import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
 import com.github.singularity.core.sync.SyncEventBridge
@@ -39,16 +40,26 @@ class ClientConnectionRepositoryImpl(
             syncEventRemoteDataSource.disconnect()
             joinedSyncGroupRepo.defaultJoinedSyncGroup
                 .flatMapLatest { defaultServer ->
-                    if (defaultServer == null) flowOf<ClientConnectionState>(ClientConnectionState.NoDefaultServer)
+                    if (defaultServer == null) flowOf<ClientSyncState>(ClientSyncState.NoDefaultServer)
                     else flow {
-                        emit(ClientConnectionState.Searching(defaultServer))
+                        emit(
+                            ClientSyncState.WithDefaultServer(
+                                defaultServer,
+                                ClientConnectionState.Searching
+                            )
+                        )
 
                         val server = withTimeoutOrNull(DISCOVER_TIMEOUT) {
                             deviceDiscoveryService.discoverServer(defaultServer)
                         }
 
                         if (server == null) {
-                            emit(ClientConnectionState.ServerNotFound(defaultServer, "timeout"))
+                            emit(
+                                ClientSyncState.WithDefaultServer(
+                                    defaultServer,
+                                    ClientConnectionState.ServerNotFound("timeout")
+                                )
+                            )
                             logger.i(this::class.simpleName, "server not found")
                             return@flow
                         }
@@ -56,24 +67,32 @@ class ClientConnectionRepositoryImpl(
                         try {
                             syncEventRemoteDataSource.connect(server, defaultServer.authToken)
                         } catch (e: Exception) {
-	                        emit(ClientConnectionState.ConnectionFailed(defaultServer, server))
+                            emit(
+                                ClientSyncState.WithDefaultServer(
+                                    defaultServer,
+                                    ClientConnectionState.SyncFailed(server)
+                                )
+                            )
                             logger.e(this::class.simpleName, "error connecting to server", e)
                             return@flow
                         }
 
                         syncEventRemoteDataSource.incomingEventsFlow()
 	                        .onStart {
-		                        emit(
-			                        ClientConnectionState.Connected(
-				                        defaultServer,
-				                        server
-			                        )
-		                        )
+                                emit(
+                                    ClientSyncState.WithDefaultServer(
+                                        defaultServer,
+                                        ClientConnectionState.Connected(server)
+                                    )
+                                )
 	                        }
                             .catch { e ->
                                 logger.e(this::class.simpleName, "websocket connection timeout", e)
                                 emit(
-	                                ClientConnectionState.ConnectionDropped(defaultServer, server)
+                                    ClientSyncState.WithDefaultServer(
+                                        defaultServer,
+                                        ClientConnectionState.SyncDropped(server)
+                                    )
                                 )
                             }.collect { syncEventBridge.incomingEventCallback(it) }
                     }

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.ServerConnectionState
+import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,9 +20,9 @@ class ServerViewModel(
     private val syncService: SyncService,
 ) : ViewModel() {
 
-    private val connectionState = syncService.connectionState
-        .filterIsInstance<ServerConnectionState>()
-	    .stateInWhileSubscribed(null)
+    private val connectionState = syncService.syncState
+        .filterIsInstance<ServerSyncState>()
+        .stateInWhileSubscribed(ServerSyncState.Loading)
 
     private val hostedSyncGroups = broadcastRepo.syncGroups
         .stateInWhileSubscribed(emptyList())

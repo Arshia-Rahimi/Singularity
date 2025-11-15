@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
@@ -28,13 +28,13 @@ import singularity.composeapp.generated.resources.refresh
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinedSyncGroupDetailsPage(
-	connectionState: ClientConnectionState.WithDefaultServer,
-	execute: ClientIntent.() -> Unit,
+    syncState: ClientSyncState.WithDefaultServer,
+    execute: ClientIntent.() -> Unit,
 ) {
 	Scaffold(
         topBar = {
             TopBar(
-                title = connectionState.joinedSyncGroup.syncGroupName,
+                title = syncState.joinedSyncGroup.syncGroupName,
                 actions = {
                     IconButton(
                         onClick = { ClientIntent.ToIndex.execute() }
@@ -59,8 +59,8 @@ fun JoinedSyncGroupDetailsPage(
 					.padding(horizontal = 4.dp),
 				horizontalArrangement = Arrangement.SpaceBetween,
 			) {
-				AnimatedContent(connectionState) {
-					Text(it.message)
+                AnimatedContent(syncState.connectionState) {
+                    Text(it.message(syncState.joinedSyncGroup.syncGroupName))
 				}
 
 				IconButton(

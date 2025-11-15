@@ -2,8 +2,8 @@ package com.github.singularity.core.sync.impl
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.shared.SyncMode
-import com.github.singularity.core.shared.model.ClientConnectionState
-import com.github.singularity.core.shared.model.ConnectionState
+import com.github.singularity.core.shared.model.ClientSyncState
+import com.github.singularity.core.shared.model.SyncState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncEventBridge
 import com.github.singularity.core.sync.SyncService
@@ -30,8 +30,8 @@ class ClientSyncService(
 
     override val syncMode = MutableStateFlow(SyncMode.Client).asStateFlow()
 
-    override val connectionState: StateFlow<ConnectionState> = clientConnectionRepo.connectionState
-        .stateInWhileSubscribed(ClientConnectionState.NoDefaultServer, scope)
+    override val syncState: StateFlow<SyncState> = clientConnectionRepo.connectionState
+        .stateInWhileSubscribed(ClientSyncState.NoDefaultServer, scope)
 
     override fun toggleSyncMode() = Unit
 

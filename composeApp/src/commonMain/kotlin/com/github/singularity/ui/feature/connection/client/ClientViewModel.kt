@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
-import com.github.singularity.core.shared.model.ClientConnectionState
+import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
@@ -33,9 +33,9 @@ class ClientViewModel(
     private val syncService: SyncService,
 ) : ViewModel() {
 
-	private val connectionState = syncService.connectionState
-		.filterIsInstance<ClientConnectionState>()
-		.stateInWhileSubscribed(null)
+    private val connectionState = syncService.syncState
+        .filterIsInstance<ClientSyncState>()
+        .stateInWhileSubscribed(ClientSyncState.Loading)
 
     private val shouldDiscover = MutableStateFlow(false)
 
