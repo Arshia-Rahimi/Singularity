@@ -81,11 +81,13 @@ class DiscoverRepositoryImp(
 		} catch (e: IOException) {
 			throw Exception("failed to send pair request: ${e.message}")
 		}
-	}
-		.flowOn(Dispatchers.IO)
-		.asResult(Dispatchers.IO)
+    }.asResult(Dispatchers.IO)
 
-	private suspend fun getCurrentDeviceAsNode() = Node(
+    override suspend fun removeAllDefaults() {
+        joinedSyncGroupsRepo.removeAllDefaults()
+    }
+
+    private suspend fun getCurrentDeviceAsNode() = Node(
 		deviceName = deviceName,
 		deviceOs = os,
 		deviceId = preferencesRepo.preferences.first().deviceId,

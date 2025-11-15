@@ -76,6 +76,7 @@ class ClientViewModel(
             is ClientIntent.StartDiscovery -> shouldDiscover.value = true
             is ClientIntent.StopDiscovery -> shouldDiscover.value = false
 	        is ClientIntent.RefreshConnection -> syncService.refresh()
+            is ClientIntent.ToIndex -> toIndex()
         }
     }
 
@@ -106,6 +107,12 @@ class ClientViewModel(
         viewModelScope.launch {
             joinedSyncGroupRepo.setAsDefault(group)
             shouldDiscover.value = false
+        }
+    }
+
+    private fun toIndex() {
+        viewModelScope.launch {
+            discoverRepo.removeAllDefaults()
         }
     }
 

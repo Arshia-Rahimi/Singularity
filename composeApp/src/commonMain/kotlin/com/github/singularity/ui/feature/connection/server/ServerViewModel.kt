@@ -47,7 +47,7 @@ class ServerViewModel(
             is ServerIntent.DeleteGroup -> delete(intent.group)
             is ServerIntent.SetAsDefault -> setAsDefault(intent.group)
             is ServerIntent.RefreshConnection -> syncService.refresh()
-            is ServerIntent.RemoveAllDefaults -> removeAllDefaults()
+            is ServerIntent.ToIndex -> toIndex()
         }
     }
 
@@ -69,7 +69,7 @@ class ServerViewModel(
         broadcastRepo.delete(group).launchIn(viewModelScope)
     }
 
-    private fun removeAllDefaults() {
+    private fun toIndex() {
         viewModelScope.launch {
             broadcastRepo.removeAllDefaults()
         }

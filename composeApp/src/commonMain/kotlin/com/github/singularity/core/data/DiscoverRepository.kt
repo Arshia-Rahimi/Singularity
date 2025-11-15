@@ -11,4 +11,6 @@ interface DiscoverRepository {
 
     fun sendPairRequest(server: LocalServer): Flow<Resource<Success>>
 
+    suspend fun removeAllDefaults()
+
 }

@@ -21,6 +21,8 @@ import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.ClientIntent
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.back
+import singularity.composeapp.generated.resources.list
 import singularity.composeapp.generated.resources.refresh
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +32,21 @@ fun JoinedSyncGroupDetailsPage(
 	execute: ClientIntent.() -> Unit,
 ) {
 	Scaffold(
-		topBar = { TopBar(connectionState.joinedSyncGroup.syncGroupName) },
+        topBar = {
+            TopBar(
+                title = connectionState.joinedSyncGroup.syncGroupName,
+                actions = {
+                    IconButton(
+                        onClick = { ClientIntent.ToIndex.execute() }
+                    ) {
+                        Icon(
+                            painter = Res.drawable.list.getPainter(),
+                            contentDescription = Res.string.back.getString(),
+                        )
+                    }
+                },
+            )
+        },
 	) { ip ->
 		Column(
 			modifier = Modifier

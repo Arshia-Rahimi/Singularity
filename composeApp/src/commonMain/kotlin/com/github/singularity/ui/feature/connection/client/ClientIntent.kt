@@ -11,4 +11,5 @@ sealed interface ClientIntent {
     data object StartDiscovery : ClientIntent
     data object StopDiscovery : ClientIntent
 	data object RefreshConnection : ClientIntent
+    data object ToIndex : ClientIntent
 }

@@ -44,14 +44,14 @@ fun HostedSyncGroupDetailsPage(
 				title = connectionState.group.name,
 				actions = {
 					IconButton(
-						onClick = { ServerIntent.RemoveAllDefaults.execute() }
+                        onClick = { ServerIntent.ToIndex.execute() }
 					) {
 						Icon(
 							painter = Res.drawable.list.getPainter(),
 							contentDescription = Res.string.back.getString(),
 						)
 					}
-				}
+                },
 			)
 		},
 	) { ip ->
