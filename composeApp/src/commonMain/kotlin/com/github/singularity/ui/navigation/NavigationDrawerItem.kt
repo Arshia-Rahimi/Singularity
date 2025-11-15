@@ -1,6 +1,5 @@
 package com.github.singularity.ui.navigation
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,10 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -56,7 +50,7 @@ enum class NavigationDrawerItemTop(
     Connection(
         icon = Res.drawable.connection,
         label = Res.string.connection,
-	    route = Route.Connection,
+        route = Route.Connection,
     ),
 
     Permissions(
@@ -121,23 +115,6 @@ fun NavigationDrawerItem(
                 .fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val selectedColor = MaterialTheme.colorScheme.primary
-            Canvas(
-                modifier = Modifier.width(3.dp)
-                    .fillMaxHeight(0.75f),
-            ) {
-                if (selected) {
-                    clipRect {
-                        drawRoundRect(
-                            color = selectedColor,
-                            topLeft = Offset(0f, 0f),
-                            size = Size(size.width, size.height),
-                            cornerRadius = CornerRadius(size.width),
-                        )
-                    }
-                }
-            }
-
             val iconColor = colors.iconColor(selected).value
             CompositionLocalProvider(
                 value = LocalContentColor provides iconColor,
