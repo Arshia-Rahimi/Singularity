@@ -195,7 +195,7 @@ private fun LazyListScope.settingsItemColumn(
                 .onCondition(onClick != null) {
                     clickable { onClick?.invoke() }
                 }
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp, vertical = 4.dp),
         ) {
             content()
         }

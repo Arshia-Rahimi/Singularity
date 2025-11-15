@@ -156,7 +156,7 @@ private fun DrawerContent(
 
 		Column(
 			modifier = Modifier.fillMaxWidth(),
-			verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+            verticalArrangement = Arrangement.spacedBy(1.dp, Alignment.Top),
 		) {
 			NavigationDrawerItemBottom.entries.forEach { item ->
 				NavigationDrawerItem(

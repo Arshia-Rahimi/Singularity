@@ -60,7 +60,7 @@ fun HostedSyncGroupIndexPage(
 
 			hostedSyncGroupItems(uiState, execute)
 
-			createGroupItem(execute) { showCreateGroupDialog = true }
+            createGroupItem { showCreateGroupDialog = true }
 
 		}
 
@@ -115,7 +115,6 @@ private fun LazyGridScope.hostedSyncGroupItems(
 }
 
 private fun LazyGridScope.createGroupItem(
-	execute: ServerIntent.() -> Unit,
 	showCreateGroupDialog: () -> Unit,
 ) {
 	stickyHeader(
