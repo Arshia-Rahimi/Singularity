@@ -4,37 +4,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.shared.model.PreferencesModel
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-	private val preferencesRepo: PreferencesRepository,
+    private val preferencesRepo: PreferencesRepository,
 ) : ViewModel() {
 
-	private val preferences = preferencesRepo.preferences
-		.stateInWhileSubscribed(PreferencesModel())
+    val uiState = preferencesRepo.preferences.map {
+        SettingsUiState(
+            themeOption = it.theme.themeOption,
+            scale = it.scale,
+        )
+    }.stateInWhileSubscribed(SettingsUiState())
 
-	val uiState = combine(preferences) {
-		SettingsUiState(
-            themeOption = it[0].theme.themeOption,
-			scale = it[0].scale,
-		)
-	}.stateInWhileSubscribed(SettingsUiState())
-
-	fun execute(intent: SettingsIntent) {
-		when (intent) {
+    fun execute(intent: SettingsIntent) {
+        when (intent) {
             is SettingsIntent.ToggleThemeOption -> toggleThemeOption()
-			is SettingsIntent.ChangeScale -> changeScale(intent.scale)
+            is SettingsIntent.ChangeScale -> changeScale(intent.scale)
             is SettingsIntent.ChangePrimaryColor -> changePrimaryColor(intent.color)
         }
-	}
+    }
 
     private fun toggleThemeOption() {
-		viewModelScope.launch {
-            preferencesRepo.setAppThemeOption(preferences.value.theme.themeOption.next())
+        viewModelScope.launch {
+            preferencesRepo.setAppThemeOption(uiState.value.themeOption.next())
         }
     }
 
@@ -44,10 +40,10 @@ class SettingsViewModel(
         }
     }
 
-	private fun changeScale(scale: Float) {
-		viewModelScope.launch {
-			preferencesRepo.setScale(scale)
-		}
-	}
+    private fun changeScale(scale: Float) {
+        viewModelScope.launch {
+            preferencesRepo.setScale(scale)
+        }
+    }
 
 }
