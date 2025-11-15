@@ -16,6 +16,7 @@ class SettingsViewModel(
     val uiState = preferencesRepo.preferences.map {
         SettingsUiState(
             themeOption = it.theme.themeOption,
+            primaryColor = it.theme.customPrimaryColor,
             scale = it.scale,
         )
     }.stateInWhileSubscribed(SettingsUiState())

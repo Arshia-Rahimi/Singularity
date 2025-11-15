@@ -1,6 +1,7 @@
 package com.github.singularity.ui.feature.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,29 +57,29 @@ import singularity.composeapp.generated.resources.theme_options
 
 @Composable
 fun SettingsScreen() {
-	val viewModel = koinViewModel<SettingsViewModel>()
-	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val viewModel = koinViewModel<SettingsViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	SettingsScreen(
-		uiState = uiState,
-		execute = { viewModel.execute(this) },
-	)
+    SettingsScreen(
+        uiState = uiState,
+        execute = { viewModel.execute(this) },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
-	uiState: SettingsUiState,
-	execute: SettingsIntent.() -> Unit,
+    uiState: SettingsUiState,
+    execute: SettingsIntent.() -> Unit,
 ) {
-	Scaffold(
-		modifier = Modifier.fillMaxSize(),
-		topBar = { TopBar(Res.string.settings.getString()) },
-	) { ip ->
-		LazyColumn(
-			modifier = Modifier.fillMaxSize()
-				.padding(ip),
-		) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { TopBar(Res.string.settings.getString()) },
+    ) { ip ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+                .padding(ip),
+        ) {
             settingsItemRow {
                 var expanded by remember { mutableStateOf(false) }
                 SettingsItemText(Res.string.scale.getString())
@@ -135,39 +137,51 @@ private fun SettingsScreen(
                         contentType = { Color::class }
                     ) {
                         Box(
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier
+                                .size(40.dp)
                                 .clip(CircleShape)
                                 .background(it)
-                                .clickable { SettingsIntent.ChangePrimaryColor(it).execute() },
+                                .onCondition(it == uiState.primaryColor) {
+                                    border(
+                                        2.dp,
+                                        MaterialTheme.colorScheme.onSecondaryContainer,
+                                        CircleShape
+                                    )
+                                }
+                                .clickable(it != uiState.primaryColor) {
+                                    SettingsIntent.ChangePrimaryColor(
+                                        it
+                                    ).execute()
+                                },
                             content = {},
                         )
                     }
                 }
             }
-		}
-	}
+        }
+    }
 }
 
 
 private fun LazyListScope.settingsItemRow(
-	onClick: (() -> Unit)? = null,
-	content: @Composable RowScope.() -> Unit,
+    onClick: (() -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit,
 ) {
-	item {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(50.dp)
-				.onCondition(onClick != null) {
-					clickable { onClick?.invoke() }
-				}
-				.padding(horizontal = 20.dp),
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.SpaceBetween,
-		) {
-			content()
-		}
-	}
+    item {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .onCondition(onClick != null) {
+                    clickable { onClick?.invoke() }
+                }
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            content()
+        }
+    }
 }
 
 private fun LazyListScope.settingsItemColumn(
@@ -190,10 +204,10 @@ private fun LazyListScope.settingsItemColumn(
 
 @Composable
 private fun SettingsItemText(
-	text: String,
+    text: String,
 ) {
-	Text(
-		text = text,
-		fontSize = 16.sp,
-	)
+    Text(
+        text = text,
+        fontSize = 16.sp,
+    )
 }

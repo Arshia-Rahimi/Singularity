@@ -66,7 +66,7 @@
     <string name="test">test</string>
     <string name="server">Server</string>
     <string name="client">Client</string>
-    <string name="theme_options">Theme Options:</string>
+    <string name="theme_options">Theme Options</string>
     <string name="scale">Scale</string>
     <string name="primary_color">Primary Color</string>
 </resources>
