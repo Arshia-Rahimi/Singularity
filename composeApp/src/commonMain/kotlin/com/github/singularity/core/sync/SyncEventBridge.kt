@@ -1,6 +1,5 @@
 package com.github.singularity.core.sync
 
-import com.github.singularity.core.shared.serialization.SyncEvent
 import kotlinx.coroutines.flow.Flow
 
 interface SyncEventBridge {

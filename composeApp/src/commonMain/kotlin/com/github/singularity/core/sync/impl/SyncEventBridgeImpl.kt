@@ -1,6 +1,6 @@
 package com.github.singularity.core.sync.impl
 
-import com.github.singularity.core.shared.serialization.SyncEvent
+import com.github.singularity.core.sync.SyncEvent
 import com.github.singularity.core.sync.SyncEventBridge
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

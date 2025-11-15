@@ -12,8 +12,7 @@ import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
-import com.github.singularity.core.shared.serialization.SyncEvent
-import com.github.singularity.core.shared.serialization.jsonConverter
+import com.github.singularity.core.sync.SyncEvent
 import com.github.singularity.core.sync.SyncEventBridge
 import io.ktor.http.ContentType
 import io.ktor.serialization.deserialize
@@ -48,6 +47,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 class KtorSyncGroupServer(
@@ -69,7 +69,7 @@ class KtorSyncGroupServer(
         host = "0.0.0.0"
     ) {
         install(WebSockets.Plugin) {
-            contentConverter = KotlinxWebsocketSerializationConverter(jsonConverter)
+            contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
 
         install(ContentNegotiation) {

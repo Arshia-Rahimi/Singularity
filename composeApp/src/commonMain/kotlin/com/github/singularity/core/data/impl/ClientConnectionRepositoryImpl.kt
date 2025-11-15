@@ -8,8 +8,8 @@ import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.ClientSyncState
-import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.shared.util.sendPulse
+import com.github.singularity.core.sync.SyncEvent
 import com.github.singularity.core.sync.SyncEventBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

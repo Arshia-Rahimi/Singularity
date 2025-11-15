@@ -20,8 +20,8 @@ class PluginManagerImpl(
     init {
         syncEventBridge.incomingSyncEvents.onEach { event ->
             plugins.firstOrNull { plugin ->
-                plugin.pluginName == event.plugin
-            }?.handleEvent(event)
+                plugin.pluginName == event.pluginName
+            }?.handleEvent(event.data)
         }.launchIn(scope)
     }
 

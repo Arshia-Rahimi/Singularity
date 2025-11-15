@@ -1,38 +1,35 @@
 package com.github.singularity.core.sync.plugin.clipboard
 
-import com.github.singularity.core.shared.serialization.SyncEvent
 import com.github.singularity.core.sync.SyncEventBridge
+import com.github.singularity.core.sync.SyncEventData
 import com.github.singularity.core.sync.plugin.Plugin
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-private const val PLUGIN_NAME = "clipboard"
+private const val PLUGIN_NAME = "Clipboard"
 
 class ClipboardPlugin(
     private val syncEventBridge: SyncEventBridge,
 ) : Plugin {
 
-    override val pluginName = PLUGIN_NAME
-
     @Serializable
-    sealed class Events : SyncEvent {
-
-        override val plugin = PLUGIN_NAME
-
-        @Serializable
-        @SerialName("${PLUGIN_NAME}_copied")
-        data class Copied(val content: String) : Events()
-
+    sealed class Events : SyncEventData {
+        data class Copied(val clipboardContent: String) : Events()
     }
 
-    override fun handleEvent(event: SyncEvent) {
+    override val pluginName: String = PLUGIN_NAME
+
+    override fun handleEvent(event: SyncEventData) {
         when (event) {
-            is Events.Copied -> copied(event.content)
+            is Events.Copied -> copied(event.clipboardContent)
         }
     }
 
-    private fun copied(content: String) {
+    private fun copied(clipboardContent: String) {
 
     }
+
+//    private fun sendCopiedContent(clipboardContent: String) {
+//        syncEventBridge.send(SyncEvent(PLUGIN_NAME, Events.Copied(clipboardContent)))
+//    }
 
 }
