@@ -16,7 +16,6 @@ fun ConnectionScreen() {
     val viewModel = koinViewModel<ConnectionViewModel>()
     val syncMode by viewModel.syncMode.collectAsStateWithLifecycle()
 
-
     AnimatedContent(
         targetState = syncMode,
         modifier = Modifier.fillMaxSize(),
