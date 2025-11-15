@@ -111,7 +111,6 @@ class KtorSyncGroupServer(
 
     private fun Application.registerRoutes() {
         routing {
-
             // websocket
             authenticate("auth", strategy = AuthenticationStrategy.Required) {
                 webSocket("/sync") {
