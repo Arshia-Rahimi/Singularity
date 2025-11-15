@@ -52,7 +52,7 @@ class SqlitePreferencesRepository(
             preferences.copy(
                 theme = AppTheme(
                     themeOption = themeOption,
-                    customPrimaryColorULong = preferences.theme.customPrimaryColorULong
+                    _customPrimaryColor = preferences.theme.customPrimaryColor.value,
                 )
             )
         )
@@ -64,7 +64,7 @@ class SqlitePreferencesRepository(
             preferences.copy(
                 theme = AppTheme(
                     themeOption = preferences.theme.themeOption,
-                    customPrimaryColorULong = color.value
+                    _customPrimaryColor = color.value,
                 )
             )
         )

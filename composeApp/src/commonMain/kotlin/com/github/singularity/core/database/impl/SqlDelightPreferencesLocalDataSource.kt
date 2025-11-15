@@ -13,7 +13,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 
 class SqlDelightPreferencesLocalDataSource(
-    db: SingularityDatabase
+    db: SingularityDatabase,
 ) : PreferencesLocalDataSource {
 
     private val queries = db.preferencesQueries
@@ -36,7 +36,7 @@ class SqlDelightPreferencesLocalDataSource(
     override fun update(preferences: PreferencesModel) {
         queries.update(
             themeOption = preferences.theme.themeOption.ordinal.toLong(),
-            customPrimaryColor = preferences.theme.customPrimaryColorULong.toLong(),
+            customPrimaryColor = preferences.theme.customPrimaryColor.value.toLong(),
             deviceId = preferences.deviceId,
             appSecret = preferences.appSecret.toString(),
             syncMode = preferences.syncMode.ordinal.toLong(),
@@ -47,7 +47,7 @@ class SqlDelightPreferencesLocalDataSource(
     override fun insert(preferences: PreferencesModel) {
         queries.insert(
             themeOption = preferences.theme.themeOption.ordinal.toLong(),
-            customPrimaryColor = preferences.theme.customPrimaryColorULong.toLong(),
+            customPrimaryColor = preferences.theme.customPrimaryColor.value.toLong(),
             deviceId = preferences.deviceId,
             appSecret = preferences.appSecret.toString(),
             syncMode = preferences.syncMode.ordinal.toLong(),

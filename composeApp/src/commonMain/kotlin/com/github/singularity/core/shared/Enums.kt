@@ -22,10 +22,10 @@ enum class SyncMode(
 @Serializable
 data class AppTheme(
     val themeOption: ThemeOption = ThemeOption.System,
-    val customPrimaryColorULong: ULong = DefaultPrimaryColor.value,
+    private val _customPrimaryColor: ULong = DefaultPrimaryColor.value,
 ) {
     val customPrimaryColor: Color
-        get() = Color(customPrimaryColorULong)
+        get() = Color(_customPrimaryColor)
 }
 
 enum class ThemeOption(
