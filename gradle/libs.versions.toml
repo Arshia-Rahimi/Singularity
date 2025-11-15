@@ -17,6 +17,7 @@ appDirs = "1.5.0"
 desugaring = "2.1.5"
 sqldelight = "2.1.0"
 dns-sd = "1.0.4"
+kolor = "4.0.4"
 
 
 [libraries]
@@ -60,6 +61,8 @@ sqldelight-driver-sqlite = { module = "app.cash.sqldelight:sqlite-driver", versi
 desugaring = { module = "com.android.tools:desugar_jdk_libs_nio", version.ref = "desugaring" }
 ##mdns
 dns-sd = { module = "com.appstractive:dns-sd-kt", version.ref = "dns-sd" }
+##materialKolor
+kolor = { module = "com.materialkolor:material-kolor", version.ref = "kolor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

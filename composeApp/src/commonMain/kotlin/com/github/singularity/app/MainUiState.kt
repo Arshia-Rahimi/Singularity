@@ -6,7 +6,7 @@ import com.github.singularity.core.shared.SyncMode
 
 @Immutable
 data class MainUiState(
-    val theme: AppTheme = AppTheme.System,
+    val theme: AppTheme = AppTheme(),
     val scale: Float = 1f,
     val syncMode: SyncMode = SyncMode.Client,
 )

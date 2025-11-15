@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Suppress("ArrayInDataClass")
 @Serializable
 data class PreferencesModel(
-    val theme: AppTheme = AppTheme.System,
+    val theme: AppTheme = AppTheme(),
     val deviceId: String = "",
     val appSecret: ByteArray = byteArrayOf(),
     val syncMode: SyncMode = SyncMode.Client,

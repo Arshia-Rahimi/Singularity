@@ -1,7 +1,8 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.AppTheme
+import androidx.compose.ui.graphics.Color
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.ThemeOption
 import com.github.singularity.core.shared.model.PreferencesModel
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -9,7 +10,9 @@ interface PreferencesRepository {
     
     val preferences: SharedFlow<PreferencesModel>
 
-    suspend fun setAppTheme(theme: AppTheme)
+    suspend fun setAppThemeOption(themeOption: ThemeOption)
+
+    suspend fun changePrimaryColor(color: Color)
 
     suspend fun setSyncMode(syncMode: SyncMode)
 

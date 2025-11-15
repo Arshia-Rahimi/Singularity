@@ -1,5 +1,6 @@
 package com.github.singularity.ui.feature.settings
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.PreferencesRepository
@@ -18,23 +19,30 @@ class SettingsViewModel(
 
 	val uiState = combine(preferences) {
 		SettingsUiState(
-			theme = it[0].theme,
+            themeOption = it[0].theme.themeOption,
 			scale = it[0].scale,
 		)
 	}.stateInWhileSubscribed(SettingsUiState())
 
 	fun execute(intent: SettingsIntent) {
 		when (intent) {
-			is SettingsIntent.ToggleTheme -> toggleTheme()
+            is SettingsIntent.ToggleThemeOption -> toggleThemeOption()
 			is SettingsIntent.ChangeScale -> changeScale(intent.scale)
-		}
+            is SettingsIntent.ChangePrimaryColor -> changePrimaryColor(intent.color)
+        }
 	}
 
-	private fun toggleTheme() {
+    private fun toggleThemeOption() {
 		viewModelScope.launch {
-			preferencesRepo.setAppTheme(preferences.value.theme.next())
-		}
-	}
+            preferencesRepo.setAppThemeOption(preferences.value.theme.themeOption.next())
+        }
+    }
+
+    private fun changePrimaryColor(color: Color) {
+        viewModelScope.launch {
+            preferencesRepo.changePrimaryColor(color)
+        }
+    }
 
 	private fun changeScale(scale: Float) {
 		viewModelScope.launch {

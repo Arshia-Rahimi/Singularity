@@ -62,6 +62,7 @@ kotlin {
                 implementation(libs.ktor.server.websockets)
                 implementation(libs.ktor.json)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kolor)
                 api(libs.dns.sd)
             }
         }

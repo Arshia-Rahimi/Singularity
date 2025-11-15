@@ -3,6 +3,7 @@
     <string name="singularity_lower">singularity</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="amoled">Amoled</string>
     <string name="sync">Sync</string>
     <string name="connection">Connection</string>
     <string name="follow_system">Follow System</string>
@@ -65,4 +66,7 @@
     <string name="test">test</string>
     <string name="server">Server</string>
     <string name="client">Client</string>
+    <string name="theme_options">Theme Options:</string>
+    <string name="scale">Scale</string>
+    <string name="primary_color">Primary Color</string>
 </resources>

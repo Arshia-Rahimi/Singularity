@@ -1,9 +1,11 @@
 package com.github.singularity.core.data.impl
 
+import androidx.compose.ui.graphics.Color
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.database.PreferencesLocalDataSource
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.shared.ThemeOption
 import com.github.singularity.core.shared.model.PreferencesModel
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
@@ -44,9 +46,27 @@ class SqlitePreferencesRepository(
         .distinctUntilChanged()
         .shareInWhileSubscribed(scope, 1)
 
-    override suspend fun setAppTheme(theme: AppTheme) {
+    override suspend fun setAppThemeOption(themeOption: ThemeOption) {
+        val preferences = preferences.first()
         preferencesLocalDataSource.update(
-            preferences.first().copy(theme = theme)
+            preferences.copy(
+                theme = AppTheme(
+                    themeOption = themeOption,
+                    customPrimaryColorULong = preferences.theme.customPrimaryColorULong
+                )
+            )
+        )
+    }
+
+    override suspend fun changePrimaryColor(color: Color) {
+        val preferences = preferences.first()
+        preferencesLocalDataSource.update(
+            preferences.copy(
+                theme = AppTheme(
+                    themeOption = preferences.theme.themeOption,
+                    customPrimaryColorULong = color.value
+                )
+            )
         )
     }
 

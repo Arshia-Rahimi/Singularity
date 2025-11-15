@@ -5,6 +5,7 @@ import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.github.singularity.core.database.PreferencesLocalDataSource
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.database.toEnum
+import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.model.PreferencesModel
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,7 @@ class SqlDelightPreferencesLocalDataSource(
         .map {
             it?.let {
                 PreferencesModel(
-                    theme = it.theme.toEnum(),
+                    theme = AppTheme(it.themeOption.toEnum(), it.customPrimaryColor.toULong()),
                     deviceId = it.deviceId,
                     appSecret = it.appSecret.toByteArray(),
                     syncMode = it.syncMode.toEnum(),
@@ -34,7 +35,8 @@ class SqlDelightPreferencesLocalDataSource(
 
     override fun update(preferences: PreferencesModel) {
         queries.update(
-            theme = preferences.theme.ordinal.toLong(),
+            themeOption = preferences.theme.themeOption.ordinal.toLong(),
+            customPrimaryColor = preferences.theme.customPrimaryColorULong.toLong(),
             deviceId = preferences.deviceId,
             appSecret = preferences.appSecret.toString(),
             syncMode = preferences.syncMode.ordinal.toLong(),
@@ -44,7 +46,8 @@ class SqlDelightPreferencesLocalDataSource(
 
     override fun insert(preferences: PreferencesModel) {
         queries.insert(
-            theme = preferences.theme.ordinal.toLong(),
+            themeOption = preferences.theme.themeOption.ordinal.toLong(),
+            customPrimaryColor = preferences.theme.customPrimaryColorULong.toLong(),
             deviceId = preferences.deviceId,
             appSecret = preferences.appSecret.toString(),
             syncMode = preferences.syncMode.ordinal.toLong(),
