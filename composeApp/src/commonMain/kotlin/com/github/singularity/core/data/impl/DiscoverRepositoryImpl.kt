@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DiscoverRepositoryImp(
+class DiscoverRepositoryImpl(
     private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
     private val preferencesRepo: PreferencesRepository,
     private val syncRemoteDataSource: SyncRemoteDataSource,

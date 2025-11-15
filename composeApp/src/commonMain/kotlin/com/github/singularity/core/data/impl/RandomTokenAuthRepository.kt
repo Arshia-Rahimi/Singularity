@@ -2,7 +2,6 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.data.Token
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.Node
 import kotlinx.coroutines.flow.first
@@ -29,7 +28,7 @@ class RandomTokenAuthRepository(
         return hostedNode
     }
 
-    override suspend fun getNode(token: Token): HostedSyncGroupNode? {
+    override suspend fun getNode(token: String): HostedSyncGroupNode? {
         val defaultGroup = hostedSyncGroupRepo.defaultSyncGroup.first() ?: return null
         return defaultGroup.nodes.firstOrNull { it.authToken == token }
     }

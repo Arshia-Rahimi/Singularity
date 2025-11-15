@@ -10,7 +10,7 @@ import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.data.impl.BroadcastRepositoryImpl
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
-import com.github.singularity.core.data.impl.DiscoverRepositoryImp
+import com.github.singularity.core.data.impl.DiscoverRepositoryImpl
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
 import com.github.singularity.core.data.impl.JoinedSyncGroupRepositoryImpl
 import com.github.singularity.core.data.impl.RandomTokenAuthRepository
@@ -23,7 +23,7 @@ import org.koin.dsl.module
 val DataModule = module {
     singleOf(::ClientConnectionRepositoryImpl) bind ClientConnectionRepository::class
     singleOf(::SqlitePreferencesRepository) bind PreferencesRepository::class
-    singleOf(::DiscoverRepositoryImp) bind DiscoverRepository::class
+    singleOf(::DiscoverRepositoryImpl) bind DiscoverRepository::class
     singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
     singleOf(::JoinedSyncGroupRepositoryImpl) bind JoinedSyncGroupRepository::class
     singleOf(::BroadcastRepositoryImpl) bind BroadcastRepository::class
