@@ -133,7 +133,7 @@ private fun SettingsScreen(
                 ) {
                     items(
                         items = ColorsList,
-                        key = { it.value },
+	                    key = { it.value.toLong() },
                         contentType = { Color::class }
                     ) {
                         Box(
