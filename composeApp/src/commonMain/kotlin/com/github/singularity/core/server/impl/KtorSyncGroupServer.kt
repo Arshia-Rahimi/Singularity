@@ -3,13 +3,13 @@ package com.github.singularity.core.server.impl
 import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.server.PairRequestDataSource
 import com.github.singularity.core.server.SyncGroupServer
-import com.github.singularity.core.server.node
+import com.github.singularity.core.server.getNode
+import com.github.singularity.core.server.getPairCheckRequest
+import com.github.singularity.core.server.getPairRequest
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
-import com.github.singularity.core.shared.model.http.PairCheckRequest
 import com.github.singularity.core.shared.model.http.PairCheckResponse
-import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.sync.SyncEvent
@@ -30,7 +30,6 @@ import io.ktor.server.auth.bearer
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.contentType
 import io.ktor.server.routing.get
@@ -117,7 +116,7 @@ class KtorSyncGroupServer(
                     try {
                         val converter = converter ?: return@webSocket
 
-	                    _connectedNodes.value += node()
+                        _connectedNodes.value += getNode()
 
                         coroutineScope {
                             launch {
@@ -152,7 +151,7 @@ class KtorSyncGroupServer(
                         }
 
                     } finally {
-                        _connectedNodes.value -= node()
+                        _connectedNodes.value -= getNode()
                     }
                 }
             }
@@ -161,7 +160,7 @@ class KtorSyncGroupServer(
             contentType(ContentType.Application.Json) {
                 post("/pair") {
                     val groupId = syncGroupId
-                    val pairRequest = call.receive<PairRequest>()
+                    val pairRequest = getPairRequest()
 
                     if (groupId == null || pairRequest.syncGroupId != groupId) {
                         call.respond(PairResponse(false))
@@ -177,7 +176,7 @@ class KtorSyncGroupServer(
 
                 get("/pairCheck") {
                     val groupId = syncGroupId
-                    val request = call.receive<PairCheckRequest>()
+                    val request = getPairCheckRequest()
                     val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
                     if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
