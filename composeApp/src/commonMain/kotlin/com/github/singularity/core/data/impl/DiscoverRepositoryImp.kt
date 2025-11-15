@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.broadcast.DeviceDiscoveryService
-import com.github.singularity.core.client.PairRemoteDataSource
+import com.github.singularity.core.client.SyncRemoteDataSource
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
@@ -27,10 +27,10 @@ import kotlinx.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiscoverRepositoryImp(
-	private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
-	private val preferencesRepo: PreferencesRepository,
-	private val pairRemoteDataSource: PairRemoteDataSource,
-	discoveryService: DeviceDiscoveryService,
+    private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
+    private val preferencesRepo: PreferencesRepository,
+    private val syncRemoteDataSource: SyncRemoteDataSource,
+    discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
 	override val discoveredServers = discoveryService.discoveredServers()
@@ -40,7 +40,7 @@ class DiscoverRepositoryImp(
 
 	override fun sendPairRequest(server: LocalServer) = flow {
 		try {
-			val response = pairRemoteDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
+            val response = syncRemoteDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
 			if (!response.success || response.pairRequestId == null) {
 				throw Exception("failed to connect")
 			}
@@ -49,7 +49,7 @@ class DiscoverRepositoryImp(
 			while (isWaiting) {
 				delay(PAIR_CHECK_RETRY_DELAY)
 
-				val response = pairRemoteDataSource
+                val response = syncRemoteDataSource
 					.sendPairCheckRequest(server, response.pairRequestId)
 
 				if (response.pairStatus == PairStatus.Awaiting) continue

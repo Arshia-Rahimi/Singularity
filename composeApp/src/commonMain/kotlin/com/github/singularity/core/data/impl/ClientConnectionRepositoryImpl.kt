@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.broadcast.DeviceDiscoveryService
-import com.github.singularity.core.client.SyncEventRemoteDataSource
+import com.github.singularity.core.client.SyncRemoteDataSource
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.log.Logger
@@ -25,11 +25,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-	private val syncEventRemoteDataSource: SyncEventRemoteDataSource,
-	syncEventBridge: SyncEventBridge,
-	joinedSyncGroupRepo: JoinedSyncGroupRepository,
-	deviceDiscoveryService: DeviceDiscoveryService,
-	logger: Logger,
+    private val syncRemoteDataSource: SyncRemoteDataSource,
+    syncEventBridge: SyncEventBridge,
+    joinedSyncGroupRepo: JoinedSyncGroupRepository,
+    deviceDiscoveryService: DeviceDiscoveryService,
+    logger: Logger,
 ) : ClientConnectionRepository {
 
     private val refreshState = MutableSharedFlow<Unit>()
@@ -37,7 +37,7 @@ class ClientConnectionRepositoryImpl(
     override val connectionState = refreshState
         .onStart { emit(Unit) }
         .flatMapLatest {
-            syncEventRemoteDataSource.disconnect()
+            syncRemoteDataSource.disconnect()
             joinedSyncGroupRepo.defaultJoinedSyncGroup
                 .flatMapLatest { defaultServer ->
                     if (defaultServer == null) flowOf<ClientSyncState>(ClientSyncState.NoDefaultServer)
@@ -65,7 +65,7 @@ class ClientConnectionRepositoryImpl(
                         }
 
                         try {
-                            syncEventRemoteDataSource.connect(server, defaultServer.authToken)
+                            syncRemoteDataSource.connect(server, defaultServer.authToken)
                         } catch (e: Exception) {
                             emit(
                                 ClientSyncState.WithDefaultServer(
@@ -77,7 +77,7 @@ class ClientConnectionRepositoryImpl(
                             return@flow
                         }
 
-                        syncEventRemoteDataSource.incomingEventsFlow()
+                        syncRemoteDataSource.incomingEventsFlow()
 	                        .onStart {
                                 emit(
                                     ClientSyncState.WithDefaultServer(
@@ -104,7 +104,7 @@ class ClientConnectionRepositoryImpl(
     }
 
     override suspend fun send(event: SyncEvent) {
-        syncEventRemoteDataSource.send(event)
+        syncRemoteDataSource.send(event)
     }
 
 }
