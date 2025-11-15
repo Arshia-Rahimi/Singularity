@@ -8,8 +8,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 
-actual fun Module.broadcastService() =
-    singleOf(::DeviceBroadcastServiceImpl) bind DeviceBroadcastService::class
-
-actual fun Module.discoverService() =
+actual fun Module.platformBroadcastModule() {
     singleOf(::DeviceDiscoveryServiceImpl) bind DeviceDiscoveryService::class
+    singleOf(::DeviceBroadcastServiceImpl) bind DeviceBroadcastService::class
+}
