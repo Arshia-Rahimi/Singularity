@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import com.github.singularity.ui.designsystem.shared.getString
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.connected
-import singularity.composeapp.generated.resources.connection_dropped
 import singularity.composeapp.generated.resources.connection_failed
 import singularity.composeapp.generated.resources.no_default_server
 import singularity.composeapp.generated.resources.searching
@@ -55,14 +54,6 @@ sealed interface ClientConnectionState {
         @Composable
         override fun message(name: String) =
             Res.string.connection_failed.getString(name)
-    }
-
-    data class SyncDropped(
-        val server: LocalServer,
-    ) : ClientConnectionState {
-        @Composable
-        override fun message(name: String) =
-            Res.string.connection_dropped.getString(name)
     }
 
     data class Connected(

@@ -37,7 +37,6 @@ class ClientConnectionRepositoryImpl(
     override val connectionState = refreshState
         .onStart { emit(Unit) }
         .flatMapLatest {
-            syncRemoteDataSource.disconnect()
             joinedSyncGroupRepo.defaultJoinedSyncGroup
                 .flatMapLatest { defaultServer ->
                     if (defaultServer == null) flowOf<ClientSyncState>(ClientSyncState.NoDefaultServer)
@@ -64,36 +63,23 @@ class ClientConnectionRepositoryImpl(
                             return@flow
                         }
 
-                        try {
-                            syncRemoteDataSource.connect(server, defaultServer.authToken)
-                        } catch (e: Exception) {
-                            emit(
-                                ClientSyncState.WithDefaultServer(
-                                    defaultServer,
-                                    ClientConnectionState.SyncFailed(server)
-                                )
-                            )
-                            logger.e(this::class.simpleName, "error connecting to server", e)
-                            return@flow
-                        }
-
-                        syncRemoteDataSource.incomingEventsFlow()
-	                        .onStart {
+                        syncRemoteDataSource.connect(server, defaultServer.authToken)
+                            .onStart {
                                 emit(
                                     ClientSyncState.WithDefaultServer(
                                         defaultServer,
                                         ClientConnectionState.Connected(server)
                                     )
                                 )
-	                        }
+                            }
                             .catch { e ->
-                                logger.e(this::class.simpleName, "websocket connection timeout", e)
                                 emit(
                                     ClientSyncState.WithDefaultServer(
                                         defaultServer,
-                                        ClientConnectionState.SyncDropped(server)
+                                        ClientConnectionState.SyncFailed(server)
                                     )
                                 )
+                                logger.e(this::class.simpleName, "error connecting to server", e)
                             }.collect { syncEventBridge.incomingEventCallback(it) }
                     }
                 }

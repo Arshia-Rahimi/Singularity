@@ -39,7 +39,6 @@ import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -118,35 +117,33 @@ class KtorSyncGroupServer(
 
                         _connectedNodes.value += getNode()
 
-                        coroutineScope {
-                            launch {
-                                try {
-                                    incoming.consumeAsFlow()
-                                        .filterIsInstance<Frame.Text>()
-                                        .map { converter.deserialize<SyncEvent>(it) }
-                                        .collect { syncEventBridge.incomingEventCallback(it) }
-                                } catch (e: Exception) {
-                                    println(e.message)
-                                    e.printStackTrace()
-                                }
+                        launch {
+                            try {
+                                incoming.consumeAsFlow()
+                                    .filterIsInstance<Frame.Text>()
+                                    .map { converter.deserialize<SyncEvent>(it) }
+                                    .collect { syncEventBridge.incomingEventCallback(it) }
+                            } catch (e: Exception) {
+                                println(e.message)
+                                e.printStackTrace()
                             }
+                        }
 
-                            launch {
-                                try {
-                                    syncEventBridge.outgoingSyncEvents
-                                        .map { converter.serialize<SyncEvent>(it) }
-                                        .collect {
-                                            try {
-                                                send(it)
-                                            } catch (e: Exception) {
-                                                println(e.message)
-                                                e.printStackTrace()
-                                            }
+                        launch {
+                            try {
+                                syncEventBridge.outgoingSyncEvents
+                                    .map { converter.serialize<SyncEvent>(it) }
+                                    .collect {
+                                        try {
+                                            send(it)
+                                        } catch (e: Exception) {
+                                            println(e.message)
+                                            e.printStackTrace()
                                         }
-                                } catch (e: Exception) {
-                                    println(e.message)
-                                    e.printStackTrace()
-                                }
+                                    }
+                            } catch (e: Exception) {
+                                println(e.message)
+                                e.printStackTrace()
                             }
                         }
 

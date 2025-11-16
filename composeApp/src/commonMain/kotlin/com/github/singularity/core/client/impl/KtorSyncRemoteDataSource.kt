@@ -16,7 +16,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.converter
-import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -28,14 +28,14 @@ import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.serialization.serialize
-import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class KtorSyncRemoteDataSource : SyncRemoteDataSource {
@@ -53,33 +53,45 @@ class KtorSyncRemoteDataSource : SyncRemoteDataSource {
         }
     }
 
-    override suspend fun connect(server: LocalServer, token: String) {
-        try {
-            wsSession = client.webSocketSession(
-                host = server.ip,
-	            port = SERVER_PORT,
-                path = "/sync",
-            ) {
+    override suspend fun connect(server: LocalServer, token: String) = callbackFlow {
+        client.webSocket(
+            host = server.ip,
+            port = SERVER_PORT,
+            path = "/sync",
+            request = {
                 header(HttpHeaders.Authorization, "Bearer $token")
+            },
+        ) {
+            val converter = converter ?: run {
+                close()
+                return@webSocket
             }
-        } finally {
-            wsSession = null
+
+            val receiveJob = launch {
+                try {
+                    incoming.consumeAsFlow()
+                        .filterIsInstance<Frame.Text>()
+                        .map { converter.deserialize<SyncEvent>(it) }
+                        .collect(::send)
+                } catch (_: Exception) {
+                    close()
+                }
+            }
+
+            launch {
+                try {
+                    closeReason.await()
+                    close()
+                } catch (_: Exception) {
+                    close()
+                }
+            }
+
+            awaitClose {
+                receiveJob.cancel()
+            }
+
         }
-    }
-
-    override suspend fun disconnect() {
-        val session = wsSession ?: return
-        session.close(CloseReason(CloseReason.Codes.NORMAL, "Client disconnect"))
-    }
-
-    override fun incomingEventsFlow() = flow {
-        val session = wsSession ?: return@flow
-        val converter = session.converter ?: return@flow
-
-        session.incoming.consumeAsFlow()
-            .filterIsInstance<Frame.Text>()
-            .map { converter.deserialize<SyncEvent>(it) }
-            .let { emitAll(it) }
     }
 
     override suspend fun send(event: SyncEvent) {
