@@ -3,6 +3,7 @@ package com.github.singularity.core.database.di
 import com.github.singularity.core.database.HostedSyncGroupsLocalDataSource
 import com.github.singularity.core.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.database.PreferencesLocalDataSource
+import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.database.impl.SqlDelightHostedSyncGroupsLocalDataSource
 import com.github.singularity.core.database.impl.SqlDelightJoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.database.impl.SqlDelightPreferencesLocalDataSource
@@ -15,6 +16,7 @@ expect fun Module.platformDatabaseModule()
 
 val DatabaseModule = module {
     platformDatabaseModule()
+	single { SingularityDatabase(get()) }
     factoryOf(::SqlDelightHostedSyncGroupsLocalDataSource) bind HostedSyncGroupsLocalDataSource::class
     factoryOf(::SqlDelightJoinedSyncGroupsLocalDataSource) bind JoinedSyncGroupsLocalDataSource::class
     factoryOf(::SqlDelightPreferencesLocalDataSource) bind PreferencesLocalDataSource::class
