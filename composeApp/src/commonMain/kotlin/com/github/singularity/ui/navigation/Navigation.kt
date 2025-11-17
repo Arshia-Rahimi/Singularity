@@ -15,10 +15,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.singularity.app.MainUiState
-import com.github.singularity.ui.feature.connection.ConnectionScreen
-import com.github.singularity.ui.feature.log.LogScreen
-import com.github.singularity.ui.feature.permissions.PermissionsScreen
-import com.github.singularity.ui.feature.settings.SettingsScreen
+import com.github.singularity.ui.feature.connection.connectionNavigation
+import com.github.singularity.ui.feature.log.logNavigation
+import com.github.singularity.ui.feature.permissions.permissionsNavigation
+import com.github.singularity.ui.feature.settings.settingsNavigation
 import com.github.singularity.ui.feature.test.TestScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,18 +61,12 @@ private fun NavigationHost(
 		navController = navController,
 		startDestination = Route.Connection,
 	) {
-		composable<Route.Connection> {
-			ConnectionScreen()
-		}
-		composable<Route.Settings> {
-			SettingsScreen()
-		}
-		composable<Route.Log> {
-			LogScreen()
-		}
-		composable<Route.Permissions> {
-			PermissionsScreen()
-		}
+		connectionNavigation()
+		settingsNavigation()
+		logNavigation()
+		permissionsNavigation()
+
+		//
 		composable<Route.Test> {
 			TestScreen()
 		}
