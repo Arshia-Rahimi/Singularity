@@ -1,5 +1,6 @@
 package com.github.singularity.core.database.di
 
+import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.github.singularity.core.database.SingularityDatabase
 import net.harawata.appdirs.AppDirsFactory
@@ -8,7 +9,7 @@ import java.io.File
 import java.util.Properties
 
 actual fun Module.platformDatabaseModule() {
-    single {
+    single<SqlDriver> {
         val directory = AppDirsFactory.getInstance()
             .getUserDataDir("Singularity", null, null)
         File(directory).mkdirs()
