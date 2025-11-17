@@ -1,8 +1,8 @@
-package com.github.singularity.core.sync.plugin.clipboard
+package com.github.singularity.core.syncservice.plugin.clipboard
 
 import com.github.singularity.core.datasource.memory.SyncEventBridge
-import com.github.singularity.core.sync.SyncEventData
-import com.github.singularity.core.sync.plugin.Plugin
+import com.github.singularity.core.syncservice.SyncEventData
+import com.github.singularity.core.syncservice.plugin.Plugin
 import kotlinx.serialization.Serializable
 
 private const val PLUGIN_NAME = "Clipboard"

@@ -1,4 +1,4 @@
-package com.github.singularity.core.sync.impl
+package com.github.singularity.core.syncservice.impl
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.PreferencesRepository
@@ -9,10 +9,10 @@ import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.model.SyncState
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.sync.SyncService
-import com.github.singularity.core.sync.plugin.Plugin
-import com.github.singularity.core.sync.plugin.PluginManager
-import com.github.singularity.core.sync.plugin.PluginManagerImpl
+import com.github.singularity.core.syncservice.SyncService
+import com.github.singularity.core.syncservice.plugin.Plugin
+import com.github.singularity.core.syncservice.plugin.PluginManager
+import com.github.singularity.core.syncservice.plugin.PluginManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

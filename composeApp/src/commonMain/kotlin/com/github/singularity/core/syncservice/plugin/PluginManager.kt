@@ -1,4 +1,4 @@
-package com.github.singularity.core.sync.plugin
+package com.github.singularity.core.syncservice.plugin
 
 import com.github.singularity.core.datasource.memory.SyncEventBridge
 import kotlinx.coroutines.CoroutineScope

@@ -11,7 +11,7 @@ import com.github.singularity.core.datasource.database.di.DatabaseDataSourceModu
 import com.github.singularity.core.datasource.memory.di.MemoryDataSourceModule
 import com.github.singularity.core.datasource.network.di.NetworkDataSourceModule
 import com.github.singularity.core.log.di.LoggerModule
-import com.github.singularity.core.sync.di.SyncModule
+import com.github.singularity.core.syncservice.di.SyncModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
 import com.github.singularity.ui.navigation.Navigation

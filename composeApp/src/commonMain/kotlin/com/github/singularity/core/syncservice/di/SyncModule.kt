@@ -1,11 +1,11 @@
-package com.github.singularity.core.sync.di
+package com.github.singularity.core.syncservice.di
 
 import com.github.singularity.core.shared.canHostSyncServer
-import com.github.singularity.core.sync.SyncService
-import com.github.singularity.core.sync.impl.ClientSyncService
-import com.github.singularity.core.sync.impl.ServerSyncService
-import com.github.singularity.core.sync.plugin.Plugin
-import com.github.singularity.core.sync.plugin.clipboard.ClipboardPlugin
+import com.github.singularity.core.syncservice.SyncService
+import com.github.singularity.core.syncservice.impl.ClientSyncService
+import com.github.singularity.core.syncservice.impl.ServerSyncService
+import com.github.singularity.core.syncservice.plugin.Plugin
+import com.github.singularity.core.syncservice.plugin.clipboard.ClipboardPlugin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
