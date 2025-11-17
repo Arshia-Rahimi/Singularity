@@ -2,11 +2,11 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.server.PairRequestDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
+import com.github.singularity.core.sync.datasource.PairRequestDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO

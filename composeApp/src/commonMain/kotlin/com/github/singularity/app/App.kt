@@ -6,12 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.broadcast.di.BroadcastModule
-import com.github.singularity.core.client.di.ClientModule
 import com.github.singularity.core.data.di.DataModule
 import com.github.singularity.core.database.di.DatabaseModule
 import com.github.singularity.core.log.di.LoggerModule
-import com.github.singularity.core.server.di.ServerModule
+import com.github.singularity.core.presence.di.PresenceModule
 import com.github.singularity.core.sync.di.SyncModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
@@ -33,10 +31,8 @@ val koinConfig = KoinConfiguration {
 		ViewmodelModule,
 		DataModule,
 		DatabaseModule,
-		ClientModule,
 		SyncModule,
-		BroadcastModule,
-		ServerModule,
+        PresenceModule,
 		LoggerModule,
 	)
 }

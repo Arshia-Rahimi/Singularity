@@ -1,13 +1,13 @@
 package com.github.singularity.core.data.impl
 
-import com.github.singularity.core.broadcast.DeviceBroadcastService
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.server.PairRequestDataSource
-import com.github.singularity.core.server.SyncGroupServer
+import com.github.singularity.core.presence.DeviceBroadcastService
 import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.sendPulse
+import com.github.singularity.core.sync.datasource.PairRequestDataSource
+import com.github.singularity.core.sync.datasource.SyncGroupServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO

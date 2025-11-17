@@ -1,6 +1,6 @@
 package com.github.singularity.core.sync.plugin
 
-import com.github.singularity.core.sync.SyncEventBridge
+import com.github.singularity.core.sync.datasource.SyncEventBridge
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
