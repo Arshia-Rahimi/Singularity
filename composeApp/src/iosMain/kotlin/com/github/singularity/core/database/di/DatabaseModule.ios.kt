@@ -6,17 +6,15 @@ import com.github.singularity.core.database.SingularityDatabase
 import org.koin.core.module.Module
 
 actual fun Module.platformDatabaseModule() {
-    single {
-        SingularityDatabase(
-            driver = NativeSqliteDriver(
-                schema = SingularityDatabase.Schema,
-                name = "singularity.db",
-                onConfiguration = { config: DatabaseConfiguration ->
-                    config.copy(
-                        extendedConfig = DatabaseConfiguration.Extended(foreignKeyConstraints = true)
-                    )
-                },
-            )
-        )
-    }
+	single {
+		NativeSqliteDriver(
+			schema = SingularityDatabase.Schema,
+			name = "singularity.db",
+			onConfiguration = { config: DatabaseConfiguration ->
+				config.copy(
+					extendedConfig = DatabaseConfiguration.Extended(foreignKeyConstraints = true)
+				)
+			},
+		)
+	}
 }

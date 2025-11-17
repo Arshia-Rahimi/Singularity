@@ -24,6 +24,6 @@ actual fun Module.platformDatabaseModule() {
             SingularityDatabase.Schema.create(driver)
         }
 
-        SingularityDatabase(driver)
+	    driver
     }
 }
