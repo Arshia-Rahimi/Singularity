@@ -11,7 +11,7 @@ import com.github.singularity.core.datasource.database.di.DatabaseDataSourceModu
 import com.github.singularity.core.datasource.memory.di.MemoryDataSourceModule
 import com.github.singularity.core.datasource.network.di.NetworkDataSourceModule
 import com.github.singularity.core.log.di.LoggerModule
-import com.github.singularity.core.syncservice.di.SyncModule
+import com.github.singularity.core.syncservice.di.SyncServiceModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
 import com.github.singularity.ui.di.ViewmodelModule
 import com.github.singularity.ui.navigation.Navigation
@@ -27,42 +27,40 @@ private val AppModule = module {
 }
 
 val koinConfig = KoinConfiguration {
-	modules(
-		AppModule,
-		ViewmodelModule,
-		DataModule,
-		SyncModule,
-		LoggerModule,
+    modules(
+        AppModule,
+        ViewmodelModule,
+        DataModule,
+        SyncServiceModule,
+        LoggerModule,
         DatabaseDataSourceModule,
         NetworkDataSourceModule,
         MemoryDataSourceModule,
-	)
+    )
 }
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App() {
-	KoinMultiplatformApplication(
-		config = koinConfig,
-	) {
-		val viewModel = koinViewModel<MainViewModel>()
-		val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    KoinMultiplatformApplication(
+        config = koinConfig,
+    ) {
+        val viewModel = koinViewModel<MainViewModel>()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-		uiState?.let { uiState ->
-			val density = LocalDensity.current
-			CompositionLocalProvider(
-				LocalDensity provides Density(
-					density.density * uiState.scale,
-					density.fontScale * uiState.scale,
-				)
-			) {
-				SingularityTheme(uiState.theme) {
-					Navigation(
-						uiState = uiState,
-						toggleSyncMode = viewModel::toggleSyncMode,
-					)
-				}
-			}
-		}
-	}
+        val density = LocalDensity.current
+        CompositionLocalProvider(
+            LocalDensity provides Density(
+                density.density * uiState.scale,
+                density.fontScale * uiState.scale,
+            )
+        ) {
+            SingularityTheme(uiState.theme) {
+                Navigation(
+                    uiState = uiState,
+                    toggleSyncMode = viewModel::toggleSyncMode,
+                )
+            }
+        }
+    }
 }

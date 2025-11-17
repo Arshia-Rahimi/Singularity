@@ -10,7 +10,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val SyncModule = module {
+val SyncServiceModule = module {
     single<SyncService>(createdAtStart = true) {
         if (canHostSyncServer) ServerSyncService(get(), get(), get(), getKoin().getAll(), get())
         else ClientSyncService(get(), getKoin().getAll(), get())

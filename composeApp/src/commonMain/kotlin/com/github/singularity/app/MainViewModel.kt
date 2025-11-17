@@ -17,7 +17,7 @@ class MainViewModel(
 	        scale = prefs.scale,
 	        syncMode = syncMode,
         )
-    }.stateInWhileSubscribed(null)
+    }.stateInWhileSubscribed(MainUiState())
 
 	fun toggleSyncMode() {
 		syncService.toggleSyncMode()
