@@ -1,7 +1,7 @@
 package com.github.singularity.core.sync.plugin.clipboard
 
+import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.sync.SyncEventData
-import com.github.singularity.core.sync.datasource.SyncEventBridge
 import com.github.singularity.core.sync.plugin.Plugin
 import kotlinx.serialization.Serializable
 

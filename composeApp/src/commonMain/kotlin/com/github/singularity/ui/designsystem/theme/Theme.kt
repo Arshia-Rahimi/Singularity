@@ -1,6 +1,7 @@
 package com.github.singularity.ui.designsystem.theme
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.ThemeOption
@@ -16,9 +17,10 @@ fun SingularityTheme(
         isDark = theme.themeOption in listOf(ThemeOption.Dark, ThemeOption.Amoled),
         isAmoled = theme.themeOption == ThemeOption.Amoled,
     )
+
 	MaterialTheme(
         colorScheme = colorScheme,
-		typography = Typography,
+        typography = Typography(),
 		content = content
 	)
 }

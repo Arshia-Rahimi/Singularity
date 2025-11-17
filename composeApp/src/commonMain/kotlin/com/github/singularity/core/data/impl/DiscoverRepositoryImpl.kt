@@ -3,7 +3,8 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.presence.DeviceDiscoveryService
+import com.github.singularity.core.datasource.network.SyncRemoteDataSource
+import com.github.singularity.core.datasource.network.presence.DeviceDiscoveryService
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
@@ -13,7 +14,6 @@ import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.os
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
-import com.github.singularity.core.sync.datasource.SyncRemoteDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO

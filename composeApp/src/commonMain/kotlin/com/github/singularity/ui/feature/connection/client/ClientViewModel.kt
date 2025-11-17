@@ -11,7 +11,7 @@ import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.sync.service.SyncService
+import com.github.singularity.core.sync.SyncService
 import com.github.singularity.ui.feature.connection.client.pages.index.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job

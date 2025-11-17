@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
-import com.github.singularity.core.database.HostedSyncGroupsLocalDataSource
+import com.github.singularity.core.datasource.database.HostedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.util.shareInWhileSubscribed

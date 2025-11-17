@@ -7,7 +7,7 @@ import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.sync.service.SyncService
+import com.github.singularity.core.sync.SyncService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance

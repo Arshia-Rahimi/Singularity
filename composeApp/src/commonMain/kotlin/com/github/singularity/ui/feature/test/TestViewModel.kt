@@ -2,10 +2,10 @@ package com.github.singularity.ui.feature.test
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.sync.SyncEvent
 import com.github.singularity.core.sync.SyncEventData
-import com.github.singularity.core.sync.datasource.SyncEventBridge
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
