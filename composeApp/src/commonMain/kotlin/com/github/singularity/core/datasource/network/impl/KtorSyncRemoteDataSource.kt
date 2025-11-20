@@ -2,6 +2,7 @@ package com.github.singularity.core.datasource.network.impl
 
 import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
+import com.github.singularity.core.datasource.resource.ResourceLoader
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.LocalServer
@@ -15,7 +16,6 @@ import com.github.singularity.core.shared.util.asResult
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.converter
@@ -27,6 +27,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
@@ -40,28 +41,38 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-class KtorSyncRemoteDataSource(
+class KtorSyncRemoteDataSource private constructor(
 	private val syncEventBridge: SyncEventBridge,
 	private val logger: Logger,
+	private val resourceLoader: ResourceLoader,
 ) : SyncRemoteDataSource {
 
-	private val client = HttpClient(CIO) {
-		install(WebSockets) {
-			contentConverter = KotlinxWebsocketSerializationConverter(Json)
-			maxFrameSize = Long.MAX_VALUE
-		}
+	private lateinit var client: HttpClient
 
-		install(ContentNegotiation) {
-			json()
+	override suspend fun init() {
+		if (this::client.isInitialized) return
+
+		val certificate = resourceLoader.loadFile(SSL_CERTIFICATE_FILENAME)
+		client = createClient(certificate) {
+			install(WebSockets) {
+				contentConverter = KotlinxWebsocketSerializationConverter(Json)
+				maxFrameSize = Long.MAX_VALUE
+			}
+
+			install(ContentNegotiation) {
+				json()
+			}
 		}
 	}
 
 	override suspend fun connect(server: LocalServer, token: String) = flow {
+		init()
 		client.webSocket(
 			host = server.ip,
 			port = SERVER_PORT,
 			path = "/ws/sync",
 			request = {
+				url.protocol = URLProtocol.WSS
 				header(HttpHeaders.Authorization, "Bearer $token")
 			},
 		) {
@@ -93,8 +104,9 @@ class KtorSyncRemoteDataSource(
 		}
 	}.asResult(Dispatchers.IO)
 
-	override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node) =
-		client.post("http://${server.ip}:${SERVER_PORT}/pair") {
+	override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairResponse {
+		init()
+		return client.post("https://${server.ip}:${SERVER_PORT}/pair") {
 			contentType(ContentType.Application.Json)
 			setBody(
 				PairRequest(
@@ -106,9 +118,14 @@ class KtorSyncRemoteDataSource(
 				)
 			)
 		}.body<PairResponse>()
+	}
 
-	override suspend fun sendPairCheckRequest(server: LocalServer, pairRequestId: Int) =
-		client.get("http://${server.ip}:${SERVER_PORT}/pairCheck") {
+	override suspend fun sendPairCheckRequest(
+		server: LocalServer,
+		pairRequestId: Int
+	): PairCheckResponse {
+		init()
+		return client.get("https://${server.ip}:${SERVER_PORT}/pairCheck") {
 			contentType(ContentType.Application.Json)
 			setBody(
 				PairCheckRequest(
@@ -117,5 +134,6 @@ class KtorSyncRemoteDataSource(
 				)
 			)
 		}.body<PairCheckResponse>()
+	}
 
 }

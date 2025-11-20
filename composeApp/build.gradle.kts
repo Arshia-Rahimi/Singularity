@@ -50,16 +50,16 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.navigation)
                 implementation(libs.sqldelight.coroutines)
-                implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.client.auth)
                 implementation(libs.ktor.client.websockets)
-                implementation(libs.ktor.server.cio)
+	            implementation(libs.ktor.server.cio)
                 implementation(libs.ktor.server.core)
                 implementation(libs.ktor.server.content.negotiation)
                 implementation(libs.ktor.server.auth)
                 implementation(libs.ktor.server.websockets)
+	            implementation(libs.ktor.server.tls)
                 implementation(libs.ktor.json)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kolor)
@@ -84,11 +84,13 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
+	            implementation(libs.ktor.client.cio)
             }
         }
         val iosMain by getting {
             dependencies {
                 implementation(libs.sqldelight.driver.native)
+	            implementation(libs.ktor.client.curl)
             }
         }
         val desktopMain by getting {
@@ -97,6 +99,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutinesSwing)
                 implementation(libs.appdirs)
                 implementation(libs.sqldelight.driver.sqlite)
+	            implementation(libs.ktor.client.cio)
                 implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
             }
         }
