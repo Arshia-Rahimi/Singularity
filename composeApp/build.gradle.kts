@@ -59,7 +59,6 @@ kotlin {
                 implementation(libs.ktor.server.content.negotiation)
                 implementation(libs.ktor.server.auth)
                 implementation(libs.ktor.server.websockets)
-	            implementation(libs.ktor.server.tls)
                 implementation(libs.ktor.json)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kolor)
