@@ -7,7 +7,9 @@ import com.github.singularity.core.datasource.network.SyncGroupServer
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
+import com.github.singularity.core.shared.model.http.PairCheckRequest
 import com.github.singularity.core.shared.model.http.PairCheckResponse
+import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.syncservice.SyncEvent
@@ -27,6 +29,7 @@ import io.ktor.server.auth.bearer
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.contentType
 import io.ktor.server.routing.get
@@ -145,12 +148,12 @@ class KtorSyncGroupServer(
             contentType(ContentType.Application.Json) {
                 post("/pair") {
                     val groupId = syncGroupId
-                    val pairRequest = getPairRequest()
+	                val pairRequest = call.receive<PairRequest>()
 
-                    if (groupId == null || pairRequest.syncGroupId != groupId) {
-                        call.respond(PairResponse(false))
-                        return@post
-                    }
+	                if (groupId == null || pairRequest.syncGroupId != groupId) {
+		                call.respond(PairResponse(false))
+		                return@post
+	                }
 
                     val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
                     pairRequestRepo.add(requestId, pairRequest)
@@ -161,14 +164,13 @@ class KtorSyncGroupServer(
 
                 get("/pairCheck") {
                     val groupId = syncGroupId
-                    val request = getPairCheckRequest()
+	                val request = call.receive<PairCheckRequest>()
                     val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
                     if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
                         call.respond(PairCheckResponse(PairStatus.Error))
                         return@get
                     }
-
 
                     if (pairCheck.status != PairStatus.Approved) {
                         call.respond(PairCheckResponse(pairCheck.status))

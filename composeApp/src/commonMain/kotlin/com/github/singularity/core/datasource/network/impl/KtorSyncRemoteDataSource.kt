@@ -48,7 +48,7 @@ class KtorSyncRemoteDataSource(
     private val client = HttpClient(CIO) {
         install(WebSockets.Plugin) {
             contentConverter =
-                KotlinxWebsocketSerializationConverter(Json.Default)
+	            KotlinxWebsocketSerializationConverter(Json)
         }
 
         install(ContentNegotiation) {
