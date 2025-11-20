@@ -39,6 +39,7 @@ import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -49,153 +50,154 @@ import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 class KtorSyncGroupServer(
-    private val syncEventBridge: SyncEventBridge,
-    private val authTokenRepo: AuthTokenRepository,
-    private val pairRequestRepo: PairRequestDataSource,
+	private val syncEventBridge: SyncEventBridge,
+	private val authTokenRepo: AuthTokenRepository,
+	private val pairRequestRepo: PairRequestDataSource,
 ) : SyncGroupServer {
 
-    private var syncGroupId: String? = null
+	private var syncGroupId: String? = null
 
-    private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
-    override val connectedNodes = _connectedNodes.asStateFlow()
+	private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
+	override val connectedNodes = _connectedNodes.asStateFlow()
 
-    private var isRunning = false
+	private var isRunning = false
 
-    private val server = embeddedServer(
-        factory = CIO,
-        port = SERVER_PORT,
-        host = "0.0.0.0",
-    ) {
-        install(WebSockets.Plugin) {
-            contentConverter = KotlinxWebsocketSerializationConverter(Json)
-        }
+	private val server = embeddedServer(
+		factory = CIO,
+		port = SERVER_PORT,
+		host = "0.0.0.0",
+	) {
+		install(WebSockets.Plugin) {
+			contentConverter = KotlinxWebsocketSerializationConverter(Json)
+		}
 
-        install(ContentNegotiation) {
-            json()
-        }
+		install(ContentNegotiation) {
+			json()
+		}
 
-        install(Authentication.Companion) {
-            bearer("auth") {
-                authenticate {
-                    authTokenRepo.getNode(it.token)
-                }
-            }
-        }
+		install(Authentication.Companion) {
+			bearer("auth") {
+				authenticate {
+					authTokenRepo.getNode(it.token)
+				}
+			}
+		}
 
-        registerRoutes()
-    }.apply {
-        monitor.subscribe(ApplicationStarted) {
-            isRunning = true
-        }
-        monitor.subscribe(ApplicationStopped) {
-            isRunning = false
-        }
-    }
+		registerRoutes()
+	}.apply {
+		monitor.subscribe(ApplicationStarted) {
+			isRunning = true
+		}
+		monitor.subscribe(ApplicationStopped) {
+			isRunning = false
+		}
+	}
 
-    override fun start(group: HostedSyncGroup) {
-        if (isRunning) {
-            server.stop()
-        }
-        _connectedNodes.value = emptyList()
-        syncGroupId = group.hostedSyncGroupId
-        server.start()
-    }
+	override fun start(group: HostedSyncGroup) {
+		if (isRunning) {
+			server.stop()
+		}
+		_connectedNodes.value = emptyList()
+		syncGroupId = group.hostedSyncGroupId
+		server.start()
+	}
 
-    override fun stop() {
-        server.stop()
-        _connectedNodes.value = emptyList()
-        syncGroupId = null
-    }
+	override fun stop() {
+		server.stop()
+		_connectedNodes.value = emptyList()
+		syncGroupId = null
+	}
 
-    private fun Application.registerRoutes() {
-        routing {
-            // websocket
-            authenticate("auth", strategy = AuthenticationStrategy.Required) {
-                webSocket("/sync") {
-                    try {
-                        val converter = converter ?: return@webSocket
+	private fun Application.registerRoutes() {
+		routing {
+			// websocket
+			authenticate("auth", strategy = AuthenticationStrategy.Required) {
+				webSocket("/sync") {
+					val converter = converter ?: return@webSocket
 
-                        _connectedNodes.value + getNode()
+					_connectedNodes.value += getNode()
+					try {
+						coroutineScope {
+							launch {
+								try {
+									incoming.consumeAsFlow()
+										.filterIsInstance<Frame.Text>()
+										.map { converter.deserialize<SyncEvent>(it) }
+										.collect { syncEventBridge.incomingEventCallback(it) }
+								} catch (e: Exception) {
+									e.printStackTrace()
+								}
+							}
 
-                        launch {
-                            try {
-                                incoming.consumeAsFlow()
-                                    .filterIsInstance<Frame.Text>()
-                                    .map { converter.deserialize<SyncEvent>(it) }
-                                    .collect { syncEventBridge.incomingEventCallback(it) }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
+							launch {
+								try {
+									syncEventBridge.outgoingSyncEvents
+										.map { converter.serialize<SyncEvent>(it) }
+										.collect { send(it) }
+								} catch (e: Exception) {
+									e.printStackTrace()
+								}
+							}
 
-                        launch {
-                            try {
-                                syncEventBridge.outgoingSyncEvents
-                                    .map { converter.serialize<SyncEvent>(it) }
-                                    .collect { send(it) }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
+						}
+					} finally {
+						_connectedNodes.value -= getNode()
+					}
+				}
+			}
 
-                    } finally {
-                        _connectedNodes.value -= getNode()
-                    }
-                }
-            }
+			// http
+			contentType(ContentType.Application.Json) {
+				post("/pair") {
+					val groupId = syncGroupId
+					val pairRequest = call.receive<PairRequest>()
 
-            // http
-            contentType(ContentType.Application.Json) {
-                post("/pair") {
-                    val groupId = syncGroupId
-	                val pairRequest = call.receive<PairRequest>()
+					if (groupId == null || pairRequest.syncGroupId != groupId) {
+						call.respond(PairResponse(false))
+						return@post
+					}
 
-	                if (groupId == null || pairRequest.syncGroupId != groupId) {
-		                call.respond(PairResponse(false))
-		                return@post
-	                }
+					val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
+					pairRequestRepo.add(requestId, pairRequest)
 
-                    val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
-                    pairRequestRepo.add(requestId, pairRequest)
+					call.respond(PairResponse(true, requestId))
 
-                    call.respond(PairResponse(true, requestId))
+				}
 
-                }
+				get("/pairCheck") {
+					val groupId = syncGroupId
+					val request = call.receive<PairCheckRequest>()
+					val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-                get("/pairCheck") {
-                    val groupId = syncGroupId
-	                val request = call.receive<PairCheckRequest>()
-                    val pairCheck = pairRequestRepo.get(request.pairRequestId)
+					if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
+						call.respond(PairCheckResponse(PairStatus.Error))
+						return@get
+					}
 
-                    if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
-                        call.respond(PairCheckResponse(PairStatus.Error))
-                        return@get
-                    }
+					if (pairCheck.status != PairStatus.Approved) {
+						call.respond(PairCheckResponse(pairCheck.status))
+						return@get
+					}
 
-                    if (pairCheck.status != PairStatus.Approved) {
-                        call.respond(PairCheckResponse(pairCheck.status))
-                        return@get
-                    }
+					val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
 
-                    val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
+					if (hostedNode == null) {
+						call.respond(PairCheckResponse(PairStatus.Error))
+						return@get
+					}
 
-                    if (hostedNode == null) {
-                        call.respond(PairCheckResponse(PairStatus.Error))
-                        return@get
-                    }
+					pairRequestRepo.remove(request.pairRequestId)
 
-                    pairRequestRepo.remove(request.pairRequestId)
+					call.respond(
+						PairCheckResponse(
+							pairStatus = pairCheck.status,
+							node = hostedNode,
+						)
+					)
 
-                    call.respond(
-                        PairCheckResponse(
-                            pairStatus = pairCheck.status,
-                            node = hostedNode,
-                        )
-                    )
-
-                }
-            }
-        }
-    }
+				}
+			}
+		}
+	}
 
 }
