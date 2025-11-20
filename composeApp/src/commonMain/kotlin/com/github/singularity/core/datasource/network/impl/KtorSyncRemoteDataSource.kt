@@ -19,6 +19,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.converter
+import io.ktor.client.plugins.websocket.sendSerialized
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -30,16 +31,12 @@ import io.ktor.http.contentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.serialization.serialize
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -63,7 +60,7 @@ class KtorSyncRemoteDataSource(
 		client.webSocket(
 			host = server.ip,
 			port = SERVER_PORT,
-			path = "/sync",
+			path = "/ws/sync",
 			request = {
 				header(HttpHeaders.Authorization, "Bearer $token")
 			},
@@ -75,32 +72,22 @@ class KtorSyncRemoteDataSource(
 				return@webSocket
 			}
 
-			launch {
-				try {
-					incoming.consumeEach { frame ->
-						if (frame !is Frame.Text) return@launch
-						val event = converter.deserialize<SyncEvent>(frame)
-						println("incoming: $event")
-						syncEventBridge.incomingEventCallback(event)
-					}
-				} catch (e: Exception) {
-					logger.e(this::class.simpleName, "incomingEvent error", e)
+			val sendJob = launch {
+				syncEventBridge.outgoingSyncEvents.collect { event ->
+					sendSerialized(event)
 				}
 			}
 
-			launch {
-				syncEventBridge.outgoingSyncEvents
-					.onEach { println("outgoingEvent: $it") }
-					.map { converter.serialize<SyncEvent>(it) }
-					.collect {
-						try {
-							outgoing.send(it)
-						} catch (_: CancellationException) {
-							return@collect
-						} catch (e: Exception) {
-							logger.e(this::class.simpleName, "outgoingEvent error", e)
-						}
-					}
+			runCatching {
+				incoming.consumeEach { frame ->
+					if (frame !is Frame.Text) return@consumeEach
+					val event = converter.deserialize<SyncEvent>(frame)
+					syncEventBridge.incomingEventCallback(event)
+				}
+			}.onFailure {
+				logger.e(this::class.simpleName, "incomingEvent error", it)
+			}.also {
+				sendJob.cancel()
 			}
 
 		}
