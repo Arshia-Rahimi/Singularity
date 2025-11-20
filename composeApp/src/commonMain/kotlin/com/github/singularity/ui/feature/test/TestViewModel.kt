@@ -4,17 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.syncservice.SyncEvent
-import com.github.singularity.core.syncservice.SyncEventData
-import kotlinx.coroutines.flow.filterIsInstance
+import com.github.singularity.core.syncservice.plugin.SyncEvent
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class TestEvent(
-    val name: String,
-) : SyncEventData
 
 class TestViewModel(
     private val syncEventBridge: SyncEventBridge,
@@ -23,13 +15,12 @@ class TestViewModel(
     private var c = 1
 
     val incomingEvents = syncEventBridge.incomingSyncEvents
-        .filterIsInstance<TestEvent>()
-        .runningFold(emptyList<TestEvent>()) { list, event -> list + event }
+	    .runningFold(emptyList<SyncEvent>()) { list, event -> list + event }
         .stateInWhileSubscribed(emptyList())
 
     fun sendEvent() {
         viewModelScope.launch {
-            syncEventBridge.send(SyncEvent("test", TestEvent(c.toString())))
+	        syncEventBridge.send(SyncEvent.Test.TestEvent(c))
             c++
         }
     }

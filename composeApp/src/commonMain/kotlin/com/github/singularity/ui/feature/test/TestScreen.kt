@@ -39,7 +39,7 @@ fun TestScreen() {
 				}
 			}
 			items(events) {
-				Text(it.name, color = MaterialTheme.colorScheme.onPrimary)
+				Text(it.toString(), color = MaterialTheme.colorScheme.onPrimary)
 			}
 		}
 	}

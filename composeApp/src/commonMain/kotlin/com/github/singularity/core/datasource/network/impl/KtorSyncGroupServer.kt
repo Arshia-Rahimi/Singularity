@@ -4,6 +4,7 @@ import com.github.singularity.core.data.AuthTokenRepository
 import com.github.singularity.core.datasource.memory.PairRequestDataSource
 import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.datasource.network.SyncGroupServer
+import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
@@ -12,7 +13,7 @@ import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
-import com.github.singularity.core.syncservice.SyncEvent
+import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.http.ContentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
@@ -39,12 +40,12 @@ import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
@@ -53,6 +54,7 @@ class KtorSyncGroupServer(
 	private val syncEventBridge: SyncEventBridge,
 	private val authTokenRepo: AuthTokenRepository,
 	private val pairRequestRepo: PairRequestDataSource,
+	private val logger: Logger,
 ) : SyncGroupServer {
 
 	private var syncGroupId: String? = null
@@ -67,8 +69,9 @@ class KtorSyncGroupServer(
 		port = SERVER_PORT,
 		host = "0.0.0.0",
 	) {
-		install(WebSockets.Plugin) {
+		install(WebSockets) {
 			contentConverter = KotlinxWebsocketSerializationConverter(Json)
+			maxFrameSize = Long.MAX_VALUE
 		}
 
 		install(ContentNegotiation) {
@@ -120,26 +123,36 @@ class KtorSyncGroupServer(
 						coroutineScope {
 							launch {
 								try {
-									incoming.consumeAsFlow()
-										.filterIsInstance<Frame.Text>()
-										.map { converter.deserialize<SyncEvent>(it) }
-										.collect { syncEventBridge.incomingEventCallback(it) }
+									incoming.consumeEach { frame ->
+										if (frame !is Frame.Text) return@launch
+										val event = converter.deserialize<SyncEvent>(frame)
+										println("incoming: $event")
+										syncEventBridge.incomingEventCallback(event)
+									}
 								} catch (e: Exception) {
-									e.printStackTrace()
+
+									logger.e(
+										this::class.simpleName,
+										"incomingEvent error",
+										e
+									)
 								}
 							}
-
-							launch {
-								try {
-									syncEventBridge.outgoingSyncEvents
-										.map { converter.serialize<SyncEvent>(it) }
-										.collect { send(it) }
-								} catch (e: Exception) {
-									e.printStackTrace()
-								}
-							}
-
 						}
+
+						launch {
+							syncEventBridge.outgoingSyncEvents
+								.onEach { println("outgoingEvent: $it") }
+								.map { converter.serialize<SyncEvent>(it) }
+								.collect {
+									try {
+										outgoing.send(it)
+									} catch (e: Exception) {
+										logger.e(this::class.simpleName, "outgoingEvent error", e)
+									}
+								}
+						}
+
 					} finally {
 						_connectedNodes.value -= getNode()
 					}
