@@ -47,10 +47,10 @@ class KtorSyncRemoteDataSource private constructor(
 	private val resourceLoader: ResourceLoader,
 ) : SyncRemoteDataSource {
 
-	private lateinit var client: HttpClient
+	private var client: HttpClient? = null
 
 	override suspend fun init() {
-		if (this::client.isInitialized) return
+		if (client != null) return
 
 		val certificate = resourceLoader.loadFile(SSL_CERTIFICATE_FILENAME)
 		client = createClient(certificate) {
@@ -67,7 +67,7 @@ class KtorSyncRemoteDataSource private constructor(
 
 	override suspend fun connect(server: LocalServer, token: String) = flow {
 		init()
-		client.webSocket(
+		client?.webSocket(
 			host = server.ip,
 			port = SERVER_PORT,
 			path = "/ws/sync",
@@ -106,7 +106,7 @@ class KtorSyncRemoteDataSource private constructor(
 
 	override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairResponse {
 		init()
-		return client.post("https://${server.ip}:${SERVER_PORT}/pair") {
+		return client!!.post("https://${server.ip}:${SERVER_PORT}/pair") {
 			contentType(ContentType.Application.Json)
 			setBody(
 				PairRequest(
@@ -125,7 +125,7 @@ class KtorSyncRemoteDataSource private constructor(
 		pairRequestId: Int
 	): PairCheckResponse {
 		init()
-		return client.get("https://${server.ip}:${SERVER_PORT}/pairCheck") {
+		return client!!.get("https://${server.ip}:${SERVER_PORT}/pairCheck") {
 			contentType(ContentType.Application.Json)
 			setBody(
 				PairCheckRequest(
