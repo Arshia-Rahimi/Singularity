@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.sqldelight)
@@ -37,18 +36,19 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
+	            implementation(libs.compose.runtime)
+	            implementation(libs.compose.foundation)
+	            implementation(libs.compose.material3)
+	            implementation(libs.compose.ui)
+	            implementation(libs.compose.nav3.ui)
+	            implementation(libs.compose.components.resources)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
-                implementation(libs.koin.compose.navigation)
+	            implementation(libs.koin.compose.viewmodel.navigation)
+	            implementation(libs.koin.compose.navigation3)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)
@@ -79,7 +79,6 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.sqldelight.driver.android)
                 implementation(libs.sqldelight.driver.android)
@@ -89,7 +88,6 @@ kotlin {
         val iosMain by getting {
             dependencies {
                 implementation(libs.sqldelight.driver.native)
-	            implementation(libs.ktor.client.curl)
             }
         }
         val desktopMain by getting {
@@ -148,7 +146,7 @@ android {
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
+	debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
 	coreLibraryDesugaring(libs.desugaring)
 }

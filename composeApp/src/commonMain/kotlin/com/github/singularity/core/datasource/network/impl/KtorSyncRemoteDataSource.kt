@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-class KtorSyncRemoteDataSource private constructor(
+class KtorSyncRemoteDataSource(
 	private val syncEventBridge: SyncEventBridge,
 	private val logger: Logger,
 	private val resourceLoader: ResourceLoader,
