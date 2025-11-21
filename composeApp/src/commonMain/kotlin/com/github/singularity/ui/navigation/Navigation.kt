@@ -1,7 +1,16 @@
 package com.github.singularity.ui.navigation
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -59,6 +68,20 @@ private fun NavigationHost() {
 			entry<Route.Test> {
 				TestScreen()
 			}
+		},
+		modifier = Modifier.fillMaxSize()
+			.background(MaterialTheme.colorScheme.surface),
+		transitionSpec = {
+			slideInVertically(
+				initialOffsetY = { it },
+				animationSpec = spring(stiffness = Spring.StiffnessMedium),
+			) togetherWith fadeOut()
+		},
+		popTransitionSpec = {
+			slideInVertically(
+				initialOffsetY = { it },
+				animationSpec = spring(stiffness = Spring.StiffnessMedium),
+			) togetherWith fadeOut()
 		},
 	)
 
