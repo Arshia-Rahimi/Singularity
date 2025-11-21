@@ -3,17 +3,12 @@ package com.github.singularity.core.shared.util
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-
-fun Channel<Unit>.sendPulse() = trySend(Unit)
-
-fun MutableSharedFlow<Unit>.trySendPulse() = tryEmit(Unit)
 
 suspend fun MutableSharedFlow<Unit>.sendPulse() = emit(Unit)
 

@@ -38,13 +38,13 @@ import singularity.composeapp.generated.resources.test
 interface NavigationDrawerItem {
     val label: StringResource
     val icon: DrawableResource
-    val route: Any
+	val route: Route
 }
 
 enum class NavigationDrawerItemTop(
     override val label: StringResource,
     override val icon: DrawableResource,
-    override val route: Any,
+    override val route: Route,
 ) : NavigationDrawerItem {
 
     Connection(
@@ -70,7 +70,7 @@ enum class NavigationDrawerItemTop(
 enum class NavigationDrawerItemBottom(
     override val label: StringResource,
     override val icon: DrawableResource,
-    override val route: Any,
+    override val route: Route,
 ) : NavigationDrawerItem {
 
     Settings(
@@ -89,18 +89,18 @@ enum class NavigationDrawerItemBottom(
 
 @Composable
 fun NavigationDrawerItem(
-    item: NavigationDrawerItem,
-    currentRoute: String?,
-    closeDrawer: () -> Unit,
-    navigateTo: (Any) -> Unit,
+	item: NavigationDrawerItem,
+	currentRoute: Route,
+	closeDrawer: () -> Unit,
+	navigateTo: (Route) -> Unit,
 ) {
     val colors = NavigationDrawerItemDefaults.colors()
-    val selected = item.route::class.simpleName == currentRoute
+	val selected = item.route == currentRoute
 
     Surface(
         selected = selected,
         onClick = {
-            if (currentRoute != item.route::class.simpleName) navigateTo(item.route)
+	        if (currentRoute != item.route) navigateTo(item.route)
             closeDrawer()
         },
         color = colors.containerColor(selected).value,

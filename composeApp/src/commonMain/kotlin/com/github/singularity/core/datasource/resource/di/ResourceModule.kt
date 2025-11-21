@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 expect fun Module.platformResourceModule()
 
-val ResourceModule = module {
+val ResourceDataSourceModule = module {
 	platformResourceModule()
 }

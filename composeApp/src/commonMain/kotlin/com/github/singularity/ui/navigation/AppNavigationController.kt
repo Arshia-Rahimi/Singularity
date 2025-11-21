@@ -1,6 +1,5 @@
 package com.github.singularity.ui.navigation
 
-import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
@@ -10,7 +9,21 @@ object AppNavigationController {
     val toggleDrawerEvent = _toggleDrawerEvent.receiveAsFlow()
 
     fun toggleDrawer() {
-        _toggleDrawerEvent.sendPulse()
+	    _toggleDrawerEvent.trySend(Unit)
     }
+
+	private val _navBackEvent = Channel<Unit>()
+	val navBackEvent = _navBackEvent.receiveAsFlow()
+
+	fun navigateBack() {
+		_navBackEvent.trySend(Unit)
+	}
+
+	private val _navigateToEvent = Channel<Route>()
+	val navigateToEvent = _navigateToEvent.receiveAsFlow()
+
+	fun navigateTo(route: Route) {
+		_navigateToEvent.trySend(route)
+	}
 
 }
