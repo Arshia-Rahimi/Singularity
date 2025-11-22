@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SyncRemoteDataSource {
 
-	suspend fun init()
-
     suspend fun connect(server: LocalServer, token: String): Flow<Resource<Success>>
 
     suspend fun sendPairRequest(server: LocalServer, currentDevice: Node): PairResponse
