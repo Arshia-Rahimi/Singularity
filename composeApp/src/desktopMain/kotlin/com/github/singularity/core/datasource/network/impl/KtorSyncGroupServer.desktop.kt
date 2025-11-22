@@ -48,10 +48,10 @@ import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 class KtorSyncGroupServer(
-	private val syncEventBridge: SyncEventBridge,
-	private val authTokenRepo: AuthTokenRepository,
-	private val pairRequestRepo: PairRequestDataSource,
-	private val logger: Logger,
+    private val syncEventBridge: SyncEventBridge,
+    private val authTokenRepo: AuthTokenRepository,
+    private val pairRequestRepo: PairRequestDataSource,
+    private val logger: Logger,
 ) : SyncGroupServer {
 
 	private var syncGroupId: String? = null
@@ -182,10 +182,10 @@ class KtorSyncGroupServer(
 					pairRequestRepo.remove(request.pairRequestId)
 
 					call.respond(
-						PairCheckResponse(
-							pairStatus = pairCheck.status,
-							node = hostedNode,
-						)
+                        PairCheckResponse(
+                            pairStatus = pairCheck.status,
+                            node = hostedNode,
+                        )
 					)
 
 				}

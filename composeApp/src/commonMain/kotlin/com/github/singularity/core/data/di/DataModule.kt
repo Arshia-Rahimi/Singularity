@@ -1,32 +1,24 @@
 package com.github.singularity.core.data.di
 
-import com.github.singularity.core.data.AuthTokenRepository
-import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.DiscoverRepository
-import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.data.impl.BroadcastRepositoryImpl
 import com.github.singularity.core.data.impl.ClientConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.DiscoverRepositoryImpl
-import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
 import com.github.singularity.core.data.impl.JoinedSyncGroupRepositoryImpl
-import com.github.singularity.core.data.impl.RandomTokenAuthRepository
-import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
 import com.github.singularity.core.data.impl.SqlitePreferencesRepository
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+expect fun Module.platformDataModule()
+
 val DataModule = module {
+    platformDataModule()
     singleOf(::ClientConnectionRepositoryImpl) bind ClientConnectionRepository::class
     singleOf(::SqlitePreferencesRepository) bind PreferencesRepository::class
     singleOf(::DiscoverRepositoryImpl) bind DiscoverRepository::class
-    singleOf(::HostedSyncGroupRepositoryImpl) bind HostedSyncGroupRepository::class
     singleOf(::JoinedSyncGroupRepositoryImpl) bind JoinedSyncGroupRepository::class
-    singleOf(::BroadcastRepositoryImpl) bind BroadcastRepository::class
-	singleOf(::ServerConnectionRepositoryImpl) bind ServerConnectionRepository::class
-    singleOf(::RandomTokenAuthRepository) bind AuthTokenRepository::class
 }

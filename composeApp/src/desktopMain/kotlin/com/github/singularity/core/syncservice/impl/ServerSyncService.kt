@@ -2,7 +2,7 @@ package com.github.singularity.core.syncservice.impl
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.data.ServerConnectionRepository
+import com.github.singularity.core.data.`ServerConnectionRepository.desktop`
 import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.ClientSyncState
@@ -16,7 +16,6 @@ import com.github.singularity.core.syncservice.plugin.PluginManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -28,7 +27,7 @@ import kotlinx.coroutines.launch
 class ServerSyncService(
     private val preferencesRepo: PreferencesRepository,
     private val clientConnectionRepo: ClientConnectionRepository,
-    private val serverConnectionRepo: ServerConnectionRepository,
+    private val serverConnectionRepo: `ServerConnectionRepository.desktop`,
     plugins: List<Plugin>,
     syncEventBridge: SyncEventBridge,
 ) : SyncService,

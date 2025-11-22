@@ -1,6 +1,7 @@
 package com.github.singularity.core.datasource.network.impl
 
 import com.github.singularity.core.datasource.memory.SyncEventBridge
+import com.github.singularity.core.datasource.network.SSL_CERTIFICATE_FILENAME
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
 import com.github.singularity.core.datasource.resource.ResourceLoader
 import com.github.singularity.core.log.Logger
