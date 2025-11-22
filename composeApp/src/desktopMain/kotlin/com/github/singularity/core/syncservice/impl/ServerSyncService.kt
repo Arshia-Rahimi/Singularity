@@ -3,7 +3,7 @@ package com.github.singularity.core.syncservice.impl
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.`ServerConnectionRepository.desktop`
-import com.github.singularity.core.datasource.memory.SyncEventBridge
+import com.github.singularity.core.datasource.SyncEventBridge
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.model.SyncState

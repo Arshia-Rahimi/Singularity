@@ -7,10 +7,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.data.di.DataModule
-import com.github.singularity.core.datasource.database.di.DatabaseDataSourceModule
-import com.github.singularity.core.datasource.memory.di.MemoryDataSourceModule
-import com.github.singularity.core.datasource.network.di.NetworkDataSourceModule
-import com.github.singularity.core.datasource.resource.di.ResourceDataSourceModule
+import com.github.singularity.core.datasource.di.DataSourceModule
 import com.github.singularity.core.log.di.LoggerModule
 import com.github.singularity.core.syncservice.di.SyncServiceModule
 import com.github.singularity.ui.designsystem.theme.SingularityTheme
@@ -34,10 +31,7 @@ private val KoinConfig = KoinConfiguration {
         DataModule,
         SyncServiceModule,
         LoggerModule,
-	    ResourceDataSourceModule,
-        DatabaseDataSourceModule,
-        NetworkDataSourceModule,
-        MemoryDataSourceModule,
+        DataSourceModule,
     )
 }
 

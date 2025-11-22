@@ -2,8 +2,7 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.datasource.network.SyncGroupServer
-import com.github.singularity.core.datasource.network.presence.DeviceBroadcastService
+import com.github.singularity.core.datasource.DeviceBroadcastService
 import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.sendPulse
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerConnectionRepositoryImpl(
-    private val server: SyncGroupServer,
+	private val server: `SyncGroupServer.desktop`,
     private val hostedSyncGroupRepo: HostedSyncGroupRepository,
     private val pairRequestDataSource: `PairRequestDataSource.desktop`,
     private val broadcastService: DeviceBroadcastService,
