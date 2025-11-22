@@ -27,7 +27,7 @@ private val AppModule = module {
     viewModelOf(::MainViewModel)
 }
 
-val koinConfig = KoinConfiguration {
+private val KoinConfig = KoinConfiguration {
     modules(
         AppModule,
         ViewmodelModule,
@@ -45,7 +45,7 @@ val koinConfig = KoinConfiguration {
 @Composable
 fun App() {
     KoinMultiplatformApplication(
-        config = koinConfig,
+        config = KoinConfig,
     ) {
         val viewModel = koinViewModel<MainViewModel>()
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
