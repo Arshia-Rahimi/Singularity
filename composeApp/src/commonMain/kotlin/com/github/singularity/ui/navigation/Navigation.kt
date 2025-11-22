@@ -48,29 +48,6 @@ private fun NavigationHost() {
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
-        entryProvider = { route ->
-            when (route) {
-                is Route.Connection -> NavEntry(route) {
-                    ConnectionScreen()
-                }
-
-                is Route.Permissions -> NavEntry(route) {
-                    PermissionsScreen()
-                }
-
-                is Route.Settings -> NavEntry(route) {
-                    SettingsScreen()
-                }
-
-                is Route.Log -> NavEntry(route) {
-                    LogScreen()
-                }
-
-                is Route.Test -> NavEntry(route) {
-                    TestScreen()
-                }
-            }
-        },
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
         transitionSpec = {
@@ -85,6 +62,28 @@ private fun NavigationHost() {
                 animationSpec = spring(stiffness = Spring.StiffnessMedium),
             ) togetherWith fadeOut()
         },
-    )
+    ) { route ->
+        when (route) {
+            is Route.Connection -> NavEntry(route) {
+                ConnectionScreen()
+            }
+
+            is Route.Permissions -> NavEntry(route) {
+                PermissionsScreen()
+            }
+
+            is Route.Settings -> NavEntry(route) {
+                SettingsScreen()
+            }
+
+            is Route.Log -> NavEntry(route) {
+                LogScreen()
+            }
+
+            is Route.Test -> NavEntry(route) {
+                TestScreen()
+            }
+        }
+    }
 
 }
