@@ -12,7 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.github.singularity.app.MainUiState
@@ -26,63 +26,65 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation(
-	uiState: MainUiState,
-	toggleSyncMode: () -> Unit,
+    uiState: MainUiState,
+    toggleSyncMode: () -> Unit,
 ) {
-	NavigationDrawer(
-		uiState = uiState,
-		toggleSyncMode = toggleSyncMode,
-	) {
-		NavigationHost()
-	}
+    NavigationDrawer(
+        uiState = uiState,
+        toggleSyncMode = toggleSyncMode,
+    ) {
+        NavigationHost()
+    }
 }
 
 @Composable
 private fun NavigationHost() {
-	val navViewModel = koinViewModel<NavigationViewmodel>()
+    val navViewModel = koinViewModel<NavigationViewmodel>()
 
-	NavDisplay(
-		backStack = navViewModel.backStack,
-		onBack = AppNavigationController::navigateBack,
-		entryDecorators = listOf(
-			rememberSaveableStateHolderNavEntryDecorator(),
-			rememberViewModelStoreNavEntryDecorator(),
-		),
-		entryProvider = entryProvider {
-			entry<Route.Connection> {
-				ConnectionScreen()
-			}
+    NavDisplay(
+        backStack = navViewModel.backStack,
+        onBack = AppNavigationController::navigateBack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        entryProvider = { route ->
+            when (route) {
+                is Route.Connection -> NavEntry(route) {
+                    ConnectionScreen()
+                }
 
-			entry<Route.Permissions> {
-				PermissionsScreen()
-			}
+                is Route.Permissions -> NavEntry(route) {
+                    PermissionsScreen()
+                }
 
-			entry<Route.Settings> {
-				SettingsScreen()
-			}
+                is Route.Settings -> NavEntry(route) {
+                    SettingsScreen()
+                }
 
-			entry<Route.Log> {
-				LogScreen()
-			}
+                is Route.Log -> NavEntry(route) {
+                    LogScreen()
+                }
 
-			entry<Route.Test> {
-				TestScreen()
-			}
-		},
-		modifier = Modifier.fillMaxSize()
-			.background(MaterialTheme.colorScheme.surface),
-		transitionSpec = {
-			slideInVertically(
-				initialOffsetY = { it },
-				animationSpec = spring(stiffness = Spring.StiffnessMedium),
-			) togetherWith fadeOut()
-		},
-		popTransitionSpec = {
-			slideInVertically(
-				initialOffsetY = { it },
-				animationSpec = spring(stiffness = Spring.StiffnessMedium),
-			) togetherWith fadeOut()
-		},
-	)
+                is Route.Test -> NavEntry(route) {
+                    TestScreen()
+                }
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
+        transitionSpec = {
+            slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = spring(stiffness = Spring.StiffnessMedium),
+            ) togetherWith fadeOut()
+        },
+        popTransitionSpec = {
+            slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = spring(stiffness = Spring.StiffnessMedium),
+            ) togetherWith fadeOut()
+        },
+    )
 
 }
