@@ -1,6 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
+import com.github.singularity.core.datasource.HostedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class HostedSyncGroupRepositoryImpl(
-    private val hostedSyncGroupsLocalDataSource: `HostedSyncGroupsLocalDataSource.desktop`,
+	private val hostedSyncGroupsLocalDataSource: HostedSyncGroupsLocalDataSource,
 ) : HostedSyncGroupRepository {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

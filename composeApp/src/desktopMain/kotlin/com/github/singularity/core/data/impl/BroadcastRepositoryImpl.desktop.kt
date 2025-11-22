@@ -2,6 +2,7 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
+import com.github.singularity.core.datasource.PairRequestDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.util.Success
@@ -12,8 +13,8 @@ import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BroadcastRepositoryImpl(
-    private val hostedSyncGroupRepo: HostedSyncGroupRepository,
-    private val pairRequestRepo: `PairRequestDataSource.desktop`,
+	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
+	private val pairRequestRepo: PairRequestDataSource,
 ) : BroadcastRepository {
 
     override val syncGroups = hostedSyncGroupRepo.syncGroups

@@ -4,6 +4,8 @@ import com.bfo.zeroconf.Service
 import com.bfo.zeroconf.Zeroconf
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datasource.DeviceBroadcastService
+import com.github.singularity.core.datasource.MDNS_SERVICE_TYPE
+import com.github.singularity.core.datasource.getServiceName
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.HostedSyncGroup

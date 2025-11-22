@@ -1,4 +1,4 @@
-package com.github.singularity.ui.navigation
+package com.github.singularity.app.navigation
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

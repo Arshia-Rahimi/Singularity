@@ -1,4 +1,4 @@
-package com.github.singularity.ui.navigation
+package com.github.singularity.app.navigation
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -16,6 +16,8 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.github.singularity.app.MainUiState
+import com.github.singularity.app.MainViewModel
+import com.github.singularity.app.navigation.components.NavigationDrawer
 import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.permissions.PermissionsScreen
@@ -27,19 +29,15 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun Navigation(
     uiState: MainUiState,
-    toggleSyncMode: () -> Unit,
 ) {
-    NavigationDrawer(
-        uiState = uiState,
-        toggleSyncMode = toggleSyncMode,
-    ) {
-        NavigationHost()
-    }
+	NavigationDrawer(uiState) {
+		NavigationHost()
+	}
 }
 
 @Composable
 private fun NavigationHost() {
-    val navViewModel = koinViewModel<NavigationViewmodel>()
+	val navViewModel = koinViewModel<MainViewModel>()
 
     NavDisplay(
         backStack = navViewModel.backStack,

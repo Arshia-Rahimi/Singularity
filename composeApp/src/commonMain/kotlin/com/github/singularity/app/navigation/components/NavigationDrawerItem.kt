@@ -1,4 +1,4 @@
-package com.github.singularity.ui.navigation
+package com.github.singularity.app.navigation.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,6 +22,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.singularity.app.navigation.Route
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import org.jetbrains.compose.resources.DrawableResource

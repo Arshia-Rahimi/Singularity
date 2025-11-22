@@ -4,6 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.datasource.PreferencesLocalDataSource
+import com.github.singularity.core.datasource.toEnum
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.model.PreferencesModel
 import io.ktor.utils.io.core.toByteArray

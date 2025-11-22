@@ -8,6 +8,7 @@ import com.github.singularity.core.datasource.DeviceDiscoveryService
 import com.github.singularity.core.datasource.HostedSyncGroupsLocalDataSource
 import com.github.singularity.core.datasource.PairRequestDataSource
 import com.github.singularity.core.datasource.ResourceLoader
+import com.github.singularity.core.datasource.SyncGroupServer
 import com.github.singularity.core.datasource.impl.DesktopResourceLoader
 import com.github.singularity.core.datasource.impl.InMemoryPairRequestDataSource
 import com.github.singularity.core.datasource.impl.KtorSyncGroupServer
@@ -44,6 +45,6 @@ actual fun Module.platformDataSourceModule() {
     singleOf(::InMemoryPairRequestDataSource) bind PairRequestDataSource::class
     singleOf(::ZeroconfDeviceDiscoveryService) bind DeviceDiscoveryService::class
     singleOf(::ZeroconfDeviceBroadcastService) bind DeviceBroadcastService::class
-    singleOf(::KtorSyncGroupServer) bind `SyncGroupServer.desktop`::class
+	singleOf(::KtorSyncGroupServer) bind SyncGroupServer::class
     singleOf(::DesktopResourceLoader) bind ResourceLoader::class
 }

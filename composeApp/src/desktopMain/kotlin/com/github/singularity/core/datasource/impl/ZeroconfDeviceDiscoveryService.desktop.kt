@@ -4,7 +4,7 @@ import com.bfo.zeroconf.Service
 import com.bfo.zeroconf.Zeroconf
 import com.bfo.zeroconf.ZeroconfListener
 import com.github.singularity.core.datasource.DeviceDiscoveryService
-import com.github.singularity.core.datasource.network.presence.MdnsEvent
+import com.github.singularity.core.datasource.MdnsEvent
 import com.github.singularity.core.datasource.toServer
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
 
-class ZeroconfDeviceDiscoveryService: DeviceDiscoveryService {
+class ZeroconfDeviceDiscoveryService : DeviceDiscoveryService {
 
 	private val servers = callbackFlow {
 		val zeroconf = Zeroconf()
@@ -40,7 +40,7 @@ class ZeroconfDeviceDiscoveryService: DeviceDiscoveryService {
 					zeroconf.query(type, name)
 				}
 			}
-		});
+		})
 
 		awaitClose {
 			zeroconf.close()

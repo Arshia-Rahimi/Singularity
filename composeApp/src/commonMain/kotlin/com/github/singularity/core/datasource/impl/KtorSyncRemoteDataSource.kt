@@ -14,7 +14,6 @@ import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -28,7 +27,6 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
@@ -48,13 +46,13 @@ class KtorSyncRemoteDataSource(
 ) : SyncRemoteDataSource {
 
     private var client = HttpClient(CIO) {
-        HttpClientConfig.install(WebSockets.Plugin) {
-            WebSockets.Config.contentConverter =
+	    install(WebSockets.Plugin) {
+		    contentConverter =
                 KotlinxWebsocketSerializationConverter(Json.Default)
-            WebSockets.Config.maxFrameSize = Long.MAX_VALUE
+		    maxFrameSize = Long.MAX_VALUE
         }
 
-        HttpClientConfig.install(ContentNegotiation) {
+	    install(ContentNegotiation) {
             json()
         }
     }
@@ -65,7 +63,6 @@ class KtorSyncRemoteDataSource(
             port = SERVER_PORT,
             path = "/ws/sync",
             request = {
-                url.protocol = URLProtocol.Companion.WSS
                 header(HttpHeaders.Authorization, "Bearer $token")
             },
         ) {
@@ -98,7 +95,7 @@ class KtorSyncRemoteDataSource(
     }.asResult(Dispatchers.IO)
 
     override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node) =
-        client.post("https://${server.ip}:${SERVER_PORT}/pair") {
+	    client.post("http://${server.ip}:${SERVER_PORT}/pair") {
             contentType(ContentType.Application.Json)
             setBody(
                 PairRequest(
@@ -114,7 +111,7 @@ class KtorSyncRemoteDataSource(
     override suspend fun sendPairCheckRequest(
         server: LocalServer,
         pairRequestId: Int
-    ) = client.get("https://${server.ip}:${SERVER_PORT}/pairCheck") {
+    ) = client.get("http://${server.ip}:${SERVER_PORT}/pairCheck") {
         contentType(ContentType.Application.Json)
         setBody(
             PairCheckRequest(
