@@ -18,12 +18,7 @@ insert:
 INSERT INTO PluginSettings (name, is_enabled, plugin_data)
     VALUES (?, ?, ?);
 
-updateIsEnabled:
+update:
 UPDATE PluginSettings
-    SET is_enabled = ?
-    WHERE name == ?;
-
-updatePluginData:
-UPDATE PluginSettings
-    SET plugin_data = ?
+    SET is_enabled = ?, plugin_data = ?
     WHERE name == ?;
