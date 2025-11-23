@@ -1,4 +1,4 @@
-package com.github.singularity.core.syncservice.plugin
+package com.github.singularity.core.syncservice
 
 import kotlinx.serialization.Serializable
 

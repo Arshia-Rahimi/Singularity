@@ -28,7 +28,7 @@ class ServerSyncService(
 	private val preferencesRepo: PreferencesRepository,
 	private val clientConnectionRepo: ClientConnectionRepository,
 	private val serverConnectionRepo: ServerConnectionRepository,
-	plugins: List<Plugin>,
+    plugins: List<Plugin>,
 	syncEventBridge: SyncEventBridge,
 ) : SyncService,
     PluginManager by PluginManagerImpl(plugins, syncEventBridge) {

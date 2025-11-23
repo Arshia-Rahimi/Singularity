@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.datasource.SyncEventBridge
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.syncservice.plugin.SyncEvent
+import com.github.singularity.core.syncservice.SyncEvent
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 

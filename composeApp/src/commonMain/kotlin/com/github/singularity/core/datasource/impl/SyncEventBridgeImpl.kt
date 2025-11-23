@@ -1,7 +1,7 @@
 package com.github.singularity.core.datasource.impl
 
 import com.github.singularity.core.datasource.SyncEventBridge
-import com.github.singularity.core.syncservice.plugin.SyncEvent
+import com.github.singularity.core.syncservice.SyncEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 

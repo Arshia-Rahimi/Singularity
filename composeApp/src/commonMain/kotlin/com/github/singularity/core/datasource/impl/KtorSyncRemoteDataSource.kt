@@ -12,7 +12,7 @@ import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.shared.util.asResult
-import com.github.singularity.core.syncservice.plugin.SyncEvent
+import com.github.singularity.core.syncservice.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
