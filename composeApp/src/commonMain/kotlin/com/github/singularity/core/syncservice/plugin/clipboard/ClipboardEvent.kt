@@ -1,5 +1,6 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
+import com.github.singularity.core.shared.model.PluginData
 import com.github.singularity.core.syncservice.SyncEvent
 import kotlinx.serialization.Serializable
 
@@ -14,3 +15,7 @@ sealed class ClipboardEvent : SyncEvent {
     ) : ClipboardEvent()
 
 }
+
+data class ClipboardPluginSettingsData(
+	val a: String = "a",
+) : PluginData

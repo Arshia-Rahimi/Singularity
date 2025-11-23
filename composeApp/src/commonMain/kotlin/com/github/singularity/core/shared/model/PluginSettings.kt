@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PluginSettings(
     val name: String,
-    val isEnabled: Boolean,
     val pluginData: PluginData,
+    val isEnabled: Boolean = true,
 )
 
 interface PluginData

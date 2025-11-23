@@ -11,18 +11,19 @@ import kotlinx.coroutines.flow.onEach
 interface PluginManager
 
 class PluginManagerImpl(
-    private val plugins: List<Plugin>,
-    syncEventBridge: SyncEventBridge,
+	private val plugins: List<Plugin>,
+	syncEventBridge: SyncEventBridge,
 ) : PluginManager {
 
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    init {
-        syncEventBridge.incomingSyncEvents.onEach { event ->
-            plugins.firstOrNull { plugin ->
-                plugin::class.simpleName == event.pluginName
-            }?.handleEvent(event)
-        }.launchIn(scope)
-    }
+	init {
+		syncEventBridge.incomingSyncEvents.onEach { event ->
+			plugins.filter { it.settings.value.isEnabled }
+				.firstOrNull { plugin ->
+					plugin::class.simpleName == event.pluginName
+				}?.handleEvent(event)
+		}.launchIn(scope)
+	}
 
 }
