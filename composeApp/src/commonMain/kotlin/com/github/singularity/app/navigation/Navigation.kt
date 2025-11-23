@@ -21,6 +21,7 @@ import com.github.singularity.app.navigation.components.NavigationDrawer
 import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.permissions.PermissionsScreen
+import com.github.singularity.ui.feature.plugins.PluginsScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.feature.test.TestScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -65,6 +66,10 @@ private fun NavigationHost() {
             is Route.Connection -> NavEntry(route) {
                 ConnectionScreen()
             }
+
+	        is Route.Plugins -> NavEntry(route) {
+		        PluginsScreen()
+	        }
 
             is Route.Permissions -> NavEntry(route) {
                 PermissionsScreen()

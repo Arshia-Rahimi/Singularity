@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.datasource.SyncEventBridge
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.syncservice.SyncEvent
+import com.github.singularity.core.syncservice.Test
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 
@@ -20,7 +21,7 @@ class TestViewModel(
 
     fun sendEvent() {
         viewModelScope.launch {
-	        syncEventBridge.send(SyncEvent.Test.TestEvent(c))
+	        syncEventBridge.send(Test.TestEvent(c))
             c++
         }
     }

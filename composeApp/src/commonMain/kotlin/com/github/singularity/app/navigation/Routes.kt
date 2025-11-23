@@ -9,6 +9,9 @@ sealed interface Route {
     object Connection : Route
 
 	@Serializable
+	object Plugins : Route
+
+	@Serializable
 	object Permissions : Route
 
 	@Serializable
