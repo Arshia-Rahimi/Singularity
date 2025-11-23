@@ -30,17 +30,17 @@ import org.koin.compose.viewmodel.koinViewModel
 fun Navigation(
     uiState: MainUiState,
 ) {
-	NavigationDrawer(uiState) {
-		NavigationHost()
-	}
+    NavigationDrawer(uiState) {
+        NavigationHost()
+    }
 }
 
 @Composable
 private fun NavigationHost() {
-	val navViewModel = koinViewModel<MainViewModel>()
+    val viewModel = koinViewModel<MainViewModel>()
 
     NavDisplay(
-        backStack = navViewModel.backStack,
+        backStack = viewModel.backStack,
         onBack = AppNavigationController::navigateBack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
