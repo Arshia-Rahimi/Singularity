@@ -1,19 +1,21 @@
 package com.github.singularity.core.syncservice.di
 
+import com.github.singularity.core.syncservice.PluginWrapper
+import com.github.singularity.core.syncservice.SyncService
 import com.github.singularity.core.syncservice.plugin.Plugin
 import com.github.singularity.core.syncservice.plugin.clipboard.ClipboardPlugin
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-expect fun Module.singleOfSyncServiceImpl()
+expect fun Module.singleOfSyncService(): KoinDefinition<out SyncService>
 
 val SyncServiceModule = module {
-
-	singleOfSyncServiceImpl()
-
-    // plugins
+	single { PluginWrapper(getKoin().getAll()) }
     singleOf(::ClipboardPlugin) bind Plugin::class
+
+	singleOfSyncService()
 
 }

@@ -2,8 +2,8 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
-import com.github.singularity.core.datasource.DeviceDiscoveryService
-import com.github.singularity.core.datasource.SyncRemoteDataSource
+import com.github.singularity.core.datasource.network.SyncRemoteDataSource
+import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT
 import com.github.singularity.core.shared.model.ClientConnectionState

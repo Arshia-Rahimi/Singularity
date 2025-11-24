@@ -1,7 +1,7 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.JoinedSyncGroupRepository
-import com.github.singularity.core.datasource.JoinedSyncGroupsLocalDataSource
+import com.github.singularity.core.datasource.database.JoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope

@@ -2,9 +2,9 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.data.ServerConnectionRepository
-import com.github.singularity.core.datasource.DeviceBroadcastService
-import com.github.singularity.core.datasource.PairRequestDataSource
-import com.github.singularity.core.datasource.SyncGroupServer
+import com.github.singularity.core.datasource.memory.PairRequestDataSource
+import com.github.singularity.core.datasource.network.SyncGroupServer
+import com.github.singularity.core.datasource.presence.DeviceBroadcastService
 import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.util.sendPulse

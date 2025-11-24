@@ -3,8 +3,8 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.datasource.DeviceDiscoveryService
-import com.github.singularity.core.datasource.SyncRemoteDataSource
+import com.github.singularity.core.datasource.network.SyncRemoteDataSource
+import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup

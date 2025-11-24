@@ -1,7 +1,7 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
 import com.github.singularity.core.data.PluginSettingsRepository
-import com.github.singularity.core.datasource.SyncEventBridge
+import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.shared.model.PluginSettings
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.syncservice.SyncEvent

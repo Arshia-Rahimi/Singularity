@@ -2,7 +2,7 @@ package com.github.singularity.core.data.impl
 
 import androidx.compose.ui.graphics.Color
 import com.github.singularity.core.data.PreferencesRepository
-import com.github.singularity.core.datasource.PreferencesLocalDataSource
+import com.github.singularity.core.datasource.database.PreferencesLocalDataSource
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.ThemeOption

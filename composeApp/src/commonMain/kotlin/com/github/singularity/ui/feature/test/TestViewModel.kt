@@ -2,7 +2,7 @@ package com.github.singularity.ui.feature.test
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.core.datasource.SyncEventBridge
+import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.syncservice.SyncEvent
 import com.github.singularity.core.syncservice.Test

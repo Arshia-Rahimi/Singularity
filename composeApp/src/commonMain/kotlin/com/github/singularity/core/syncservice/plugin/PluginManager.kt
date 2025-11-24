@@ -1,6 +1,7 @@
 package com.github.singularity.core.syncservice.plugin
 
-import com.github.singularity.core.datasource.SyncEventBridge
+import com.github.singularity.core.datasource.memory.SyncEventBridge
+import com.github.singularity.core.syncservice.PluginWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.onEach
 interface PluginManager
 
 class PluginManagerImpl(
-	private val plugins: List<Plugin>,
+	private val pluginWrapper: PluginWrapper,
 	syncEventBridge: SyncEventBridge,
 ) : PluginManager {
 
@@ -19,7 +20,7 @@ class PluginManagerImpl(
 
 	init {
 		syncEventBridge.incomingSyncEvents.onEach { event ->
-			plugins.filter { it.settings.value.isEnabled }
+			pluginWrapper.plugins.filter { it.settings.value.isEnabled }
 				.firstOrNull { plugin ->
 					plugin::class.simpleName == event.pluginName
 				}?.handleEvent(event)

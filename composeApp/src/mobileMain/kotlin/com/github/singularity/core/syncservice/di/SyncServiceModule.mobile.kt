@@ -5,8 +5,7 @@ import com.github.singularity.core.syncservice.SyncService
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 
-actual fun Module.singleOfSyncServiceImpl() {
+actual fun Module.singleOfSyncService() =
 	single(createdAtStart = true) {
-		ClientSyncService(get(), get(), getKoin().getAll())
+		ClientSyncService(get(), get(), get())
 	} bind SyncService::class
-}
