@@ -4,13 +4,13 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.datasource.database.PluginSettingsDataSource
+import com.github.singularity.core.shared.filterNotNull
 import com.github.singularity.core.shared.model.PluginData
 import com.github.singularity.core.shared.model.PluginSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 
-@Suppress("UNCHECKED_CAST")
 class SqlDelightPluginSettingsDataSource(
 	db: SingularityDatabase,
 ) : PluginSettingsDataSource {
@@ -23,10 +23,9 @@ class SqlDelightPluginSettingsDataSource(
 			query.executeAsList()
 				.groupBy { it.name }
 				.map { (pluginName, data) ->
-					val pluginData = data
+					val pluginData: PluginData = data
 						.associate { it.data_key to it.data_value }
-						.filterKeys { it != null }
-						.filterValues { it != null } as PluginData
+						.filterNotNull()
 
 					PluginSettings(
 						name = pluginName,
@@ -44,8 +43,7 @@ class SqlDelightPluginSettingsDataSource(
 
 			val pluginData = queryResult
 				.associate { it.data_key to it.data_value }
-				.filterKeys { it != null }
-				.filterValues { it != null } as PluginData
+				.filterNotNull()
 
 			PluginSettings(
 				name = queryResult.first().name,
