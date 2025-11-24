@@ -58,7 +58,6 @@ kotlin {
                 implementation(libs.ktor.json)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kolor)
-                api(libs.dns.sd)
             }
         }
         val commonTest by getting {
@@ -70,6 +69,9 @@ kotlin {
 
 	    val mobileMain by creating {
 		    dependsOn(commonMain)
+		    dependencies {
+			    implementation(libs.dns.sd)
+		    }
 	    }
 
 	    val desktopMain by getting {
@@ -83,7 +85,6 @@ kotlin {
 			    implementation(libs.ktor.server.content.negotiation)
 			    implementation(libs.ktor.server.auth)
 			    implementation(libs.ktor.server.websockets)
-			    implementation(libs.ktor.server.tls)
 			    implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
 		    }
 	    }
@@ -101,6 +102,7 @@ kotlin {
 			    implementation(libs.sqldelight.driver.android)
 		    }
 	    }
+
 	    val iosMain by getting {
 		    dependsOn(mobileMain)
 		    dependencies {
@@ -115,7 +117,6 @@ kotlin {
 		    listOf(
 			    "-Xwhen-guards",
 			    "-Xcontext-parameters",
-			    "-Xexpect-actual-classes"
 		    )
 	    )
     }
