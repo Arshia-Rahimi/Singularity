@@ -1,12 +1,12 @@
 package com.github.singularity.core.syncservice.di
 
-import com.github.singularity.core.syncservice.ServerSyncService
+import com.github.singularity.core.syncservice.ClientSyncService
 import com.github.singularity.core.syncservice.SyncService
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 
 actual fun Module.singleOfSyncServiceImpl() {
 	single(createdAtStart = true) {
-		ServerSyncService(get(), get(), get(), get(), getKoin().getAll())
+		ClientSyncService(get(), get(), getKoin().getAll())
 	} bind SyncService::class
 }

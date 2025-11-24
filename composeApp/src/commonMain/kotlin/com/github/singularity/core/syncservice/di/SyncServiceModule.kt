@@ -7,11 +7,13 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-expect fun Module.platformSyncServiceModule()
+expect fun Module.singleOfSyncServiceImpl()
 
 val SyncServiceModule = module {
-    platformSyncServiceModule()
+
+	singleOfSyncServiceImpl()
 
     // plugins
     singleOf(::ClipboardPlugin) bind Plugin::class
+
 }

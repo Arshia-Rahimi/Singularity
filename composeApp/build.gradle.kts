@@ -67,42 +67,57 @@ kotlin {
                 implementation(libs.junit)
             }
         }
-        val androidInstrumentedTest by getting {
-            dependencies {
-                implementation(libs.androidx.testExt.junit)
-                implementation(libs.androidx.espresso.core)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.sqldelight.driver.android)
-            }
-        }
-        val iosMain by getting {
-            dependencies {
-                implementation(libs.sqldelight.driver.native)
-            }
-        }
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-                implementation(libs.kotlinx.coroutinesSwing)
-                implementation(libs.appdirs)
-                implementation(libs.sqldelight.driver.sqlite)
-                implementation(libs.ktor.server.cio)
-                implementation(libs.ktor.server.core)
-                implementation(libs.ktor.server.content.negotiation)
-                implementation(libs.ktor.server.auth)
-                implementation(libs.ktor.server.websockets)
-                implementation(libs.ktor.server.tls)
-                implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
-            }
-        }
+
+	    val mobileMain by creating {
+		    dependsOn(commonMain)
+	    }
+
+	    val desktopMain by getting {
+		    dependencies {
+			    implementation(compose.desktop.currentOs)
+			    implementation(libs.kotlinx.coroutinesSwing)
+			    implementation(libs.appdirs)
+			    implementation(libs.sqldelight.driver.sqlite)
+			    implementation(libs.ktor.server.cio)
+			    implementation(libs.ktor.server.core)
+			    implementation(libs.ktor.server.content.negotiation)
+			    implementation(libs.ktor.server.auth)
+			    implementation(libs.ktor.server.websockets)
+			    implementation(libs.ktor.server.tls)
+			    implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
+		    }
+	    }
+
+	    val androidInstrumentedTest by getting {
+		    dependencies {
+			    implementation(libs.androidx.testExt.junit)
+			    implementation(libs.androidx.espresso.core)
+		    }
+	    }
+	    val androidMain by getting {
+		    dependsOn(mobileMain)
+		    dependencies {
+			    implementation(libs.androidx.activity.compose)
+			    implementation(libs.sqldelight.driver.android)
+		    }
+	    }
+	    val iosMain by getting {
+		    dependsOn(mobileMain)
+		    dependencies {
+			    implementation(libs.sqldelight.driver.native)
+		    }
+	    }
+
     }
 
     compilerOptions {
-        freeCompilerArgs.set(listOf("-Xwhen-guards", "-Xcontext-parameters"))
+	    freeCompilerArgs.set(
+		    listOf(
+			    "-Xwhen-guards",
+			    "-Xcontext-parameters",
+			    "-Xexpect-actual-classes"
+		    )
+	    )
     }
 }
 
