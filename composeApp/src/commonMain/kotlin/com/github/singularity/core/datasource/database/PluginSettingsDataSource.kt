@@ -11,6 +11,8 @@ interface PluginSettingsDataSource {
 
 	suspend fun insert(vararg pluginSettings: PluginSettings)
 
-	suspend fun update(pluginSettings: PluginSettings)
+	suspend fun update(vararg pluginSettings: PluginSettings)
+
+	suspend fun delete(vararg pluginSettings: PluginSettings)
 
 }

@@ -31,7 +31,7 @@ class SqlitePluginSettingsRepository(
 
 	override suspend fun updatePluginData(
 		pluginName: String,
-		pluginData: PluginData
+		pluginData: PluginData,
 	) {
 		pluginSettings.first().firstOrNull { it.name == pluginName }
 			?.let { pluginSettingsDataSource.update(it.copy(pluginData = pluginData)) }

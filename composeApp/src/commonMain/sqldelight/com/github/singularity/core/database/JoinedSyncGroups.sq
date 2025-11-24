@@ -22,8 +22,8 @@ UPDATE JoinedSyncGroups
 updateIsDefault:
 UPDATE JoinedSyncGroups 
     SET is_default = ?
-    WHERE id = ?;
+    WHERE id == ?;
 
 delete: 
 DELETE FROM JoinedSyncGroups
-    WHERE id = ?;
+    WHERE id == ?;

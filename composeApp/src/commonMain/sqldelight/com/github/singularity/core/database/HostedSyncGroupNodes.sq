@@ -19,4 +19,4 @@ UPDATE HostedSyncGroupNodes
 
 delete: 
 DELETE FROM HostedSyncGroupNodes 
-    WHERE id = ?;
+    WHERE id == ?;

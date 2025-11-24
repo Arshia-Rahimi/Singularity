@@ -8,7 +8,7 @@ index:
 SELECT *
     FROM HostedSyncGroups
     LEFT JOIN HostedSyncGroupNodes
-    ON HostedSyncGroups.id= HostedSyncGroupNodes.hosted_sync_group_id
+    ON HostedSyncGroups.id = HostedSyncGroupNodes.hosted_sync_group_id
     ORDER BY HostedSyncGroups.name DESC;
 
 insert:
@@ -18,13 +18,13 @@ INSERT INTO HostedSyncGroups (id, name, is_default)
 updateIsDefault: 
 UPDATE HostedSyncGroups 
     SET is_default = ?
-    WHERE id = ?;
+    WHERE id == ?;
     
 updateName:
 UPDATE HostedSyncGroups
     SET name = ?
-    WHERE id = ?;
+    WHERE id == ?;
 
 delete:
 DELETE FROM HostedSyncGroups 
-    WHERE id = ?;
+    WHERE id == ?;

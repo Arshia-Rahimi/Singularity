@@ -14,10 +14,10 @@ INSERT INTO Preferences (id, themeOption, customPrimaryColor, deviceId, appSecre
 
 get:
 SELECT * FROM Preferences
-    WHERE id = 1
+    WHERE id == 1
     LIMIT 1;
 
 update:
 UPDATE Preferences
     SET themeOption = ?, customPrimaryColor = ?, deviceId = ?, appSecret = ?, syncMode = ?, scale = ?
-    WHERE id = 1;
+    WHERE id == 1;
