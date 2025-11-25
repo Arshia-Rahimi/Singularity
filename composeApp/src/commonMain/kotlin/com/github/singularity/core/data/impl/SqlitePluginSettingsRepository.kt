@@ -2,7 +2,7 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.PluginSettingsRepository
 import com.github.singularity.core.datasource.database.PluginSettingsDataSource
-import com.github.singularity.core.shared.model.PluginData
+import com.github.singularity.core.shared.model.PluginDataMap
 import com.github.singularity.core.shared.model.PluginSettings
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
@@ -34,10 +34,10 @@ class SqlitePluginSettingsRepository(
 
 	override suspend fun updatePluginData(
 		pluginName: String,
-		pluginData: PluginData,
+		pluginData: PluginDataMap,
 	) {
 		pluginSettings.first().firstOrNull { it.name == pluginName }
-			?.let { pluginSettingsDataSource.update(it.copy(pluginData = pluginData)) }
+			?.let { pluginSettingsDataSource.update(it.copy(pluginDataMap = pluginData)) }
 	}
 
 }

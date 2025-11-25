@@ -1,6 +1,6 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.model.PluginData
+import com.github.singularity.core.shared.model.PluginDataMap
 import com.github.singularity.core.shared.model.PluginSettings
 import kotlinx.coroutines.flow.Flow
 
@@ -14,6 +14,6 @@ interface PluginSettingsRepository {
 
 	suspend fun toggleIsEnabled(pluginName: String)
 
-	suspend fun updatePluginData(pluginName: String, pluginData: PluginData)
+	suspend fun updatePluginData(pluginName: String, pluginData: PluginDataMap)
 
 }

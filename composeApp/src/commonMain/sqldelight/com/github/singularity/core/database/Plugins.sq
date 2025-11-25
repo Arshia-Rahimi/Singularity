@@ -1,28 +1,52 @@
 CREATE TABLE Plugins (
     name TEXT PRIMARY KEY NOT NULL UNIQUE,
-    is_enabled INTEGER NOT NULL CHECK (is_enabled IN (0, 1)),
-    plugin_data TEXT NOT NULL
+    is_enabled INTEGER NOT NULL CHECK (is_enabled IN (0, 1))
+);
+
+CREATE TABLE PluginData (
+    plugin_name TEXT NOT NULL,
+    data_key TEXT NOT NULL,
+    data_value TEXT,
+    FOREIGN KEY (plugin_name) REFERENCES Plugins(name) ON DELETE CASCADE,
+    PRIMARY KEY (plugin_name, data_key)
 );
 
 index:
 SELECT *
-    FROM Plugins;
+    FROM Plugins
+    LEFT JOIN PluginData
+    ON Plugins.name = PluginData.data_key;
 
 getPlugin:
 SELECT *
     FROM Plugins
+    LEFT JOIN PluginData
+    ON Plugins.name = PluginData.data_key
     WHERE name == ?
     LIMIT 1;
 
 insert:
-INSERT INTO Plugins (name, is_enabled, plugin_data)
-    VALUES (?, ?, ?);
+INSERT INTO Plugins (name, is_enabled)
+    VALUES (?, ?);
 
 update:
 UPDATE Plugins
-    SET is_enabled = ?, plugin_data = ?
+    SET is_enabled = ?
     WHERE name == ?;
 
 delete:
 DELETE FROM Plugins
     WHERE name = ?;
+
+insertPluginData:
+INSERT INTO PluginData (plugin_name, data_key, data_value)
+    VALUES (?, ?, ?);
+
+updatePluginData:
+UPDATE PluginData
+    SET data_value = ?
+    WHERE plugin_name == ? AND data_key == ?;
+
+deletePluginData:
+DELETE FROM PluginData
+    WHERE plugin_name == ? AND data_key == ?;

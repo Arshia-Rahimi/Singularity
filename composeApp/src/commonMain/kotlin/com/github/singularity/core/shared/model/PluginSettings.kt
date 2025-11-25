@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PluginSettings(
-    val name: String,
-    val pluginData: PluginData,
-    val isEnabled: Boolean = true,
+	val name: String,
+	val pluginDataMap: PluginDataMap,
+	val isEnabled: Boolean = true,
 )
 
-interface PluginData
+typealias PluginDataMap = Map<String, String>
