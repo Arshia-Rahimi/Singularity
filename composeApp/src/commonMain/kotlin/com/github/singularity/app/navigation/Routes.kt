@@ -2,8 +2,7 @@ package com.github.singularity.app.navigation
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-sealed interface Route {
+interface Route {
 
     @Serializable
     object Connection : Route

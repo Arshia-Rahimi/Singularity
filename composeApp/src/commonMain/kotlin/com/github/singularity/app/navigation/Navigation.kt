@@ -12,7 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.github.singularity.app.navigation.components.NavigationDrawer
@@ -50,29 +50,27 @@ fun Navigation() {
 					animationSpec = spring(stiffness = Spring.StiffnessMedium),
 				) togetherWith fadeOut()
 			},
-		) { route ->
-			when (route) {
-				is Route.Connection -> NavEntry(route) {
+			entryProvider = entryProvider {
+				entry<Route.Connection> {
 					ConnectionScreen()
 				}
-
-				is Route.Plugins -> NavEntry(route) {
+				entry<Route.Plugins> {
 					PluginsScreen()
 				}
 
-				is Route.Settings -> NavEntry(route) {
+				entry<Route.Settings> {
 					SettingsScreen()
 				}
 
-				is Route.Log -> NavEntry(route) {
+				entry<Route.Log> {
 					LogScreen()
 				}
 
-				is Route.Test -> NavEntry(route) {
+				entry<Route.Test> {
 					TestScreen()
 				}
 			}
-		}
+		)
 
 	}
 }
