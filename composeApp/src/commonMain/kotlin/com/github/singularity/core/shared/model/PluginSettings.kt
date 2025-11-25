@@ -9,4 +9,4 @@ data class PluginSettings(
     val isEnabled: Boolean = true,
 )
 
-typealias PluginData = Map<String, String>
+interface PluginData

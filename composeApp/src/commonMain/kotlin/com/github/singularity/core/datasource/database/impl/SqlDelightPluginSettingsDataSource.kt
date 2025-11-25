@@ -1,15 +1,14 @@
 package com.github.singularity.core.datasource.database.impl
 
 import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.datasource.database.PluginSettingsDataSource
-import com.github.singularity.core.shared.filterNotNull
-import com.github.singularity.core.shared.model.PluginData
 import com.github.singularity.core.shared.model.PluginSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 
 class SqlDelightPluginSettingsDataSource(
 	db: SingularityDatabase,
@@ -21,35 +20,26 @@ class SqlDelightPluginSettingsDataSource(
 		.asFlow()
 		.map { query ->
 			query.executeAsList()
-				.groupBy { it.name }
-				.map { (pluginName, data) ->
-					val pluginData: PluginData = data
-						.associate { it.data_key to it.data_value }
-						.filterNotNull()
-
+				.map {
 					PluginSettings(
-						name = pluginName,
-						isEnabled = data.first().is_enabled.toBoolean(),
-						pluginData = pluginData,
+						name = it.name,
+						isEnabled = it.is_enabled.toBoolean(),
+						pluginData = Json.decodeFromString(it.plugin_data),
 					)
 				}
 		}
 
 	override fun getPluginSettings(pluginName: String) = queries.getPlugin(pluginName)
 		.asFlow()
-		.mapToList(Dispatchers.IO)
-		.map { queryResult ->
-			if (queryResult.isEmpty()) return@map null
-
-			val pluginData = queryResult
-				.associate { it.data_key to it.data_value }
-				.filterNotNull()
-
-			PluginSettings(
-				name = queryResult.first().name,
-				isEnabled = queryResult.first().is_enabled.toBoolean(),
-				pluginData = pluginData,
-			)
+		.mapToOneOrNull(Dispatchers.IO)
+		.map {
+			it?.let {
+				PluginSettings(
+					name = it.name,
+					isEnabled = it.is_enabled.toBoolean(),
+					pluginData = Json.decodeFromString(it.plugin_data),
+				)
+			}
 		}
 
 	override suspend fun insert(vararg pluginSettings: PluginSettings) {
@@ -58,14 +48,8 @@ class SqlDelightPluginSettingsDataSource(
 				queries.insert(
 					name = it.name,
 					is_enabled = it.isEnabled.toLong(),
+					plugin_data = Json.encodeToString(it.pluginData),
 				)
-				it.pluginData.forEach { (key, value) ->
-					queries.insertPluginData(
-						plugin_name = it.name,
-						data_key = key,
-						data_value = value,
-					)
-				}
 			}
 		}
 	}
@@ -76,14 +60,8 @@ class SqlDelightPluginSettingsDataSource(
 				queries.update(
 					is_enabled = it.isEnabled.toLong(),
 					name = it.name,
+					plugin_data = Json.encodeToString(it.pluginData),
 				)
-				it.pluginData.forEach { (key, value) ->
-					queries.updatePluginData(
-						data_value = value,
-						data_key = key,
-						plugin_name = it.name,
-					)
-				}
 			}
 		}
 	}
@@ -92,12 +70,6 @@ class SqlDelightPluginSettingsDataSource(
 		queries.transaction {
 			pluginSettings.forEach {
 				queries.delete(name = it.name)
-				it.pluginData.forEach { (key, _) ->
-					queries.deletePluginData(
-						data_key = key,
-						plugin_name = it.name,
-					)
-				}
 			}
 		}
 	}
