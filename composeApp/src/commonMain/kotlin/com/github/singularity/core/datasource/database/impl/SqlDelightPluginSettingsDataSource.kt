@@ -53,7 +53,6 @@ class SqlDelightPluginSettingsDataSource(
 			)
 		}
 
-
 	override suspend fun insert(vararg pluginSettings: PluginSettings) {
 		queries.transaction {
 			pluginSettings.forEach {

@@ -49,7 +49,6 @@ import com.github.singularity.ui.feature.settings.components.ColorsList
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.arrow_down
-import singularity.composeapp.generated.resources.arrow_up
 import singularity.composeapp.generated.resources.primary_color
 import singularity.composeapp.generated.resources.scale
 import singularity.composeapp.generated.resources.settings
@@ -57,157 +56,157 @@ import singularity.composeapp.generated.resources.theme_options
 
 @Composable
 fun SettingsScreen() {
-    val viewModel = koinViewModel<SettingsViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val viewModel = koinViewModel<SettingsViewModel>()
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    SettingsScreen(
-        uiState = uiState,
-        execute = { viewModel.execute(this) },
-    )
+	SettingsScreen(
+		uiState = uiState,
+		execute = { viewModel.execute(this) },
+	)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
-    uiState: SettingsUiState,
-    execute: SettingsIntent.() -> Unit,
+	uiState: SettingsUiState,
+	execute: SettingsIntent.() -> Unit,
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { TopBar(Res.string.settings.getString()) },
-    ) { ip ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-                .padding(ip),
-        ) {
-            settingsItemRow {
-                var expanded by remember { mutableStateOf(false) }
-                SettingsItemText(Res.string.scale.getString())
+	Scaffold(
+		modifier = Modifier.fillMaxSize(),
+		topBar = { TopBar(Res.string.settings.getString()) },
+	) { ip ->
+		LazyColumn(
+			modifier = Modifier.fillMaxSize()
+				.padding(ip),
+		) {
+			settingsItemRow {
+				var expanded by remember { mutableStateOf(false) }
+				SettingsItemText(Res.string.scale.getString())
 
-                Row(
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    SettingsItemText(uiState.scale.getScaleLabel())
-                    IconButton(
-                        onClick = { expanded = true },
-                    ) {
-                        Icon(
-                            painter = if (expanded) Res.drawable.arrow_down.getPainter() else Res.drawable.arrow_up.getPainter(),
-                            contentDescription = "",
-                        )
+				Row(
+					modifier = Modifier.padding(vertical = 4.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceBetween,
+				) {
+					SettingsItemText(uiState.scale.getScaleLabel())
+					IconButton(
+						onClick = { expanded = true },
+					) {
+						Icon(
+							painter = Res.drawable.arrow_down.getPainter(),
+							contentDescription = "",
+						)
 
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false },
-                        ) {
-                            scaleOptions.forEach {
-                                DropdownMenuItem(
-                                    text = { Text(it.getScaleLabel()) },
-                                    onClick = {
-                                        SettingsIntent.ChangeScale(it).execute()
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
+						DropdownMenu(
+							expanded = expanded,
+							onDismissRequest = { expanded = false },
+						) {
+							scaleOptions.forEach {
+								DropdownMenuItem(
+									text = { Text(it.getScaleLabel()) },
+									onClick = {
+										SettingsIntent.ChangeScale(it).execute()
+										expanded = false
+									}
+								)
+							}
+						}
+					}
+				}
 
-            }
+			}
 
-            settingsItemRow(
-                onClick = { SettingsIntent.ToggleThemeOption.execute() },
-            ) {
-                SettingsItemText(Res.string.theme_options.getString())
-                SettingsItemText(uiState.themeOption.title.getString())
-            }
+			settingsItemRow(
+				onClick = { SettingsIntent.ToggleThemeOption.execute() },
+			) {
+				SettingsItemText(Res.string.theme_options.getString())
+				SettingsItemText(uiState.themeOption.title.getString())
+			}
 
-            settingsItemColumn {
-                SettingsItemText(Res.string.primary_color.getString())
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(
-                        items = ColorsList,
-	                    key = { it.value.toLong() },
-                        contentType = { Color::class }
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(it)
-                                .onCondition(it == uiState.primaryColor) {
-                                    border(
-                                        2.dp,
-                                        MaterialTheme.colorScheme.onSecondaryContainer,
-                                        CircleShape
-                                    )
-                                }
-                                .clickable(it != uiState.primaryColor) {
-                                    SettingsIntent.ChangePrimaryColor(
-                                        it
-                                    ).execute()
-                                },
-                            content = {},
-                        )
-                    }
-                }
-            }
-        }
-    }
+			settingsItemColumn {
+				SettingsItemText(Res.string.primary_color.getString())
+				LazyRow(
+					modifier = Modifier.fillMaxWidth()
+						.padding(top = 8.dp),
+					horizontalArrangement = Arrangement.spacedBy(8.dp),
+				) {
+					items(
+						items = ColorsList,
+						key = { it.value.toLong() },
+						contentType = { Color::class }
+					) {
+						Box(
+							modifier = Modifier
+								.size(40.dp)
+								.clip(CircleShape)
+								.background(it)
+								.onCondition(it == uiState.primaryColor) {
+									border(
+										2.dp,
+										MaterialTheme.colorScheme.onSecondaryContainer,
+										CircleShape
+									)
+								}
+								.clickable(it != uiState.primaryColor) {
+									SettingsIntent.ChangePrimaryColor(
+										it
+									).execute()
+								},
+							content = {},
+						)
+					}
+				}
+			}
+		}
+	}
 }
 
 
 private fun LazyListScope.settingsItemRow(
-    onClick: (() -> Unit)? = null,
-    content: @Composable RowScope.() -> Unit,
+	onClick: (() -> Unit)? = null,
+	content: @Composable RowScope.() -> Unit,
 ) {
-    item {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .onCondition(onClick != null) {
-                    clickable { onClick?.invoke() }
-                }
-                .padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            content()
-        }
-    }
+	item {
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(50.dp)
+				.onCondition(onClick != null) {
+					clickable { onClick?.invoke() }
+				}
+				.padding(horizontal = 20.dp),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.SpaceBetween,
+		) {
+			content()
+		}
+	}
 }
 
 private fun LazyListScope.settingsItemColumn(
-    onClick: (() -> Unit)? = null,
-    content: @Composable ColumnScope.() -> Unit,
+	onClick: (() -> Unit)? = null,
+	content: @Composable ColumnScope.() -> Unit,
 ) {
-    item {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .onCondition(onClick != null) {
-                    clickable { onClick?.invoke() }
-                }
-                .padding(horizontal = 20.dp, vertical = 4.dp),
-        ) {
-            content()
-        }
-    }
+	item {
+		Column(
+			modifier = Modifier
+				.fillMaxWidth()
+				.onCondition(onClick != null) {
+					clickable { onClick?.invoke() }
+				}
+				.padding(horizontal = 20.dp, vertical = 4.dp),
+		) {
+			content()
+		}
+	}
 }
 
 @Composable
 private fun SettingsItemText(
-    text: String,
+	text: String,
 ) {
-    Text(
-        text = text,
-        fontSize = 16.sp,
-    )
+	Text(
+		text = text,
+		fontSize = 16.sp,
+	)
 }

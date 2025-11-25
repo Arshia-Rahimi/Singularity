@@ -20,7 +20,7 @@ class PluginEventHandlerImpl(
 	init {
 		syncEventBridge.incomingSyncEvents.onEach { event ->
 			pluginWrapper.plugins.firstOrNull { plugin ->
-				plugin::class.simpleName == event.pluginName
+				plugin.pluginName == event.pluginName
 			}?.handleEvent(event)
 		}.launchIn(scope)
 	}

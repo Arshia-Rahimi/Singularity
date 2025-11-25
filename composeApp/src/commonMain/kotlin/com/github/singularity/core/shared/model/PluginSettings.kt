@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PluginSettings(
 	val name: String,
-	val pluginDataMap: PluginDataMap,
+	val pluginDataMap: PluginDataMap = emptyMap(),
 	val isEnabled: Boolean = true,
 )
 

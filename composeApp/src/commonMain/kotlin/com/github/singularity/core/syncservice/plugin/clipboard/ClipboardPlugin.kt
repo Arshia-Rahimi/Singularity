@@ -11,7 +11,12 @@ class ClipboardPlugin(
 	private val syncEventBridge: SyncEventBridge,
 	pluginSettingsRepository: PluginSettingsRepository,
 ) : Plugin,
-	PluginSettingsManager by PluginSettingsManagerImpl(pluginSettingsRepository) {
+	PluginSettingsManager by PluginSettingsManagerImpl(
+		CLIPBOARD_PLUGIN_NAME,
+		pluginSettingsRepository
+	) {
+
+	override val pluginName = CLIPBOARD_PLUGIN_NAME
 
 	override fun handleEvent(syncEvent: SyncEvent) {
 		if (syncEvent !is ClipboardPluginEvent) return

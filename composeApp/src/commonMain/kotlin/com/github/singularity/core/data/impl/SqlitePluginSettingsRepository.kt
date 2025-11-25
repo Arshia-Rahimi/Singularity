@@ -18,7 +18,7 @@ class SqlitePluginSettingsRepository(
 	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
 	override val pluginSettings = pluginSettingsDataSource.pluginSettings
-		.shareInWhileSubscribed(scope)
+		.shareInWhileSubscribed(scope, 1)
 
 	override fun getPluginSettings(pluginName: String) =
 		pluginSettingsDataSource.getPluginSettings(pluginName)
