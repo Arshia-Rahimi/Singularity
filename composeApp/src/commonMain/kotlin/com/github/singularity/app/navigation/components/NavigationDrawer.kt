@@ -70,7 +70,6 @@ fun NavigationDrawer(
 
 		ObserveForEvents(AppNavigationController.toggleDrawerEvent) {
 			scope.launch {
-				println(drawerState.isOpen)
 				if (drawerState.isOpen) drawerState.close()
 				else drawerState.open()
 			}

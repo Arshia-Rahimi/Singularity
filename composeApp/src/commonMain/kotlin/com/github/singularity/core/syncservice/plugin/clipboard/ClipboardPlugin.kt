@@ -14,11 +14,11 @@ class ClipboardPlugin(
 	PluginSettingsManager by PluginSettingsManagerImpl(pluginSettingsRepository) {
 
 	override fun handleEvent(syncEvent: SyncEvent) {
-		if (syncEvent !is ClipboardEvent) return
+		if (syncEvent !is ClipboardPluginEvent) return
 		if (!settings.value.isEnabled) return
 
 		when (syncEvent) {
-			is ClipboardEvent.Copied -> copied(syncEvent.clipboardContent)
+			is ClipboardPluginEvent.Copied -> copied(syncEvent.clipboardContent)
 		}
 	}
 

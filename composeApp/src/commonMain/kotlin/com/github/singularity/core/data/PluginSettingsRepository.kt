@@ -8,7 +8,9 @@ interface PluginSettingsRepository {
 
 	val pluginSettings: Flow<List<PluginSettings>>
 
-	fun getPluginSettings(pluginName: String): Flow<PluginSettings>
+	fun getPluginSettings(pluginName: String): Flow<PluginSettings?>
+
+	suspend fun insert(pluginSettings: PluginSettings)
 
 	suspend fun toggleIsEnabled(pluginName: String)
 

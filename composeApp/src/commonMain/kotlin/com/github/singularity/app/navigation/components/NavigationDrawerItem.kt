@@ -31,7 +31,6 @@ import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.connection
 import singularity.composeapp.generated.resources.log
 import singularity.composeapp.generated.resources.logs
-import singularity.composeapp.generated.resources.permissions
 import singularity.composeapp.generated.resources.plugin
 import singularity.composeapp.generated.resources.plugins
 import singularity.composeapp.generated.resources.plus
@@ -61,12 +60,6 @@ enum class NavigationDrawerItemTop(
 		label = Res.string.plugins,
 		route = Route.Plugins,
 	),
-
-    Permissions(
-        icon = Res.drawable.permissions,
-        label = Res.string.permissions,
-        route = Route.Permissions,
-    ),
 
     Test(
         icon = Res.drawable.plus,

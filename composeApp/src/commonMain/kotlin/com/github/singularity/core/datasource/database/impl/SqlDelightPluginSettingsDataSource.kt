@@ -29,18 +29,19 @@ class SqlDelightPluginSettingsDataSource(
 				}
 		}
 
-	override fun getPluginSettings(pluginName: String) = queries.getPlugin(pluginName)
-		.asFlow()
-		.mapToOneOrNull(Dispatchers.IO)
-		.map {
-			it?.let {
-				PluginSettings(
-					name = it.name,
-					isEnabled = it.is_enabled.toBoolean(),
-					pluginData = Json.decodeFromString(it.plugin_data),
-				)
+	override fun getPluginSettings(pluginName: String) =
+		queries.getPlugin(pluginName)
+			.asFlow()
+			.mapToOneOrNull(Dispatchers.IO)
+			.map {
+				it?.let {
+					PluginSettings(
+						name = it.name,
+						isEnabled = it.is_enabled.toBoolean(),
+						pluginData = Json.decodeFromString(it.plugin_data),
+					)
+				}
 			}
-		}
 
 	override suspend fun insert(vararg pluginSettings: PluginSettings) {
 		queries.transaction {

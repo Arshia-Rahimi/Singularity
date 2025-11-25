@@ -12,9 +12,6 @@ sealed interface Route {
 	object Plugins : Route
 
 	@Serializable
-	object Permissions : Route
-
-	@Serializable
     object Settings : Route
 
     @Serializable

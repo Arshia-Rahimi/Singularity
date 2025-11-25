@@ -15,7 +15,8 @@ class PluginsViewModel(
 	val uiState = pluginSettingsRepo.pluginSettings
 		.map {
 			PluginsUiState(
-				plugins = it.toMutableStateList(),
+				plugins = it.sortedBy { pluginSettings -> pluginSettings.name }
+					.toMutableStateList(),
 			)
 		}.stateInWhileSubscribed(PluginsUiState())
 
