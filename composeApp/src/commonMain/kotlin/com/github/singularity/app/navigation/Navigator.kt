@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 class Navigator {
 
-	val backStack: SnapshotStateList<Route> = mutableStateListOf<Route>(Route.Connection)
+	val backStack: SnapshotStateList<Route> = mutableStateListOf(Route.Connection)
 
 	fun navigateTo(route: Route) {
 		backStack.add(route)
