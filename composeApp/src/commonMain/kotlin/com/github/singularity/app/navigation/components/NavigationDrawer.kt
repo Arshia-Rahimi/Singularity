@@ -26,22 +26,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.app.MainUiState
-import com.github.singularity.app.MainViewModel
-import com.github.singularity.app.navigation.AppNavigationController
+import com.github.singularity.app.navigation.Navigator
 import com.github.singularity.ui.designsystem.shared.ObserveForEvents
 import com.github.singularity.ui.designsystem.shared.WindowSizeClass
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.designsystem.shared.onCondition
 import com.github.singularity.ui.designsystem.shared.rememberWindowSizeClass
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.singularity
 
 @Composable
 fun NavigationDrawer(
-	uiState: MainUiState,
 	navHost: @Composable () -> Unit,
 ) {
 	val windowSizeClass by rememberWindowSizeClass()
@@ -52,10 +49,7 @@ fun NavigationDrawer(
 				PermanentDrawerSheet(
 					modifier = Modifier.width(IntrinsicSize.Max),
 				) {
-					DrawerContent(
-						uiState = uiState,
-						closeDrawer = {},
-					)
+					DrawerContent()
 				}
 			},
 		) {
@@ -64,11 +58,12 @@ fun NavigationDrawer(
 
 	} else {
 
+		val navigator = koinInject<Navigator>()
 		val scope = rememberCoroutineScope()
 		val drawerState = rememberDrawerState(DrawerValue.Closed)
 		val closeDrawer: () -> Unit = { scope.launch { drawerState.close() } }
 
-		ObserveForEvents(AppNavigationController.toggleDrawerEvent) {
+		ObserveForEvents(navigator.toggleDrawerEvent) {
 			scope.launch {
 				if (drawerState.isOpen) drawerState.close()
 				else drawerState.open()
@@ -81,10 +76,7 @@ fun NavigationDrawer(
 				ModalDrawerSheet(
 					modifier = Modifier.width(IntrinsicSize.Max),
 				) {
-					DrawerContent(
-						closeDrawer = closeDrawer,
-						uiState = uiState,
-					)
+					DrawerContent(closeDrawer)
 				}
 			}
 		) {
@@ -96,11 +88,10 @@ fun NavigationDrawer(
 
 @Composable
 private fun DrawerContent(
-	uiState: MainUiState,
-	closeDrawer: () -> Unit,
+	closeDrawer: () -> Unit = {},
 ) {
-	val navViewModel = koinViewModel<MainViewModel>()
-	val backStack = navViewModel.backStack
+	val navigator = koinInject<Navigator>()
+	val backStack = navigator.backStack
 	val currentRoute by remember(backStack) { derivedStateOf { backStack.last() } }
 	val windowSizeClass by rememberWindowSizeClass()
 
@@ -114,6 +105,7 @@ private fun DrawerContent(
 	) {
 		Column(
 			modifier = Modifier.fillMaxWidth(),
+			verticalArrangement = Arrangement.spacedBy(4.dp),
 		) {
 			Text(
 				text = Res.string.singularity.getString(),
@@ -133,7 +125,7 @@ private fun DrawerContent(
 					item = item,
 					currentRoute = currentRoute,
 					closeDrawer = closeDrawer,
-					navigateTo = AppNavigationController::navigateTo,
+					navigateTo = navigator::navigateTo,
 				)
 			}
 
@@ -141,13 +133,14 @@ private fun DrawerContent(
 
 		Column(
 			modifier = Modifier.fillMaxWidth(),
+			verticalArrangement = Arrangement.spacedBy(4.dp),
 		) {
 			NavigationDrawerItemBottom.entries.forEach { item ->
 				NavigationDrawerItem(
 					item = item,
 					currentRoute = currentRoute,
 					closeDrawer = closeDrawer,
-					navigateTo = AppNavigationController::navigateTo,
+					navigateTo = navigator::navigateTo,
 				)
 			}
 		}

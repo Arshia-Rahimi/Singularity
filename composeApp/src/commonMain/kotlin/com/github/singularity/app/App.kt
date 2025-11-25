@@ -30,7 +30,7 @@ fun App() {
 			)
 		) {
 			SingularityTheme(uiState.theme) {
-				Navigation(uiState)
+				Navigation()
 			}
 		}
 	}

@@ -15,33 +15,29 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.github.singularity.app.MainUiState
-import com.github.singularity.app.MainViewModel
 import com.github.singularity.app.navigation.components.NavigationDrawer
 import com.github.singularity.ui.feature.connection.ConnectionScreen
 import com.github.singularity.ui.feature.log.LogScreen
 import com.github.singularity.ui.feature.plugins.PluginsScreen
 import com.github.singularity.ui.feature.settings.SettingsScreen
 import com.github.singularity.ui.feature.test.TestScreen
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(
-    uiState: MainUiState,
-) {
-    NavigationDrawer(uiState) {
+fun Navigation() {
+	NavigationDrawer {
         NavigationHost()
     }
 }
 
 @Composable
 private fun NavigationHost() {
-    val viewModel = koinViewModel<MainViewModel>()
+	val navigator = koinInject<Navigator>()
 
     NavDisplay(
-        backStack = viewModel.backStack,
-        onBack = AppNavigationController::navigateBack,
+	    backStack = navigator.backStack,
+	    onBack = navigator::navigateUp,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
