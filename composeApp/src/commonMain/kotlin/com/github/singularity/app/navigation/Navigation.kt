@@ -27,57 +27,52 @@ import org.koin.compose.koinInject
 @Composable
 fun Navigation() {
 	NavigationDrawer {
-        NavigationHost()
-    }
-}
+		val navigator = koinInject<Navigator>()
 
-@Composable
-private fun NavigationHost() {
-	val navigator = koinInject<Navigator>()
+		NavDisplay(
+			backStack = navigator.backStack,
+			onBack = navigator::navigateUp,
+			entryDecorators = listOf(
+				rememberSaveableStateHolderNavEntryDecorator(),
+				rememberViewModelStoreNavEntryDecorator(),
+			),
+			modifier = Modifier.fillMaxSize()
+				.background(MaterialTheme.colorScheme.surface),
+			transitionSpec = {
+				slideInVertically(
+					initialOffsetY = { it },
+					animationSpec = spring(stiffness = Spring.StiffnessMedium),
+				) togetherWith fadeOut()
+			},
+			popTransitionSpec = {
+				slideInVertically(
+					initialOffsetY = { it },
+					animationSpec = spring(stiffness = Spring.StiffnessMedium),
+				) togetherWith fadeOut()
+			},
+		) { route ->
+			when (route) {
+				is Route.Connection -> NavEntry(route) {
+					ConnectionScreen()
+				}
 
-    NavDisplay(
-	    backStack = navigator.backStack,
-	    onBack = navigator::navigateUp,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator(),
-        ),
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        transitionSpec = {
-            slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = spring(stiffness = Spring.StiffnessMedium),
-            ) togetherWith fadeOut()
-        },
-        popTransitionSpec = {
-            slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = spring(stiffness = Spring.StiffnessMedium),
-            ) togetherWith fadeOut()
-        },
-    ) { route ->
-        when (route) {
-            is Route.Connection -> NavEntry(route) {
-                ConnectionScreen()
-            }
+				is Route.Plugins -> NavEntry(route) {
+					PluginsScreen()
+				}
 
-	        is Route.Plugins -> NavEntry(route) {
-		        PluginsScreen()
-	        }
+				is Route.Settings -> NavEntry(route) {
+					SettingsScreen()
+				}
 
-            is Route.Settings -> NavEntry(route) {
-                SettingsScreen()
-            }
+				is Route.Log -> NavEntry(route) {
+					LogScreen()
+				}
 
-            is Route.Log -> NavEntry(route) {
-                LogScreen()
-            }
+				is Route.Test -> NavEntry(route) {
+					TestScreen()
+				}
+			}
+		}
 
-            is Route.Test -> NavEntry(route) {
-                TestScreen()
-            }
-        }
-    }
-
+	}
 }
