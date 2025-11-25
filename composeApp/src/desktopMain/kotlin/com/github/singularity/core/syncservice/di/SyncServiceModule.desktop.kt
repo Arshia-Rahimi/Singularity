@@ -9,4 +9,3 @@ actual fun Module.singleOfSyncService() =
 	single(createdAtStart = true) {
 		ServerSyncService(get(), get(), get(), get(), get())
 	} bind SyncService::class
-
