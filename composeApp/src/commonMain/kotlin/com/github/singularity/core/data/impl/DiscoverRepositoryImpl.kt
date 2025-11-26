@@ -6,7 +6,7 @@ import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
 import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
 import com.github.singularity.core.log.Logger
-import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
+import com.github.singularity.core.shared.PAIR_CHECK_RETRY_MS
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
@@ -49,7 +49,7 @@ class DiscoverRepositoryImpl(
 
 			var isWaiting = true
 			while (isWaiting) {
-				delay(PAIR_CHECK_RETRY_DELAY)
+				delay(PAIR_CHECK_RETRY_MS)
 
                 val response = syncRemoteDataSource
 					.sendPairCheckRequest(server, response.pairRequestId)
