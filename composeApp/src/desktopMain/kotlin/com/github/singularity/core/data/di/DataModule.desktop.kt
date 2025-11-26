@@ -7,7 +7,7 @@ import com.github.singularity.core.data.impl.BroadcastRepositoryImpl
 import com.github.singularity.core.data.impl.HostedSyncGroupRepositoryImpl
 import com.github.singularity.core.data.impl.ServerConnectionRepositoryImpl
 import com.github.singularity.core.datasource.memory.AuthTokenDataSource
-import com.github.singularity.core.datasource.memory.RandomAuthTokenDataSource
+import com.github.singularity.core.datasource.memory.impl.RandomAuthTokenDataSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module

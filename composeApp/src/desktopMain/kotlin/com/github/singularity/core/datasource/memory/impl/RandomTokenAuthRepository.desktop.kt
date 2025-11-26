@@ -1,6 +1,7 @@
-package com.github.singularity.core.datasource.memory
+package com.github.singularity.core.datasource.memory.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
+import com.github.singularity.core.datasource.memory.AuthTokenDataSource
 import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.model.Node
 import kotlinx.coroutines.flow.first

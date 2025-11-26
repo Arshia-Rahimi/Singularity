@@ -55,7 +55,7 @@ class ClientConnectionRepositoryImpl(
                                 ClientConnectionState.ServerNotFound("timeout"),
                             )
                         )
-                        logger.i(this::class.simpleName, "server not found")
+	                    logger.e(this::class.simpleName, "server not found")
                         return@flow
                     }
 

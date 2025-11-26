@@ -5,6 +5,7 @@ import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
 import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
+import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_DELAY
 import com.github.singularity.core.shared.deviceName
 import com.github.singularity.core.shared.model.JoinedSyncGroup
@@ -30,6 +31,7 @@ class DiscoverRepositoryImpl(
     private val joinedSyncGroupsRepo: JoinedSyncGroupRepository,
     private val preferencesRepo: PreferencesRepository,
     private val syncRemoteDataSource: SyncRemoteDataSource,
+    private val logger: Logger,
     discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
@@ -79,6 +81,7 @@ class DiscoverRepositoryImpl(
 			}
 
 		} catch (e: IOException) {
+			logger.e(this::class.simpleName, "failed to send pair request", e)
 			throw Exception("failed to send pair request: ${e.message}")
 		}
     }.asResult(Dispatchers.IO)
