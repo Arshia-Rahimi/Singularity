@@ -13,7 +13,7 @@ import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.model.http.PairStatus
-import com.github.singularity.core.syncservice.SyncEvent
+import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.http.ContentType
 import io.ktor.serialization.deserialize
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter

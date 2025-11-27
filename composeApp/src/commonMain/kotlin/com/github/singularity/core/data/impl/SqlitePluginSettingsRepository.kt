@@ -23,8 +23,8 @@ class SqlitePluginSettingsRepository(
 	override fun getPluginSettings(pluginName: String) =
 		pluginSettingsDataSource.getPluginSettings(pluginName)
 
-	override suspend fun insert(pluginSettings: PluginSettings) {
-		pluginSettingsDataSource.insert(pluginSettings)
+	override suspend fun insert(vararg pluginSettings: PluginSettings) {
+		pluginSettingsDataSource.insert(*pluginSettings)
 	}
 
 	override suspend fun toggleIsEnabled(pluginName: String) {

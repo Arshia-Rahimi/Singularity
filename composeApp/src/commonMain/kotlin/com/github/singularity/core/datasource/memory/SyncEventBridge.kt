@@ -1,6 +1,6 @@
 package com.github.singularity.core.datasource.memory
 
-import com.github.singularity.core.syncservice.SyncEvent
+import com.github.singularity.core.syncservice.plugin.SyncEvent
 import kotlinx.coroutines.flow.Flow
 
 interface SyncEventBridge {

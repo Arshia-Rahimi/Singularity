@@ -7,5 +7,5 @@ import org.koin.dsl.bind
 
 actual fun Module.singleOfSyncService() =
 	single(createdAtStart = true) {
-		ClientSyncService(get(), get(), get())
+		ClientSyncService(get(), get(), get(), get())
 	} bind SyncService::class

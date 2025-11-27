@@ -1,6 +1,7 @@
 package com.github.singularity.core.syncservice
 
 import com.github.singularity.core.data.ClientConnectionRepository
+import com.github.singularity.core.data.PluginSettingsRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.datasource.memory.SyncEventBridge
@@ -27,10 +28,15 @@ class ServerSyncService(
 	private val preferencesRepo: PreferencesRepository,
 	private val clientConnectionRepo: ClientConnectionRepository,
 	private val serverConnectionRepo: ServerConnectionRepository,
+	pluginSettingsRepo: PluginSettingsRepository,
 	syncEventBridge: SyncEventBridge,
 	pluginWrapper: PluginWrapper,
 ) : SyncService,
-	PluginEventHandler by PluginEventHandlerImpl(pluginWrapper, syncEventBridge) {
+	PluginEventHandler by PluginEventHandlerImpl(
+		pluginSettingsRepo,
+		syncEventBridge,
+		pluginWrapper,
+	) {
 
 	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 

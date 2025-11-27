@@ -10,7 +10,7 @@ interface PluginSettingsRepository {
 
 	fun getPluginSettings(pluginName: String): Flow<PluginSettings?>
 
-	suspend fun insert(pluginSettings: PluginSettings)
+	suspend fun insert(vararg pluginSettings: PluginSettings)
 
 	suspend fun toggleIsEnabled(pluginName: String)
 

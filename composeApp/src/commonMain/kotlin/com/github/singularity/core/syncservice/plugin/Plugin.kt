@@ -1,11 +1,9 @@
 package com.github.singularity.core.syncservice.plugin
 
-import com.github.singularity.core.syncservice.SyncEvent
-
-interface Plugin : PluginSettingsManager {
+interface Plugin {
 
 	val pluginName: String
 
-	fun handleEvent(syncEvent: SyncEvent)
+	fun handleEvent(event: SyncEvent)
 
 }
