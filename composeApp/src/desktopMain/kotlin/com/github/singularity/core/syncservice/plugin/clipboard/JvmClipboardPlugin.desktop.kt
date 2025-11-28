@@ -1,9 +1,33 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
+import java.awt.datatransfer.Transferable
 
 class JvmClipboardPlugin : PlatformClipboardPlugin {
+
+	override val systemClipboardUpdatedEvent = flow {
+		val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+		var lastContent: Transferable? = null
+		while (true) {
+			try {
+				val content = clipboard.getContents(null)
+				if (content != null && content != lastContent) {
+					if (content.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+						lastContent = content
+						val textContent =
+							lastContent.getTransferData(DataFlavor.stringFlavor) as String
+						emit(textContent)
+					}
+				}
+			} catch (_: Exception) {
+			}
+			delay(3_000L)
+		}
+	}
 
 	override fun copy(content: String) {
 		val clipboard = Toolkit.getDefaultToolkit().systemClipboard
