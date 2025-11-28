@@ -8,7 +8,7 @@ import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 
 actual fun Module.singleOfSqlDriver(): KoinDefinition<out SqlDriver> =
-	single {
+	single<SqlDriver> {
 		NativeSqliteDriver(
 			schema = SingularityDatabase.Schema,
 			name = "singularity.db",

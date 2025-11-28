@@ -8,18 +8,6 @@ interface SyncEvent {
 }
 
 @Serializable
-sealed class Test : SyncEvent {
-
-	override val pluginName = "Test"
-
-	@Serializable
-	data class TestEvent(
-		val c: Int,
-	) : Test()
-
-}
-
-@Serializable
 class ClipboardPluginEvent(
 	val content: String,
 ) : SyncEvent {
