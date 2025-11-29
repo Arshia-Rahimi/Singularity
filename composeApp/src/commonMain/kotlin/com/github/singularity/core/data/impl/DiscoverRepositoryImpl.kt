@@ -13,15 +13,12 @@ import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.model.Node
 import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.os
-import com.github.singularity.core.shared.util.Success
-import com.github.singularity.core.shared.util.asResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.io.IOException
@@ -35,65 +32,63 @@ class DiscoverRepositoryImpl(
     discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
-	override val discoveredServers = discoveryService.discoveredServers()
-		.onStart { emit(emptyList()) }
-		.catch {}
-		.flowOn(Dispatchers.IO)
+    override val discoveredServers = discoveryService.discoveredServers()
+        .onStart { emit(emptyList()) }
+        .catch {}
+        .flowOn(Dispatchers.IO)
 
-	override fun sendPairRequest(server: LocalServer) = flow {
-		try {
+    override suspend fun sendPairRequest(server: LocalServer) {
+        try {
             val response = syncRemoteDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
-			if (!response.success || response.pairRequestId == null) {
-				throw Exception("failed to connect")
-			}
+            if (!response.success || response.pairRequestId == null) {
+                throw Exception("failed to connect")
+            }
 
-			var isWaiting = true
-			while (isWaiting) {
-				delay(PAIR_CHECK_RETRY_MS)
+            var isWaiting = true
+            while (isWaiting) {
+                delay(PAIR_CHECK_RETRY_MS)
 
                 val response = syncRemoteDataSource
-					.sendPairCheckRequest(server, response.pairRequestId)
+                    .sendPairCheckRequest(server, response.pairRequestId)
 
-				if (response.pairStatus == PairStatus.Awaiting) continue
+                if (response.pairStatus == PairStatus.Awaiting) continue
 
-				isWaiting = false
+                isWaiting = false
 
-				when (response.pairStatus) {
-					PairStatus.Approved -> {
-						val newGroup = JoinedSyncGroup(
-							syncGroupId = response.node?.syncGroupId ?: "",
-							syncGroupName = response.node?.syncGroupName ?: "",
-							authToken = response.node?.authToken ?: "",
-						)
-						joinedSyncGroupsRepo.upsert(newGroup)
-						joinedSyncGroupsRepo.setAsDefault(newGroup)
+                when (response.pairStatus) {
+                    PairStatus.Approved -> {
+                        val newGroup = JoinedSyncGroup(
+                            syncGroupId = response.node?.syncGroupId ?: "",
+                            syncGroupName = response.node?.syncGroupName ?: "",
+                            authToken = response.node?.authToken ?: "",
+                        )
+                        joinedSyncGroupsRepo.upsert(newGroup)
+                        joinedSyncGroupsRepo.setAsDefault(newGroup)
+                    }
 
-						emit(Success)
-					}
+                    PairStatus.Rejected -> {
+                        throw Exception("server rejected pair request")
+                    }
 
-					PairStatus.Rejected -> {
-						throw Exception("server rejected pair request")
-					}
+                    else -> Unit
+                }
 
-					else -> Unit
-				}
+            }
 
-			}
-
-		} catch (e: IOException) {
-			logger.e(this::class.simpleName, "failed to send pair request", e)
-			throw Exception("failed to send pair request: ${e.message}")
-		}
-    }.asResult(Dispatchers.IO)
+        } catch (e: IOException) {
+            logger.e(this::class.simpleName, "failed to send pair request", e)
+            throw Exception("failed to send pair request: ${e.message}")
+        }
+    }
 
     override suspend fun removeAllDefaults() {
         joinedSyncGroupsRepo.removeAllDefaults()
     }
 
     private suspend fun getCurrentDeviceAsNode() = Node(
-		deviceName = deviceName,
-		deviceOs = os,
-		deviceId = preferencesRepo.preferences.first().deviceId,
-	)
+        deviceName = deviceName,
+        deviceOs = os,
+        deviceId = preferencesRepo.preferences.first().deviceId,
+    )
 
 }

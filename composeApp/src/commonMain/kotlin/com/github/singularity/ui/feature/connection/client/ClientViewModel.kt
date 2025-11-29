@@ -9,7 +9,6 @@ import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.core.shared.util.Resource
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.syncservice.SyncService
 import com.github.singularity.ui.feature.connection.client.pages.index.PairRequestState
@@ -21,9 +20,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,13 +49,13 @@ class ClientViewModel(
         availableServers,
         sentPairRequestState,
         joinedSyncGroups,
-	    connectionState,
+        connectionState,
     ) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
         ClientUiState(
-	        connectionState = connectionState,
-	        availableServers = availableServers?.distinctBy { it.syncGroupId }?.toMutableStateList()
-		        ?: mutableStateListOf(),
-	        joinedSyncGroups = joinedSyncGroups.distinctBy { it.syncGroupId }.toMutableStateList(),
+            connectionState = connectionState,
+            availableServers = availableServers?.distinctBy { it.syncGroupId }?.toMutableStateList()
+                ?: mutableStateListOf(),
+            joinedSyncGroups = joinedSyncGroups.distinctBy { it.syncGroupId }.toMutableStateList(),
             sentPairRequestState = sentPairRequestState,
             isDiscovering = availableServers != null,
         )
@@ -75,23 +71,25 @@ class ClientViewModel(
             is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
             is ClientIntent.StartDiscovery -> shouldDiscover.value = true
             is ClientIntent.StopDiscovery -> shouldDiscover.value = false
-	        is ClientIntent.RefreshConnection -> syncService.refresh()
+            is ClientIntent.RefreshConnection -> syncService.refresh()
             is ClientIntent.ToIndex -> toIndex()
         }
     }
 
     private fun sendPairRequest(server: LocalServer) {
         pairRequestJob?.cancel()
-        pairRequestJob = discoverRepo.sendPairRequest(server).onEach {
-            sentPairRequestState.value = when (it) {
-                is Resource.Loading -> PairRequestState.Awaiting(server)
-                is Resource.Error -> PairRequestState.Error(it.error?.message ?: "failed")
-                is Resource.Success -> PairRequestState.Success(server)
+        viewModelScope.launch {
+            sentPairRequestState.value = PairRequestState.Awaiting(server)
+            try {
+                discoverRepo.sendPairRequest(server)
+                sentPairRequestState.value = PairRequestState.Success(server)
+            } catch (e: Exception) {
+                sentPairRequestState.value = PairRequestState.Error(e.message ?: "failed")
             }
-        }.onCompletion {
+
             delay(5000)
             sentPairRequestState.value = PairRequestState.Idle
-        }.launchIn(viewModelScope)
+        }
     }
 
     private fun cancelPairRequest() {

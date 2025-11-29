@@ -11,7 +11,6 @@ import com.github.singularity.core.syncservice.SyncService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,8 +32,8 @@ class ServerViewModel(
     ) { connectionState, hostedSyncGroups ->
         ServerUiState(
             connectionState = connectionState,
-	        hostedSyncGroups = hostedSyncGroups.distinctBy { it.hostedSyncGroupId }
-		        .toMutableStateList(),
+            hostedSyncGroups = hostedSyncGroups.distinctBy { it.hostedSyncGroupId }
+                .toMutableStateList(),
         )
     }.stateInWhileSubscribed(ServerUiState())
 
@@ -58,15 +57,21 @@ class ServerViewModel(
     }
 
     private fun create(groupName: String) {
-        broadcastRepo.create(HostedSyncGroup(groupName)).launchIn(viewModelScope)
+        viewModelScope.launch {
+            broadcastRepo.create(HostedSyncGroup(groupName))
+        }
     }
 
     private fun editName(groupName: String, group: HostedSyncGroup) {
-        broadcastRepo.editName(groupName, group).launchIn(viewModelScope)
+        viewModelScope.launch {
+            broadcastRepo.editName(groupName, group)
+        }
     }
 
     private fun delete(group: HostedSyncGroup) {
-        broadcastRepo.delete(group).launchIn(viewModelScope)
+        viewModelScope.launch {
+            broadcastRepo.delete(group)
+        }
     }
 
     private fun toIndex() {

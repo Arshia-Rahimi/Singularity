@@ -11,7 +11,6 @@ import com.github.singularity.core.shared.model.http.PairCheckResponse
 import com.github.singularity.core.shared.model.http.PairRequest
 import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.util.Success
-import com.github.singularity.core.shared.util.asResult
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -33,8 +32,6 @@ import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.joinAll
@@ -58,7 +55,7 @@ class KtorSyncRemoteDataSource(
 	    }
     }
 
-    override suspend fun connect(server: LocalServer, token: String) = flow {
+    override fun connect(server: LocalServer, token: String) = flow {
 	    client.webSocket(
 		    host = server.ip,
 		    port = SERVER_PORT,
@@ -99,7 +96,7 @@ class KtorSyncRemoteDataSource(
             joinAll(receiveJob, sendJob)
 
 	    }
-    }.asResult(Dispatchers.IO)
+    }
 
     override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node) =
 	    client.post("http://${server.ip}:${SERVER_PORT}/pair") {
