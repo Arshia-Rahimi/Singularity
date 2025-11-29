@@ -21,7 +21,7 @@ class TestViewModel(
 
     fun sendEvent() {
         viewModelScope.launch {
-	        syncEventBridge.send(ClipboardPluginEvent(c.toString()))
+	        syncEventBridge.send(ClipboardPluginEvent.Copied(c.toString()))
             c++
         }
     }

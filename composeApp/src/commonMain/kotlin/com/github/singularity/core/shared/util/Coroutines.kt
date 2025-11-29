@@ -31,3 +31,6 @@ fun <T> Flow<T>.stateInWhileSubscribed(initialValue: T, scope: CoroutineScope) =
 
 fun <T> Flow<T>.shareInWhileSubscribed(scope: CoroutineScope, replay: Int = 0) =
     shareIn(scope, SharingStarted.WhileSubscribed(5000), replay)
+
+fun <T> Flow<T>.shareInEagerly(scope: CoroutineScope, replay: Int = 0) =
+	shareIn(scope, SharingStarted.Eagerly, replay)

@@ -18,9 +18,9 @@ class JvmClipboardPlugin : PlatformClipboardPlugin {
 				if (content != null && content != lastContent) {
 					if (content.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 						lastContent = content
-						val textContent =
-							lastContent.getTransferData(DataFlavor.stringFlavor) as String
-						emit(textContent)
+						(lastContent.getTransferData(DataFlavor.stringFlavor) as? String)?.let {
+							emit(it)
+						}
 					}
 				}
 			} catch (_: Exception) {
@@ -30,9 +30,13 @@ class JvmClipboardPlugin : PlatformClipboardPlugin {
 	}
 
 	override fun copy(content: String) {
-		val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-		val selection = StringSelection(content)
-		clipboard.setContents(selection, null)
+		println(content)
+		try {
+			val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+			val selection = StringSelection(content)
+			clipboard.setContents(selection, null)
+		} catch (_: Exception) {
+		}
 	}
 
 }

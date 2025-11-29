@@ -1,16 +1,14 @@
 package com.github.singularity.core.syncservice.plugin
 
-import com.github.singularity.core.syncservice.plugin.clipboard.CLIPBOARD_PLUGIN_NAME
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface SyncEvent {
-	val pluginName: String
-}
+sealed interface SyncEvent
 
 @Serializable
-class ClipboardPluginEvent(
-	val content: String,
-) : SyncEvent {
-	override val pluginName = CLIPBOARD_PLUGIN_NAME
+sealed class ClipboardPluginEvent : SyncEvent {
+
+	@Serializable
+	data class Copied(val content: String) : ClipboardPluginEvent()
+
 }
