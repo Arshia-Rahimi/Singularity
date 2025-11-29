@@ -3,7 +3,8 @@ package com.github.singularity.core.syncservice.plugin
 import com.github.singularity.core.syncservice.plugin.clipboard.CLIPBOARD_PLUGIN_NAME
 import kotlinx.serialization.Serializable
 
-interface SyncEvent {
+@Serializable
+sealed interface SyncEvent {
 	val pluginName: String
 }
 

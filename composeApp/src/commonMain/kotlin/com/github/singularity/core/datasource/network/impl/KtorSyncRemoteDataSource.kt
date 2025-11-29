@@ -37,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -75,21 +76,27 @@ class KtorSyncRemoteDataSource(
 
 		    val sendJob = launch {
 			    syncEventBridge.outgoingSyncEvents.collect { event ->
-				    sendSerialized(event)
+                    try {
+                        sendSerialized(event)
+                    } catch (e: Exception) {
+                        logger.e(this::class.simpleName, "outgoingEvent error", e)
+                    }
 			    }
 		    }
 
-		    runCatching {
-			    incoming.consumeEach { frame ->
-				    if (frame !is Frame.Text) return@consumeEach
-				    val event = converter.deserialize<SyncEvent>(frame)
-				    syncEventBridge.incomingEventCallback(event)
-			    }
-		    }.onFailure {
-			    logger.e(this::class.simpleName, "incomingEvent error", it)
-		    }.also {
-			    sendJob.cancel()
-		    }
+            val receiveJob = launch {
+                try {
+                    incoming.consumeEach { frame ->
+                        if (frame !is Frame.Text) return@consumeEach
+                        val event = converter.deserialize<SyncEvent>(frame)
+                        syncEventBridge.incomingEventCallback(event)
+                    }
+                } catch (e: Exception) {
+                    logger.e(this::class.simpleName, "incomingEvent error", e)
+                }
+            }
+
+            joinAll(receiveJob, sendJob)
 
 	    }
     }.asResult(Dispatchers.IO)

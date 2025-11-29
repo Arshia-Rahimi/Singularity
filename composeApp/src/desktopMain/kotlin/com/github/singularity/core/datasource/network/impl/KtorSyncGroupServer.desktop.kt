@@ -44,15 +44,16 @@ import io.ktor.websocket.Frame
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 class KtorSyncGroupServer(
-	private val syncEventBridge: SyncEventBridge,
-	private val authTokenRepo: AuthTokenDataSource,
-	private val pairRequestRepo: PairRequestDataSource,
-	private val logger: Logger,
+    private val syncEventBridge: SyncEventBridge,
+    private val authTokenRepo: AuthTokenDataSource,
+    private val pairRequestRepo: PairRequestDataSource,
+    private val logger: Logger,
 ) : SyncGroupServer {
 
     private var syncGroupId: String? = null
@@ -116,28 +117,33 @@ class KtorSyncGroupServer(
                 webSocket("/ws/sync") {
                     val converter = converter ?: return@webSocket
 
-	                val node = call.principal<HostedSyncGroupNode>() ?: return@webSocket
+                    val node = call.principal<HostedSyncGroupNode>() ?: return@webSocket
 
-	                _connectedNodes.value += node
+                    _connectedNodes.value += node
 
                     val sendJob = launch {
                         syncEventBridge.outgoingSyncEvents.collect { event ->
-                            sendSerialized(event)
+                            try {
+                                sendSerialized(event)
+                            } catch (e: Exception) {
+                                logger.e(this::class.simpleName, "outgoingEvent error", e)
+                            }
                         }
                     }
 
-                    runCatching {
-                        incoming.consumeEach { frame ->
-                            if (frame !is Frame.Text) return@consumeEach
-                            val event = converter.deserialize<SyncEvent>(frame)
-                            syncEventBridge.incomingEventCallback(event)
+                    val receiveJob = launch {
+                        try {
+                            incoming.consumeEach { frame ->
+                                if (frame !is Frame.Text) return@consumeEach
+                                val event = converter.deserialize<SyncEvent>(frame)
+                                syncEventBridge.incomingEventCallback(event)
+                            }
+                        } catch (e: Exception) {
+                            logger.e(this::class.simpleName, "incomingEvent error", e)
                         }
-                    }.onFailure {
-                        logger.e(this::class.simpleName, "incomingEvent error", it)
-                    }.also {
-                        sendJob.cancel()
-	                    _connectedNodes.value -= node
                     }
+
+                    joinAll(receiveJob, sendJob)
 
                 }
             }
