@@ -21,12 +21,10 @@ class SettingsViewModel(
         )
     }.stateInWhileSubscribed(SettingsUiState())
 
-    fun execute(intent: SettingsIntent) {
-        when (intent) {
-            is SettingsIntent.ToggleThemeOption -> toggleThemeOption()
-            is SettingsIntent.ChangeScale -> changeScale(intent.scale)
-            is SettingsIntent.ChangePrimaryColor -> changePrimaryColor(intent.color)
-        }
+    fun execute(intent: SettingsIntent) = when (intent) {
+        is SettingsIntent.ToggleThemeOption -> toggleThemeOption()
+        is SettingsIntent.ChangeScale -> changeScale(intent.scale)
+        is SettingsIntent.ChangePrimaryColor -> changePrimaryColor(intent.color)
     }
 
     private fun toggleThemeOption() {

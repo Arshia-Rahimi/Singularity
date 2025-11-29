@@ -63,17 +63,15 @@ class ClientViewModel(
 
     private var pairRequestJob: Job? = null
 
-    fun execute(intent: ClientIntent) {
-        when (intent) {
-            is ClientIntent.SendPairRequest -> sendPairRequest(intent.server)
-            is ClientIntent.CancelPairRequest -> cancelPairRequest()
-            is ClientIntent.DeleteGroup -> delete(intent.group)
-            is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
-            is ClientIntent.StartDiscovery -> shouldDiscover.value = true
-            is ClientIntent.StopDiscovery -> shouldDiscover.value = false
-            is ClientIntent.RefreshConnection -> syncService.refresh()
-            is ClientIntent.ToIndex -> toIndex()
-        }
+    fun execute(intent: ClientIntent) = when (intent) {
+        is ClientIntent.SendPairRequest -> sendPairRequest(intent.server)
+        is ClientIntent.CancelPairRequest -> cancelPairRequest()
+        is ClientIntent.DeleteGroup -> delete(intent.group)
+        is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
+        is ClientIntent.StartDiscovery -> shouldDiscover.value = true
+        is ClientIntent.StopDiscovery -> shouldDiscover.value = false
+        is ClientIntent.RefreshConnection -> syncService.refresh()
+        is ClientIntent.ToIndex -> toIndex()
     }
 
     private fun sendPairRequest(server: LocalServer) {
