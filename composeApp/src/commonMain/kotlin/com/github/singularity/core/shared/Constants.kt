@@ -9,5 +9,5 @@ const val SERVER_PORT = 7836
 const val LOG_FILE = "singularity.log"
 
 const val DISCOVER_TIMEOUT_MS = 30_000L
-const val WEBSOCKET_CONNECTION_RETRY_MS = 2_000L
-const val PAIR_CHECK_RETRY_MS = 5_000L
+const val WEBSOCKET_CONNECTION_RETRY_MS = 5_000L
+const val PAIR_CHECK_RETRY_MS = 3_000L
