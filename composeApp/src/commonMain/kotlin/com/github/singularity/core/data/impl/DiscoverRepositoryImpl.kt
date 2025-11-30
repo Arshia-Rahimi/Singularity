@@ -61,7 +61,7 @@ class DiscoverRepositoryImpl(
                         )
                         joinedSyncGroupsRepo.upsert(newGroup)
                         joinedSyncGroupsRepo.setAsDefault(newGroup)
-                        continue
+                        break
                     }
 
                     PairStatus.Rejected -> {
