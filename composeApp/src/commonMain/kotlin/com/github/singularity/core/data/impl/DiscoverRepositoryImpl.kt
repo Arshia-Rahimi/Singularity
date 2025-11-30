@@ -44,16 +44,13 @@ class DiscoverRepositoryImpl(
                 throw Exception("failed to connect")
             }
 
-            var isWaiting = true
-            while (isWaiting) {
+            while (true) {
                 delay(PAIR_CHECK_RETRY_MS)
 
                 val response = syncRemoteDataSource
                     .sendPairCheckRequest(server, response.pairRequestId)
 
                 if (response.pairStatus == PairStatus.Awaiting) continue
-
-                isWaiting = false
 
                 when (response.pairStatus) {
                     PairStatus.Approved -> {
@@ -64,6 +61,7 @@ class DiscoverRepositoryImpl(
                         )
                         joinedSyncGroupsRepo.upsert(newGroup)
                         joinedSyncGroupsRepo.setAsDefault(newGroup)
+                        continue
                     }
 
                     PairStatus.Rejected -> {
