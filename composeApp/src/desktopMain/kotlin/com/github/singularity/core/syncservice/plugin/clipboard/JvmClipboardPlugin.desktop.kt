@@ -30,7 +30,6 @@ class JvmClipboardPlugin : PlatformClipboardPlugin {
 	}
 
 	override fun copy(content: String) {
-		println(content)
 		try {
 			val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 			val selection = StringSelection(content)

@@ -29,7 +29,6 @@ class ClipboardPlugin(
 	}
 
 	override fun handleEvent(event: SyncEvent) {
-		println(event)
 		if (!event.instanceOf(eventClass)) return
 		when (event) {
 			is ClipboardPluginEvent.Copied -> platformClipboardPlugin.copy(event.content)
