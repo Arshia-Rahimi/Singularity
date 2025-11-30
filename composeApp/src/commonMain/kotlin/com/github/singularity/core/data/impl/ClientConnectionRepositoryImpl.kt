@@ -7,7 +7,6 @@ import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT_MS
 import com.github.singularity.core.shared.WEBSOCKET_CONNECTION_RETRY_MS
-import com.github.singularity.core.shared.model.ClientConnectionState
 import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.util.sendPulse
 import kotlinx.coroutines.Dispatchers
@@ -25,73 +24,65 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientConnectionRepositoryImpl(
-    private val syncRemoteDataSource: SyncRemoteDataSource,
-    joinedSyncGroupRepo: JoinedSyncGroupRepository,
-    deviceDiscoveryService: DeviceDiscoveryService,
-    logger: Logger,
+	private val syncRemoteDataSource: SyncRemoteDataSource,
+	joinedSyncGroupRepo: JoinedSyncGroupRepository,
+	deviceDiscoveryService: DeviceDiscoveryService,
+	logger: Logger,
 ) : ClientConnectionRepository {
 
-    private val refreshState = MutableSharedFlow<Unit>()
+	private val refreshState = MutableSharedFlow<Unit>()
 
-    override val connectionState = refreshState
-        .onStart { emit(Unit) }
-        .flatMapLatest {
-            joinedSyncGroupRepo.defaultJoinedSyncGroup.flatMapLatest { defaultServer ->
-                if (defaultServer == null) flowOf<ClientSyncState>(ClientSyncState.NoDefaultServer)
-                else flow {
-                    emit(
-                        ClientSyncState.WithDefaultServer(
-                            defaultServer,
-                            ClientConnectionState.Searching
-                        )
-                    )
+	override val connectionState = refreshState
+		.onStart { emit(Unit) }
+		.flatMapLatest {
+			joinedSyncGroupRepo.defaultJoinedSyncGroup.flatMapLatest { defaultServer ->
+				if (defaultServer == null) flowOf<ClientSyncState>(ClientSyncState.NoDefaultServer)
+				else flow {
+					emit(ClientSyncState.Searching(defaultServer.syncGroupName))
 
-                    val server = withTimeoutOrNull(DISCOVER_TIMEOUT_MS) {
-                        deviceDiscoveryService.discoverServer(defaultServer)
-                    }
+					val server = withTimeoutOrNull(DISCOVER_TIMEOUT_MS) {
+						deviceDiscoveryService.discoverServer(defaultServer)
+					}
 
-                    if (server == null) {
-                        emit(
-                            ClientSyncState.WithDefaultServer(
-                                defaultServer,
-                                ClientConnectionState.ServerNotFound("timeout"),
-                            )
-                        )
-                        logger.e(this::class.simpleName, "server not found")
-                        return@flow
-                    }
+					if (server == null) {
+						emit(
+							ClientSyncState.ServerNotFound(defaultServer.syncGroupName, "timeout")
+						)
+						logger.e(this::class.simpleName, "server not found")
+						return@flow
+					}
 
-                    while (true) {
-                        syncRemoteDataSource.connect(server, defaultServer.authToken)
-                            .catch {
-                                logger.e(
-                                    this::class.simpleName,
-                                    "error connecting to server",
-                                    it
-                                )
-                                emit(
-                                    ClientSyncState.WithDefaultServer(
-                                        defaultServer,
-                                        ClientConnectionState.SyncFailed(server),
-                                    )
-                                )
-                            }
-                            .collect {
-                                emit(
-                                    ClientSyncState.WithDefaultServer(
-                                        defaultServer,
-                                        ClientConnectionState.Connected(server),
-                                    )
-                                )
-                            }
-                        delay(WEBSOCKET_CONNECTION_RETRY_MS)
-                    }
-                }
-            }
-        }.flowOn(Dispatchers.IO)
+					while (true) {
+						syncRemoteDataSource.connect(server, defaultServer.authToken)
+							.catch {
+								logger.e(
+									this::class.simpleName,
+									"error connecting to server",
+									it
+								)
+								emit(
+									ClientSyncState.SyncFailed(
+										defaultServer.syncGroupName,
+										server,
+									)
+								)
+							}
+							.collect {
+								emit(
+									ClientSyncState.Connected(
+										defaultServer.syncGroupName,
+										server,
+									)
+								)
+							}
+						delay(WEBSOCKET_CONNECTION_RETRY_MS)
+					}
+				}
+			}
+		}.flowOn(Dispatchers.IO)
 
-    override suspend fun refresh() {
-        refreshState.sendPulse()
-    }
+	override suspend fun refresh() {
+		refreshState.sendPulse()
+	}
 
 }

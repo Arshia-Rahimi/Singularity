@@ -20,39 +20,38 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PulseAnimation(
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.primary,
-    content: @Composable BoxScope.() -> Unit = {},
+	modifier: Modifier = Modifier,
+	color: Color = MaterialTheme.colorScheme.primary,
+	content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "loading_animation")
+	val infiniteTransition = rememberInfiniteTransition()
 
-    val progress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000),
-        ),
-        label = "pulse_animation"
-    )
+	val progress by infiniteTransition.animateFloat(
+		initialValue = 0f,
+		targetValue = 1f,
+		animationSpec = infiniteRepeatable(
+			animation = tween(durationMillis = 1000),
+		),
+	)
 
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
-        Box(
-            modifier = Modifier.matchParentSize()
-                .size(60.dp)
-                .graphicsLayer {
-                    scaleX = progress
-                    scaleY = progress
-                    alpha = 1f - progress
-                }
-                .border(
-                    width = 5.dp,
-                    color = color,
-                    shape = CircleShape
-                ),
-        )
-    }
+	Box(
+		modifier = modifier,
+		contentAlignment = Alignment.Center,
+	) {
+		content()
+		Box(
+			modifier = Modifier.matchParentSize()
+				.size(60.dp)
+				.graphicsLayer {
+					scaleX = progress
+					scaleY = progress
+					alpha = 1f - progress
+				}
+				.border(
+					width = 5.dp,
+					color = color,
+					shape = CircleShape
+				),
+		)
+	}
 }

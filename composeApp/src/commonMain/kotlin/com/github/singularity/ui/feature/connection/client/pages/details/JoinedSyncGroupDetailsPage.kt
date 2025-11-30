@@ -28,25 +28,25 @@ import singularity.composeapp.generated.resources.refresh
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinedSyncGroupDetailsPage(
-    syncState: ClientSyncState.WithDefaultServer,
-    execute: ClientIntent.() -> Unit,
+	syncState: ClientSyncState.WithDefaultServer,
+	execute: ClientIntent.() -> Unit,
 ) {
 	Scaffold(
-        topBar = {
-            TopBar(
-                title = syncState.joinedSyncGroup.syncGroupName,
-                actions = {
-                    IconButton(
-                        onClick = { ClientIntent.ToIndex.execute() }
-                    ) {
-                        Icon(
-                            painter = Res.drawable.list.getPainter(),
-                            contentDescription = Res.string.back.getString(),
-                        )
-                    }
-                },
-            )
-        },
+		topBar = {
+			TopBar(
+				title = syncState.joinedSyncGroupName,
+				actions = {
+					IconButton(
+						onClick = { ClientIntent.ToIndex.execute() }
+					) {
+						Icon(
+							painter = Res.drawable.list.getPainter(),
+							contentDescription = Res.string.back.getString(),
+						)
+					}
+				},
+			)
+		},
 	) { ip ->
 		Column(
 			modifier = Modifier
@@ -59,8 +59,8 @@ fun JoinedSyncGroupDetailsPage(
 					.padding(horizontal = 4.dp),
 				horizontalArrangement = Arrangement.SpaceBetween,
 			) {
-                AnimatedContent(syncState.connectionState) {
-                    Text(it.message(syncState.joinedSyncGroup.syncGroupName))
+				AnimatedContent(syncState) {
+					Text(it.message)
 				}
 
 				IconButton(
