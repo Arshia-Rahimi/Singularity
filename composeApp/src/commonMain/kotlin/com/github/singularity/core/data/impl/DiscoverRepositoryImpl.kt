@@ -32,7 +32,7 @@ class DiscoverRepositoryImpl(
     discoveryService: DeviceDiscoveryService,
 ) : DiscoverRepository {
 
-    override val discoveredServers = discoveryService.discoveredServers()
+    override val discoveredServers = discoveryService.discoverServers()
         .onStart { emit(emptyList()) }
         .catch {}
         .flowOn(Dispatchers.IO)

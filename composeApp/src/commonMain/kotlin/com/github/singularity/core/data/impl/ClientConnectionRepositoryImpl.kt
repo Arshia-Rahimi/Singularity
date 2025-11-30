@@ -41,7 +41,7 @@ class ClientConnectionRepositoryImpl(
 					emit(ClientSyncState.Searching(defaultServer.syncGroupName))
 
 					val server = withTimeoutOrNull(DISCOVER_TIMEOUT_MS) {
-						deviceDiscoveryService.discoverServer(defaultServer)
+                        deviceDiscoveryService.findServer(defaultServer)
 					}
 
 					if (server == null) {

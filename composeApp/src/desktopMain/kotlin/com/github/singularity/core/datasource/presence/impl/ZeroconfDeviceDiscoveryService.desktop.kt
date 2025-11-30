@@ -45,7 +45,7 @@ class ZeroconfDeviceDiscoveryService : DeviceDiscoveryService {
 		}
 	}
 
-	override fun discoveredServers(): Flow<List<LocalServer>> = servers
+    override fun discoverServers(): Flow<List<LocalServer>> = servers
 		.runningFold(emptyList()) { list, newServer ->
 			when (newServer) {
 				is MdnsEvent.Removed -> list - newServer.server
@@ -53,7 +53,7 @@ class ZeroconfDeviceDiscoveryService : DeviceDiscoveryService {
 			}.distinctBy { it.syncGroupId }
 		}
 
-	override suspend fun discoverServer(syncGroup: JoinedSyncGroup): LocalServer? =
+    override suspend fun findServer(syncGroup: JoinedSyncGroup): LocalServer? =
 		servers.filterIsInstance<MdnsEvent.Resolved>()
 			.map { it.server }
 			.firstOrNull { it.syncGroupId == syncGroup.syncGroupId }

@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface DeviceDiscoveryService {
 
-    fun discoveredServers(): Flow<List<LocalServer>>
+    fun discoverServers(): Flow<List<LocalServer>>
 
-    suspend fun discoverServer(syncGroup: JoinedSyncGroup): LocalServer?
+    suspend fun findServer(syncGroup: JoinedSyncGroup): LocalServer?
 
 }

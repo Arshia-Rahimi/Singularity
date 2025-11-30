@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.runningFold
 
 class DnsSdDeviceDiscoveryService : DeviceDiscoveryService {
 
-    override fun discoveredServers() = discoverServices(MDNS_SERVICE_TYPE)
+    override fun discoverServers() = discoverServices(MDNS_SERVICE_TYPE)
         .runningFold(emptyList<LocalServer>()) { list, newServer ->
             when (newServer) {
                 is DiscoveryEvent.Discovered -> {
@@ -25,7 +25,7 @@ class DnsSdDeviceDiscoveryService : DeviceDiscoveryService {
             }.distinctBy { it.syncGroupId }
         }
 
-    override suspend fun discoverServer(syncGroup: JoinedSyncGroup) =
+    override suspend fun findServer(syncGroup: JoinedSyncGroup) =
         discoverServices(MDNS_SERVICE_TYPE).mapNotNull { newServer ->
             when (newServer) {
                 is DiscoveryEvent.Discovered -> newServer.resolve()
