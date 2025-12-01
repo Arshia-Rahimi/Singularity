@@ -99,7 +99,7 @@ class KtorSyncRemoteDataSource(
     }
 
     override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node) =
-	    client.post("http://${server.ip}:${SERVER_PORT}/pair") {
+        client.post("http://${server.ip}:${SERVER_PORT}/api/pair") {
             contentType(ContentType.Application.Json)
             setBody(
 	            PairRequest(
@@ -115,7 +115,7 @@ class KtorSyncRemoteDataSource(
     override suspend fun sendPairCheckRequest(
 	    server: LocalServer,
 	    pairRequestId: Int
-    ) = client.get("http://${server.ip}:${SERVER_PORT}/pairCheck") {
+    ) = client.get("http://${server.ip}:${SERVER_PORT}/api/pairCheck") {
         contentType(ContentType.Application.Json)
         setBody(
 	        PairCheckRequest(

@@ -150,7 +150,7 @@ class KtorSyncGroupServer(
 
             // http
             contentType(ContentType.Application.Json) {
-                post("/pair") {
+                post("/api/pair") {
                     val groupId = syncGroupId
                     val pairRequest = call.receive<PairRequest>()
 
@@ -166,7 +166,7 @@ class KtorSyncGroupServer(
 
                 }
 
-                get("/pairCheck") {
+                get("/api/pairCheck") {
                     val groupId = syncGroupId
                     val request = call.receive<PairCheckRequest>()
                     val pairCheck = pairRequestRepo.get(request.pairRequestId)
