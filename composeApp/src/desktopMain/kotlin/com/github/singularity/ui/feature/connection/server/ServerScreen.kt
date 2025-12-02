@@ -33,6 +33,13 @@ private fun ServerScreen(
 
     AnimatedContent(
         targetState = uiState.connectionState,
+	    contentKey = {
+		    when (it) {
+			    is ServerSyncState.Loading -> "Loading"
+			    is ServerSyncState.NoDefaultServer -> "NoDefaultServer"
+			    is ServerSyncState.Running -> "Running"
+		    }
+	    },
         modifier = Modifier
             .fillMaxSize(),
     ) {

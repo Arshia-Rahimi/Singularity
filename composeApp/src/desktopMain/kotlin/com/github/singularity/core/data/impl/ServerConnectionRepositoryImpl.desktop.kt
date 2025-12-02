@@ -12,10 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,8 +32,15 @@ class ServerConnectionRepositoryImpl(
 		.onStart { emit(Unit) }
 		.flatMapLatest {
 			hostedSyncGroupRepo.defaultSyncGroup
+				.distinctUntilChangedBy {
+					it?.hostedSyncGroupId
+				}
 				.flatMapLatest { group ->
-                    if (group == null) flowOf(ServerSyncState.NoDefaultServer)
+					server.stop()
+					broadcastService.stopBroadcast()
+					pairRequestDataSource.clear()
+
+					if (group == null) flowOf(ServerSyncState.NoDefaultServer)
 					else {
 						server.start(group)
 						broadcastService.startBroadcast(group)
@@ -42,7 +49,7 @@ class ServerConnectionRepositoryImpl(
 							server.connectedNodes,
 							pairRequestDataSource.requests,
 						) { connectedNodes, requests ->
-                            ServerSyncState.Running(
+							ServerSyncState.Running(
 								group = group,
 								connectedNodes = connectedNodes,
 								pairRequests = requests
@@ -52,10 +59,6 @@ class ServerConnectionRepositoryImpl(
 							)
 						}
 					}
-				}.onCompletion {
-					server.stop()
-					broadcastService.stopBroadcast()
-					pairRequestDataSource.clear()
 				}
 		}.flowOn(Dispatchers.IO)
 

@@ -24,92 +24,96 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ClientViewModel(
-    private val discoverRepo: DiscoverRepository,
-    private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
-    private val syncService: SyncService,
+	private val discoverRepo: DiscoverRepository,
+	private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
+	private val syncService: SyncService,
 ) : ViewModel() {
 
-    private val connectionState = syncService.syncState
-        .filterIsInstance<ClientSyncState>()
-        .stateInWhileSubscribed(ClientSyncState.Loading)
+	private val connectionState = syncService.syncState
+		.filterIsInstance<ClientSyncState>()
+		.stateInWhileSubscribed(ClientSyncState.Loading)
 
-    private val shouldDiscover = MutableStateFlow(false)
+	private val shouldDiscover = MutableStateFlow(false)
 
-    private val availableServers = shouldDiscover.flatMapLatest {
-        if (it) discoverRepo.discoveredServers
-        else flowOf(null)
-    }.stateInWhileSubscribed(null)
+	private val availableServers = shouldDiscover.flatMapLatest {
+		if (it) discoverRepo.discoveredServers
+		else flowOf(null)
+	}.stateInWhileSubscribed(null)
 
-    private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
+	private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
-    private val joinedSyncGroups =
-        joinedSyncGroupRepo.joinedSyncGroups.stateInWhileSubscribed(emptyList())
+	private val joinedSyncGroups =
+		joinedSyncGroupRepo.joinedSyncGroups.stateInWhileSubscribed(emptyList())
 
-    val uiState = combine(
-        availableServers,
-        sentPairRequestState,
-        joinedSyncGroups,
-        connectionState,
-    ) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
-        ClientUiState(
-            connectionState = connectionState,
-            availableServers = availableServers?.distinctBy { it.syncGroupId }?.toMutableStateList()
-                ?: mutableStateListOf(),
-            joinedSyncGroups = joinedSyncGroups.distinctBy { it.syncGroupId }.toMutableStateList(),
-            sentPairRequestState = sentPairRequestState,
-            isDiscovering = availableServers != null,
-        )
-    }.stateInWhileSubscribed(ClientUiState())
+	val uiState = combine(
+		availableServers,
+		sentPairRequestState,
+		joinedSyncGroups,
+		connectionState,
+	) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
+		ClientUiState(
+			connectionState = connectionState,
+			availableServers = availableServers?.distinctBy { it.syncGroupId }?.toMutableStateList()
+				?: mutableStateListOf(),
+			joinedSyncGroups = joinedSyncGroups.distinctBy { it.syncGroupId }.toMutableStateList(),
+			sentPairRequestState = sentPairRequestState,
+			isDiscovering = availableServers != null,
+		)
+	}.stateInWhileSubscribed(ClientUiState())
 
-    private var pairRequestJob: Job? = null
+	private var pairRequestJob: Job? = null
 
-    fun execute(intent: ClientIntent) = when (intent) {
-        is ClientIntent.SendPairRequest -> sendPairRequest(intent.server)
-        is ClientIntent.CancelPairRequest -> cancelPairRequest()
-        is ClientIntent.DeleteGroup -> delete(intent.group)
-        is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
-        is ClientIntent.StartDiscovery -> shouldDiscover.value = true
-        is ClientIntent.StopDiscovery -> shouldDiscover.value = false
-        is ClientIntent.RefreshConnection -> syncService.refresh()
-        is ClientIntent.ToIndex -> toIndex()
-    }
+	fun execute(intent: ClientIntent) = when (intent) {
+		is ClientIntent.SendPairRequest -> sendPairRequest(intent.server)
+		is ClientIntent.CancelPairRequest -> cancelPairRequest()
+		is ClientIntent.DeleteGroup -> delete(intent.group)
+		is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
+		is ClientIntent.StartDiscovery -> shouldDiscover.value = true
+		is ClientIntent.StopDiscovery -> shouldDiscover.value = false
+		is ClientIntent.RefreshConnection -> syncService.refresh()
+		is ClientIntent.ToIndex -> toIndex()
+	}
 
-    private fun sendPairRequest(server: LocalServer) {
-        pairRequestJob?.cancel()
-        viewModelScope.launch {
-            sentPairRequestState.value = PairRequestState.Awaiting(server)
-            try {
-                discoverRepo.sendPairRequest(server)
-                sentPairRequestState.value = PairRequestState.Success(server)
-            } catch (e: Exception) {
-                sentPairRequestState.value = PairRequestState.Error(e.message ?: "failed")
-            }
+	private fun sendPairRequest(server: LocalServer) {
+		pairRequestJob?.cancel()
+		viewModelScope.launch {
+			sentPairRequestState.value = PairRequestState.Awaiting(server)
+			try {
+				discoverRepo.sendPairRequest(server)
+				sentPairRequestState.value = PairRequestState.Success(server)
+			} catch (e: Exception) {
+				sentPairRequestState.value = PairRequestState.Error(e.message ?: "failed")
+			}
 
-            delay(5000)
-            sentPairRequestState.value = PairRequestState.Idle
-        }
-    }
+			delay(5000)
+			sentPairRequestState.value = PairRequestState.Idle
+		}
+	}
 
-    private fun cancelPairRequest() {
-        pairRequestJob?.cancel()
-        sentPairRequestState.value = PairRequestState.Idle
-    }
+	private fun cancelPairRequest() {
+		pairRequestJob?.cancel()
+		sentPairRequestState.value = PairRequestState.Idle
+	}
 
-    private fun delete(group: JoinedSyncGroup) {
-        viewModelScope.launch { joinedSyncGroupRepo.delete(group) }
-    }
+	private fun delete(group: JoinedSyncGroup) {
+		viewModelScope.launch { joinedSyncGroupRepo.delete(group) }
+	}
 
-    private fun setAsDefault(group: JoinedSyncGroup) {
-        viewModelScope.launch {
-            joinedSyncGroupRepo.setAsDefault(group)
-            shouldDiscover.value = false
-        }
-    }
+	private fun setAsDefault(group: JoinedSyncGroup) {
+		viewModelScope.launch {
+			joinedSyncGroupRepo.setAsDefault(group)
+			shouldDiscover.value = false
+		}
+	}
 
-    private fun toIndex() {
-        viewModelScope.launch {
-            discoverRepo.removeAllDefaults()
-        }
-    }
+	private fun toIndex() {
+		viewModelScope.launch {
+			discoverRepo.removeAllDefaults()
+		}
+	}
+
+	override fun onCleared() {
+		shouldDiscover.value = false
+	}
 
 }
