@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -28,6 +29,12 @@ class ServerConnectionRepositoryImpl(
 
 	private val refreshState = MutableSharedFlow<Unit>()
 
+	private suspend fun stopServer() {
+		server.stop()
+		broadcastService.stopBroadcast()
+		pairRequestDataSource.clear()
+	}
+
 	override fun runServer() = refreshState
 		.onStart { emit(Unit) }
 		.flatMapLatest {
@@ -36,10 +43,6 @@ class ServerConnectionRepositoryImpl(
 					it?.hostedSyncGroupId
 				}
 				.flatMapLatest { group ->
-					server.stop()
-					broadcastService.stopBroadcast()
-					pairRequestDataSource.clear()
-
 					if (group == null) flowOf(ServerSyncState.NoDefaultServer)
 					else {
 						server.start(group)
@@ -59,7 +62,7 @@ class ServerConnectionRepositoryImpl(
 							)
 						}
 					}
-				}
+				}.onCompletion { stopServer() }
 		}.flowOn(Dispatchers.IO)
 
 	override suspend fun refresh() {
