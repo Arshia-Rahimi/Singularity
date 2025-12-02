@@ -61,7 +61,7 @@ class ClientConnectionRepositoryImpl(
 									it
 								)
 								emit(
-									ClientSyncState.SyncFailed(
+									ClientSyncState.ConnectionFailed(
 										defaultServer.syncGroupName,
 										server,
 									)

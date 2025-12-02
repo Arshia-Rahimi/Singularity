@@ -3,9 +3,11 @@ package com.github.singularity.core.shared.model
 import androidx.compose.runtime.Composable
 import com.github.singularity.ui.designsystem.shared.getString
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.connected
 import singularity.composeapp.generated.resources.connection_failed
 import singularity.composeapp.generated.resources.no_default_server
 import singularity.composeapp.generated.resources.searching
+import singularity.composeapp.generated.resources.server_not_found
 import singularity.composeapp.generated.resources.server_running
 
 sealed interface SyncState {
@@ -36,7 +38,7 @@ sealed interface ClientSyncState : SyncState {
 			@Composable get() = Res.string.searching.getString(joinedSyncGroupName)
 	}
 
-	data class SyncFailed(
+	data class ConnectionFailed(
 		override val joinedSyncGroupName: String,
 		val server: LocalServer,
 	) : WithDefaultServer {
@@ -49,7 +51,7 @@ sealed interface ClientSyncState : SyncState {
 		val server: LocalServer,
 	) : WithDefaultServer {
 		override val message: String
-			@Composable get() = Res.string.connection_failed.getString(joinedSyncGroupName)
+			@Composable get() = Res.string.connected.getString(joinedSyncGroupName)
 	}
 
 	data class ServerNotFound(
@@ -57,7 +59,7 @@ sealed interface ClientSyncState : SyncState {
 		val errorMessage: String,
 	) : WithDefaultServer {
 		override val message: String
-			@Composable get() = Res.string.connection_failed.getString(joinedSyncGroupName)
+			@Composable get() = Res.string.server_not_found.getString(joinedSyncGroupName)
 	}
 
 }

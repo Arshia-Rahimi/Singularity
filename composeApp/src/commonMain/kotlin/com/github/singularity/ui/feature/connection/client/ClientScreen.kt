@@ -29,9 +29,15 @@ private fun ClientScreen(
 	uiState: ClientUiState,
 	execute: ClientIntent.() -> Unit,
 ) {
-
 	AnimatedContent(
 		targetState = uiState.connectionState,
+		contentKey = {
+			when (it) {
+				is ClientSyncState.Loading -> "Loading"
+				is ClientSyncState.NoDefaultServer -> "NoDefaultServer"
+				is ClientSyncState.WithDefaultServer -> "WithDefaultServer"
+			}
+		},
 		modifier = Modifier.fillMaxSize(),
 	) {
 		when (it) {
