@@ -3,10 +3,10 @@ package com.github.singularity.core.data.impl
 import androidx.compose.ui.graphics.Color
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datasource.database.PreferencesLocalDataSource
+import com.github.singularity.core.datasource.database.PreferencesModel
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.ThemeOption
-import com.github.singularity.core.shared.model.PreferencesModel
 import com.github.singularity.core.shared.util.onFirst
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
@@ -32,13 +32,13 @@ class SqlitePreferencesRepository(
 	        if (it != null) return@onFirst
 
             preferencesLocalDataSource.insert(
-                PreferencesModel(
-                    deviceId = Uuid.random().toString(),
-                    appSecret = Random.nextBytes(32).let { secret ->
-                        Base64.withPadding(Base64.PaddingOption.ABSENT)
-                            .encodeToByteArray(secret)
-                    }
-                )
+	            PreferencesModel(
+		            deviceId = Uuid.random().toString(),
+		            appSecret = Random.nextBytes(32).let { secret ->
+			            Base64.withPadding(Base64.PaddingOption.ABSENT)
+				            .encodeToByteArray(secret)
+		            }
+	            )
             )
 
         }
