@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface Logger {
 
-    fun i(tag: String?, message: String?)
+	fun i(message: String?)
 
-    fun e(tag: String?, message: String?, throwable: Throwable? = null)
+	fun e(message: String?, throwable: Throwable? = null)
 
     suspend fun clearLog()
 

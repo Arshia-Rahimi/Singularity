@@ -32,9 +32,9 @@ import singularity.composeapp.generated.resources.paired_nodes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HostedSyncGroupDetailsPage(
-    connectionState: ServerSyncState.Running,
-    execute: ServerIntent.() -> Unit,
+fun ServerSyncGroupDetailsPage(
+	connectionState: ServerSyncState.Running,
+	execute: ServerIntent.() -> Unit,
 ) {
 
 	Scaffold(
@@ -68,8 +68,8 @@ fun HostedSyncGroupDetailsPage(
 }
 
 private fun LazyGridScope.pairRequestItems(
-    connectionState: ServerSyncState.Running,
-    execute: ServerIntent.() -> Unit,
+	connectionState: ServerSyncState.Running,
+	execute: ServerIntent.() -> Unit,
 ) {
 	if (!connectionState.pairRequests.isEmpty()) {
 		stickyHeader(
@@ -101,8 +101,8 @@ private fun LazyGridScope.pairRequestItems(
 }
 
 private fun LazyGridScope.connectedDevicesItem(
-    connectionState: ServerSyncState.Running,
-    execute: ServerIntent.() -> Unit,
+	connectionState: ServerSyncState.Running,
+	execute: ServerIntent.() -> Unit,
 ) {
 	stickyHeader(
 		key = "connected_title",
@@ -131,8 +131,8 @@ private fun LazyGridScope.connectedDevicesItem(
 }
 
 private fun LazyGridScope.pairedAndNotConnectedItems(
-    connectionState: ServerSyncState.Running,
-    execute: ServerIntent.() -> Unit,
+	connectionState: ServerSyncState.Running,
+	execute: ServerIntent.() -> Unit,
 ) {
 	val pairedAndNotConnectedNodes =
 		connectionState.group.nodes.filter { it !in connectionState.connectedNodes }

@@ -40,7 +40,7 @@ import singularity.composeapp.generated.resources.plus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HostedSyncGroupIndexPage(
+fun ServerSyncGroupIndexPage(
 	uiState: ServerUiState,
 	execute: ServerIntent.() -> Unit,
 ) {

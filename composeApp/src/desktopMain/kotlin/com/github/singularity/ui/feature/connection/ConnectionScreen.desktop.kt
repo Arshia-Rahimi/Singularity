@@ -7,14 +7,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.syncservice.SyncService
 import com.github.singularity.ui.feature.connection.client.ClientScreen
 import com.github.singularity.ui.feature.connection.server.ServerScreen
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 actual fun ConnectionScreen() {
-    val viewModel = koinViewModel<ConnectionViewModel>()
-    val syncMode by viewModel.syncMode.collectAsStateWithLifecycle()
+	val syncService = koinInject<SyncService>()
+	val syncMode by syncService.syncMode.collectAsStateWithLifecycle()
 
     AnimatedContent(
         targetState = syncMode,

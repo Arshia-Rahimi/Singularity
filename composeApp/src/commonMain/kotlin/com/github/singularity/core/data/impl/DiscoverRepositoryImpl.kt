@@ -74,7 +74,7 @@ class DiscoverRepositoryImpl(
             }
 
         } catch (e: IOException) {
-            logger.e(this::class.simpleName, "failed to send pair request", e)
+	        logger.e("failed to send pair request", e)
             throw Exception("failed to send pair request: ${e.message}")
         }
     }

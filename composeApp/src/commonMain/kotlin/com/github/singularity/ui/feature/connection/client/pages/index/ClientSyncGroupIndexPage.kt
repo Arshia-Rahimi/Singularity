@@ -38,7 +38,7 @@ import singularity.composeapp.generated.resources.stop
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JoinedSyncGroupIndexPage(
+fun ClientSyncGroupIndexPage(
 	uiState: ClientUiState,
 	execute: ClientIntent.() -> Unit,
 ) {

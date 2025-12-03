@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.model.ServerSyncState
 import com.github.singularity.ui.designsystem.components.LinearLoader
-import com.github.singularity.ui.feature.connection.server.pages.details.HostedSyncGroupDetailsPage
-import com.github.singularity.ui.feature.connection.server.pages.index.HostedSyncGroupIndexPage
+import com.github.singularity.ui.feature.connection.server.pages.details.ServerSyncGroupDetailsPage
+import com.github.singularity.ui.feature.connection.server.pages.index.ServerSyncGroupIndexPage
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -27,8 +27,8 @@ fun ServerScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ServerScreen(
-    uiState: ServerUiState,
-    execute: ServerIntent.() -> Unit,
+	uiState: ServerUiState,
+	execute: ServerIntent.() -> Unit,
 ) {
 
     AnimatedContent(
@@ -46,12 +46,12 @@ private fun ServerScreen(
         when (it) {
             is ServerSyncState.Loading -> LinearLoader()
 
-            is ServerSyncState.NoDefaultServer -> HostedSyncGroupIndexPage(
+	        is ServerSyncState.NoDefaultServer -> ServerSyncGroupIndexPage(
                 uiState = uiState,
                 execute = execute,
             )
 
-            is ServerSyncState.Running -> HostedSyncGroupDetailsPage(
+	        is ServerSyncState.Running -> ServerSyncGroupDetailsPage(
 	            connectionState = it,
                 execute = execute,
             )

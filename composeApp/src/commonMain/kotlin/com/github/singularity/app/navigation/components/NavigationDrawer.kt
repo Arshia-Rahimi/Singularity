@@ -105,6 +105,7 @@ private fun DrawerContent(
 	) {
 		Column(
 			modifier = Modifier.fillMaxWidth(),
+			verticalArrangement = Arrangement.spacedBy(4.dp),
 		) {
 			Text(
 				text = Res.string.singularity.getString(),
@@ -132,6 +133,7 @@ private fun DrawerContent(
 
 		Column(
 			modifier = Modifier.fillMaxWidth(),
+			verticalArrangement = Arrangement.spacedBy(4.dp),
 		) {
 			NavigationDrawerItemBottom.entries.forEach { item ->
 				NavigationDrawerItem(

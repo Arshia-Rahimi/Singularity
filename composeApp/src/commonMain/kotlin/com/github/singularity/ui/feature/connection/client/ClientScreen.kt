@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.ui.designsystem.components.LinearLoader
-import com.github.singularity.ui.feature.connection.client.pages.details.JoinedSyncGroupDetailsPage
-import com.github.singularity.ui.feature.connection.client.pages.index.JoinedSyncGroupIndexPage
+import com.github.singularity.ui.feature.connection.client.pages.details.ClientSyncGroupDetailsPage
+import com.github.singularity.ui.feature.connection.client.pages.index.ClientSyncGroupIndexPage
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -43,12 +43,12 @@ private fun ClientScreen(
 		when (it) {
             is ClientSyncState.Loading -> LinearLoader()
 
-            is ClientSyncState.NoDefaultServer -> JoinedSyncGroupIndexPage(
+			is ClientSyncState.NoDefaultServer -> ClientSyncGroupIndexPage(
 				uiState = uiState,
 				execute = execute,
 			)
 
-            is ClientSyncState.WithDefaultServer -> JoinedSyncGroupDetailsPage(
+			is ClientSyncState.WithDefaultServer -> ClientSyncGroupDetailsPage(
                 syncState = it,
 				execute = execute,
 			)

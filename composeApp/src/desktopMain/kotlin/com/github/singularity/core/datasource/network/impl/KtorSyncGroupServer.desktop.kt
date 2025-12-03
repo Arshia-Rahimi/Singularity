@@ -135,7 +135,7 @@ class KtorSyncGroupServer(
 							try {
 								sendSerialized(event)
 							} catch (e: Exception) {
-								logger.e(this::class.simpleName, "outgoingEvent error", e)
+								logger.e("outgoingEvent error", e)
 							}
 						}
 					}
@@ -148,7 +148,7 @@ class KtorSyncGroupServer(
 								syncEventBridge.incomingEventCallback(event)
 							}
 						} catch (e: Exception) {
-							logger.e(this::class.simpleName, "incomingEvent error", e)
+							logger.e("incomingEvent error", e)
 						}
 					}
 

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,9 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.singularity.ui.designsystem.components.TopBar
+import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
+import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import org.koin.compose.viewmodel.koinViewModel
 import singularity.composeapp.generated.resources.Res
+import singularity.composeapp.generated.resources.clear
+import singularity.composeapp.generated.resources.clear_log
+import singularity.composeapp.generated.resources.clear_log_message
 import singularity.composeapp.generated.resources.logs
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,6 +40,7 @@ fun LogScreen() {
 	val log by viewModel.logStream.collectAsStateWithLifecycle()
 	val scrollState = rememberScrollState()
 	var isFirstScroll by remember { mutableStateOf(true) }
+	var showClearLogDialog by mutableStateOf(false)
 
 	LaunchedEffect(log) {
 		if (isFirstScroll) {
@@ -45,7 +53,21 @@ fun LogScreen() {
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
-		topBar = { TopBar(Res.string.logs.getString()) },
+		topBar = {
+			TopBar(
+				title = Res.string.logs.getString(),
+				actions = {
+					IconButton(
+						onClick = { showClearLogDialog = true },
+					) {
+						Icon(
+							painter = Res.drawable.clear.getPainter(),
+							contentDescription = Res.string.clear_log.getString(),
+						)
+					}
+				},
+			)
+		},
 	) { ip ->
 		Column(
 			modifier = Modifier
@@ -62,5 +84,12 @@ fun LogScreen() {
 				lineHeight = TextUnit(16f, TextUnitType.Sp),
 			)
 		}
+
+		ConfirmationDialog(
+			visible = showClearLogDialog,
+			onDismiss = { showClearLogDialog = false },
+			onConfirm = viewModel::clear,
+			message = Res.string.clear_log_message.getString(),
+		)
 	}
 }

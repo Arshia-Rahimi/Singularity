@@ -27,7 +27,7 @@ import singularity.composeapp.generated.resources.refresh
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JoinedSyncGroupDetailsPage(
+fun ClientSyncGroupDetailsPage(
 	syncState: ClientSyncState.WithDefaultServer,
 	execute: ClientIntent.() -> Unit,
 ) {

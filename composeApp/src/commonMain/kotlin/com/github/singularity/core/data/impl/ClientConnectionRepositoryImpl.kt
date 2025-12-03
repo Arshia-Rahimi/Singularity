@@ -48,18 +48,14 @@ class ClientConnectionRepositoryImpl(
 						emit(
 							ClientSyncState.ServerNotFound(defaultServer.syncGroupName, "timeout")
 						)
-						logger.e(this::class.simpleName, "server not found")
+						logger.e("server not found")
 						return@flow
 					}
 
 					while (true) {
 						syncRemoteDataSource.connect(server, defaultServer.authToken)
 							.catch {
-								logger.e(
-									this::class.simpleName,
-									"error connecting to server",
-									it
-								)
+								logger.e("error connecting to server", it)
 								emit(
 									ClientSyncState.ConnectionFailed(
 										defaultServer.syncGroupName,
