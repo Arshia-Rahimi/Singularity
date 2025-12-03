@@ -17,14 +17,14 @@ actual fun ConnectionScreen() {
 	val syncService = koinInject<SyncService>()
 	val syncMode by syncService.syncMode.collectAsStateWithLifecycle()
 
-    AnimatedContent(
-        targetState = syncMode,
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        when (it) {
-            SyncMode.Server -> ServerScreen()
-            SyncMode.Client -> ClientScreen()
-        }
-    }
+	AnimatedContent(
+		targetState = syncMode,
+		modifier = Modifier.fillMaxSize(),
+	) {
+		when (it) {
+			SyncMode.Server -> ServerScreen()
+			SyncMode.Client -> ClientScreen()
+		}
+	}
 
 }

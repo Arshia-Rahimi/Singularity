@@ -1,9 +1,9 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.HostedSyncGroupRepository
+import com.github.singularity.core.datasource.database.HostedSyncGroupModel
+import com.github.singularity.core.datasource.database.HostedSyncGroupNodeModel
 import com.github.singularity.core.datasource.database.HostedSyncGroupsLocalDataSource
-import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,24 +27,24 @@ class HostedSyncGroupRepositoryImpl(
         .flowOn(Dispatchers.IO)
         .shareInWhileSubscribed(scope, 1)
 
-    override suspend fun insert(group: HostedSyncGroup) {
+	override suspend fun insert(group: HostedSyncGroupModel) {
         hostedSyncGroupsLocalDataSource.insert(group)
     }
 
-    override suspend fun upsert(node: HostedSyncGroupNode) {
+	override suspend fun upsert(node: HostedSyncGroupNodeModel) {
         hostedSyncGroupsLocalDataSource.upsert(node)
     }
 
-    override suspend fun editName(groupName: String, group: HostedSyncGroup) {
-        hostedSyncGroupsLocalDataSource.updateName(groupName, group.hostedSyncGroupId)
+	override suspend fun editName(groupName: String, groupId: String) {
+		hostedSyncGroupsLocalDataSource.updateName(groupName, groupId)
     }
 
-    override suspend fun delete(group: HostedSyncGroup) {
-        hostedSyncGroupsLocalDataSource.delete(group)
+	override suspend fun delete(groupId: String) {
+		hostedSyncGroupsLocalDataSource.delete(groupId)
     }
 
-    override suspend fun setAsDefault(group: HostedSyncGroup) {
-        hostedSyncGroupsLocalDataSource.setAsDefault(group)
+	override suspend fun setAsDefault(groupId: String) {
+		hostedSyncGroupsLocalDataSource.setAsDefault(groupId)
     }
 
     override suspend fun removeAllDefaults() {

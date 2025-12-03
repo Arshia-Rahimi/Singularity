@@ -1,24 +1,22 @@
 package com.github.singularity.core.datasource.database
 
-import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.HostedSyncGroupNode
 import kotlinx.coroutines.flow.Flow
 
 interface HostedSyncGroupsLocalDataSource {
 
-    val hostedSyncGroups: Flow<List<HostedSyncGroup>>
+	val hostedSyncGroups: Flow<List<HostedSyncGroupModel>>
 
-    fun insert(syncGroup: HostedSyncGroup)
+	fun insert(syncGroup: HostedSyncGroupModel)
 
     fun updateName(groupName: String, groupId: String)
 
-    fun upsert(syncGroupNode: HostedSyncGroupNode)
+	fun upsert(syncGroupNode: HostedSyncGroupNodeModel)
 
-    fun delete(syncGroupNode: HostedSyncGroupNode)
+	fun delete(syncGroupNode: HostedSyncGroupNodeModel)
 
-    fun delete(syncGroup: HostedSyncGroup)
+	fun delete(groupId: String)
 
-    suspend fun setAsDefault(hostedSyncGroup: HostedSyncGroup)
+	suspend fun setAsDefault(groupId: String)
 
     suspend fun removeAllDefaults()
 

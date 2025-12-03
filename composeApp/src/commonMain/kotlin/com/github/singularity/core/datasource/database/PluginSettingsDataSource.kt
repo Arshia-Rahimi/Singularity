@@ -1,18 +1,17 @@
 package com.github.singularity.core.datasource.database
 
-import com.github.singularity.core.shared.model.PluginSettings
 import kotlinx.coroutines.flow.Flow
 
 interface PluginSettingsDataSource {
 
-    val pluginSettings: Flow<List<PluginSettings>>
+	val pluginSettingsModel: Flow<List<PluginSettingsModel>>
 
-	fun getPluginSettings(pluginName: String): Flow<PluginSettings?>
+	fun getPluginSettings(pluginName: String): Flow<PluginSettingsModel?>
 
-	suspend fun insert(vararg pluginSettings: PluginSettings)
+	suspend fun insert(vararg pluginSettingsModel: PluginSettingsModel)
 
-	suspend fun update(vararg pluginSettings: PluginSettings)
+	suspend fun update(vararg pluginSettingsModel: PluginSettingsModel)
 
-	suspend fun delete(vararg pluginSettings: PluginSettings)
+	suspend fun delete(vararg pluginSettingsModel: PluginSettingsModel)
 
 }

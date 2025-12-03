@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.ClientIntent
+import com.github.singularity.ui.feature.connection.client.PairedSyncGroup
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
 import singularity.composeapp.generated.resources.delete
@@ -29,7 +29,7 @@ import singularity.composeapp.generated.resources.delete_group
 
 @Composable
 fun LazyGridItemScope.JoinedSyncGroupItem(
-	joinedSyncGroup: JoinedSyncGroup,
+	joinedSyncGroup: PairedSyncGroup,
 	execute: ClientIntent.() -> Unit,
 ) {
 	var showDeletionDialog by remember { mutableStateOf(false) }
@@ -49,7 +49,7 @@ fun LazyGridItemScope.JoinedSyncGroupItem(
 	) {
 		Text(
 			fontSize = 16.sp,
-			text = joinedSyncGroup.syncGroupName,
+			text = joinedSyncGroup.groupName,
 			color = MaterialTheme.colorScheme.onSecondary,
 		)
 	}
@@ -57,7 +57,7 @@ fun LazyGridItemScope.JoinedSyncGroupItem(
 	ConfirmationDialog(
 		visible = showDeletionDialog,
 		title = Res.string.confirm_action.getString(),
-		message = Res.string.delete_group.getString(joinedSyncGroup.syncGroupName),
+		message = Res.string.delete_group.getString(joinedSyncGroup.groupName),
 		onConfirm = { ClientIntent.DeleteGroup(joinedSyncGroup).execute() },
 		onDismiss = { showDeletionDialog = false },
 		confirmText = Res.string.delete.getString(),

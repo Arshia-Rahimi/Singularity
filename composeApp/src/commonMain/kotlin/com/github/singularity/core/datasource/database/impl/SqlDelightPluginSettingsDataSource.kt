@@ -3,10 +3,10 @@ package com.github.singularity.core.datasource.database.impl
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.github.singularity.core.database.SingularityDatabase
+import com.github.singularity.core.datasource.database.PluginDataMap
 import com.github.singularity.core.datasource.database.PluginSettingsDataSource
-import com.github.singularity.core.shared.filterNotNull
-import com.github.singularity.core.shared.model.PluginDataMap
-import com.github.singularity.core.shared.model.PluginSettings
+import com.github.singularity.core.datasource.database.PluginSettingsModel
+import com.github.singularity.core.shared.util.filterNotNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
@@ -17,7 +17,7 @@ class SqlDelightPluginSettingsDataSource(
 
 	private val queries = db.pluginsQueries
 
-	override val pluginSettings = queries.index()
+	override val pluginSettingsModel = queries.index()
 		.asFlow()
 		.map { query ->
 			query.executeAsList()
@@ -27,7 +27,7 @@ class SqlDelightPluginSettingsDataSource(
 						.associate { it.data_key to it.data_value }
 						.filterNotNull()
 
-					PluginSettings(
+					PluginSettingsModel(
 						name = pluginName,
 						isEnabled = data.first().is_enabled.toBoolean(),
 						pluginDataMap = pluginData,
@@ -46,16 +46,16 @@ class SqlDelightPluginSettingsDataSource(
 				.associate { it.data_key to it.data_value }
 				.filterNotNull()
 
-			PluginSettings(
+			PluginSettingsModel(
 				name = queryResult.first().name,
 				isEnabled = queryResult.first().is_enabled.toBoolean(),
 				pluginDataMap = pluginData,
 			)
 		}
 
-	override suspend fun insert(vararg pluginSettings: PluginSettings) {
+	override suspend fun insert(vararg pluginSettingsModel: PluginSettingsModel) {
 		queries.transaction {
-			pluginSettings.forEach {
+			pluginSettingsModel.forEach {
 				queries.insert(
 					name = it.name,
 					is_enabled = it.isEnabled.toLong(),
@@ -71,9 +71,9 @@ class SqlDelightPluginSettingsDataSource(
 		}
 	}
 
-	override suspend fun update(vararg pluginSettings: PluginSettings) {
+	override suspend fun update(vararg pluginSettingsModel: PluginSettingsModel) {
 		queries.transaction {
-			pluginSettings.forEach {
+			pluginSettingsModel.forEach {
 				queries.update(
 					is_enabled = it.isEnabled.toLong(),
 					name = it.name,
@@ -89,9 +89,9 @@ class SqlDelightPluginSettingsDataSource(
 		}
 	}
 
-	override suspend fun delete(vararg pluginSettings: PluginSettings) {
+	override suspend fun delete(vararg pluginSettingsModel: PluginSettingsModel) {
 		queries.transaction {
-			pluginSettings.forEach {
+			pluginSettingsModel.forEach {
 				queries.delete(name = it.name)
 				it.pluginDataMap.toMap().forEach { (key, _) ->
 					queries.deletePluginData(

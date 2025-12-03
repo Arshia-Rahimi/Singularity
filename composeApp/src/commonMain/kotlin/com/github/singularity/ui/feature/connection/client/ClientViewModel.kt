@@ -1,15 +1,12 @@
 package com.github.singularity.ui.feature.connection.client
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
-import com.github.singularity.core.shared.model.ClientSyncState
-import com.github.singularity.core.shared.model.JoinedSyncGroup
-import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.core.syncservice.ClientSyncState
 import com.github.singularity.core.syncservice.SyncService
 import com.github.singularity.ui.feature.connection.client.pages.index.PairRequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,8 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,17 +29,20 @@ class ClientViewModel(
 		.filterIsInstance<ClientSyncState>()
 		.stateInWhileSubscribed(ClientSyncState.Loading)
 
-	private val shouldDiscover = MutableStateFlow(false)
-
-	private val availableServers = shouldDiscover.flatMapLatest {
-		if (it) discoverRepo.discoveredServers
-		else flowOf(null)
-	}.stateInWhileSubscribed(null)
+	private val availableServers = discoverRepo.discoveredServers
+		.map {
+			it.map { localServerModel -> localServerModel.toDiscoveredServer() }
+				.distinctBy { discoveredServer -> discoveredServer.groupId }
+		}.stateInWhileSubscribed(emptyList())
 
 	private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
-	private val joinedSyncGroups =
-		joinedSyncGroupRepo.joinedSyncGroups.stateInWhileSubscribed(emptyList())
+	private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups
+		.map {
+			it.map { joinedSyncGroupModel -> joinedSyncGroupModel.toPairedSyncGroup() }
+				.distinctBy { pairedSyncGroup -> pairedSyncGroup.groupId }
+		}
+		.stateInWhileSubscribed(emptyList())
 
 	val uiState = combine(
 		availableServers,
@@ -53,11 +52,9 @@ class ClientViewModel(
 	) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
 		ClientUiState(
 			connectionState = connectionState,
-			availableServers = availableServers?.distinctBy { it.syncGroupId }?.toMutableStateList()
-				?: mutableStateListOf(),
-			joinedSyncGroups = joinedSyncGroups.distinctBy { it.syncGroupId }.toMutableStateList(),
+			discoveredServers = availableServers.toMutableStateList(),
+			joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
 			sentPairRequestState = sentPairRequestState,
-			isDiscovering = availableServers != null,
 		)
 	}.stateInWhileSubscribed(ClientUiState())
 
@@ -68,18 +65,16 @@ class ClientViewModel(
 		is ClientIntent.CancelPairRequest -> cancelPairRequest()
 		is ClientIntent.DeleteGroup -> delete(intent.group)
 		is ClientIntent.SetAsDefault -> setAsDefault(intent.group)
-		is ClientIntent.StartDiscovery -> shouldDiscover.value = true
-		is ClientIntent.StopDiscovery -> shouldDiscover.value = false
 		is ClientIntent.RefreshConnection -> syncService.refresh()
 		is ClientIntent.ToIndex -> toIndex()
 	}
 
-	private fun sendPairRequest(server: LocalServer) {
+	private fun sendPairRequest(server: DiscoveredServer) {
 		pairRequestJob?.cancel()
 		viewModelScope.launch {
 			sentPairRequestState.value = PairRequestState.Awaiting(server)
 			try {
-				discoverRepo.sendPairRequest(server)
+				discoverRepo.sendPairRequest(server.toLocalServer())
 				sentPairRequestState.value = PairRequestState.Success(server)
 			} catch (e: Exception) {
 				sentPairRequestState.value = PairRequestState.Error(e.message ?: "failed")
@@ -95,14 +90,13 @@ class ClientViewModel(
 		sentPairRequestState.value = PairRequestState.Idle
 	}
 
-	private fun delete(group: JoinedSyncGroup) {
-		viewModelScope.launch { joinedSyncGroupRepo.delete(group) }
+	private fun delete(group: PairedSyncGroup) {
+		viewModelScope.launch { joinedSyncGroupRepo.delete(group.groupId) }
 	}
 
-	private fun setAsDefault(group: JoinedSyncGroup) {
+	private fun setAsDefault(group: PairedSyncGroup) {
 		viewModelScope.launch {
-			joinedSyncGroupRepo.setAsDefault(group)
-			shouldDiscover.value = false
+			joinedSyncGroupRepo.setAsDefault(group.groupId)
 		}
 	}
 
@@ -110,10 +104,6 @@ class ClientViewModel(
 		viewModelScope.launch {
 			discoverRepo.removeAllDefaults()
 		}
-	}
-
-	override fun onCleared() {
-		shouldDiscover.value = false
 	}
 
 }

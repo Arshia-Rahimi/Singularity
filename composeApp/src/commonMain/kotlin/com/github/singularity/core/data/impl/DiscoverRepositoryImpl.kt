@@ -3,15 +3,15 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.data.DiscoverRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
+import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
+import com.github.singularity.core.datasource.network.DeviceDiscoveryService
+import com.github.singularity.core.datasource.network.LocalServerModel
+import com.github.singularity.core.datasource.network.NodeModel
+import com.github.singularity.core.datasource.network.PairStatus
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
-import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.PAIR_CHECK_RETRY_MS
 import com.github.singularity.core.shared.deviceName
-import com.github.singularity.core.shared.model.JoinedSyncGroup
-import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.core.shared.model.Node
-import com.github.singularity.core.shared.model.http.PairStatus
 import com.github.singularity.core.shared.os
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +37,7 @@ class DiscoverRepositoryImpl(
         .catch {}
         .flowOn(Dispatchers.IO)
 
-    override suspend fun sendPairRequest(server: LocalServer) {
+	override suspend fun sendPairRequest(server: LocalServerModel) {
         try {
             val response = syncRemoteDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
             if (!response.success || response.pairRequestId == null) {
@@ -54,13 +54,13 @@ class DiscoverRepositoryImpl(
 
                 when (response.pairStatus) {
                     PairStatus.Approved -> {
-                        val newGroup = JoinedSyncGroup(
+	                    val newGroup = JoinedSyncGroupModel(
                             syncGroupId = response.node?.syncGroupId ?: "",
                             syncGroupName = response.node?.syncGroupName ?: "",
                             authToken = response.node?.authToken ?: "",
                         )
                         joinedSyncGroupsRepo.upsert(newGroup)
-                        joinedSyncGroupsRepo.setAsDefault(newGroup)
+	                    joinedSyncGroupsRepo.setAsDefault(newGroup.syncGroupId)
                         break
                     }
 
@@ -83,7 +83,7 @@ class DiscoverRepositoryImpl(
         joinedSyncGroupsRepo.removeAllDefaults()
     }
 
-    private suspend fun getCurrentDeviceAsNode() = Node(
+	private suspend fun getCurrentDeviceAsNode() = NodeModel(
         deviceName = deviceName,
         deviceOs = os,
         deviceId = preferencesRepo.preferences.first().deviceId,

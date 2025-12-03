@@ -12,10 +12,11 @@ class PluginsViewModel(
     private val pluginSettingsRepo: PluginSettingsRepository,
 ) : ViewModel() {
 
-    val uiState = pluginSettingsRepo.pluginSettings
+	val uiState = pluginSettingsRepo.pluginSettingsModel
         .map { pluginSettings ->
             PluginsUiState(
                 plugins = pluginSettings.sortedBy { pluginSettings -> pluginSettings.name }
+	                .map { it.toPlugin() }
                     .distinctBy { it.name }
                     .toMutableStateList(),
             )

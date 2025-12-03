@@ -1,19 +1,19 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.model.PluginDataMap
-import com.github.singularity.core.shared.model.PluginSettings
+import com.github.singularity.core.datasource.database.PluginDataMap
+import com.github.singularity.core.datasource.database.PluginSettingsModel
 import com.github.singularity.core.syncservice.plugin.Plugin
 import kotlinx.coroutines.flow.Flow
 
 interface PluginSettingsRepository {
 
-	val pluginSettings: Flow<List<PluginSettings>>
+	val pluginSettingsModel: Flow<List<PluginSettingsModel>>
 
 	suspend fun isEnabled(plugin: Plugin): Boolean
 
-	fun getPluginSettings(pluginName: String): Flow<PluginSettings?>
+	fun getPluginSettings(pluginName: String): Flow<PluginSettingsModel?>
 
-	suspend fun insert(vararg pluginSettings: PluginSettings)
+	suspend fun insert(vararg pluginSettingsModel: PluginSettingsModel)
 
 	suspend fun toggleIsEnabled(pluginName: String)
 

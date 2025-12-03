@@ -4,8 +4,8 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.datasource.database.PreferencesLocalDataSource
+import com.github.singularity.core.datasource.database.PreferencesModel
 import com.github.singularity.core.shared.AppTheme
-import com.github.singularity.core.shared.model.PreferencesModel
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -22,13 +22,13 @@ class SqlDelightPreferencesLocalDataSource(
         .mapToOneOrNull(Dispatchers.IO)
         .map {
             it?.let {
-                PreferencesModel(
-                    theme = AppTheme(it.themeOption.toEnum(), it.customPrimaryColor.toULong()),
-                    deviceId = it.deviceId,
-                    appSecret = it.appSecret.toByteArray(),
-                    syncMode = it.syncMode.toEnum(),
-                    scale = it.scale.toFloat(),
-                )
+	            PreferencesModel(
+		            theme = AppTheme(it.themeOption.toEnum(), it.customPrimaryColor.toULong()),
+		            deviceId = it.deviceId,
+		            appSecret = it.appSecret.toByteArray(),
+		            syncMode = it.syncMode.toEnum(),
+		            scale = it.scale.toFloat(),
+	            )
             }
         }
 

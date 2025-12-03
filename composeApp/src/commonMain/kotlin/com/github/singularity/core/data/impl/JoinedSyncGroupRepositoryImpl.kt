@@ -1,8 +1,8 @@
 package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.JoinedSyncGroupRepository
+import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
 import com.github.singularity.core.datasource.database.JoinedSyncGroupsLocalDataSource
-import com.github.singularity.core.shared.model.JoinedSyncGroup
 import com.github.singularity.core.shared.util.shareInWhileSubscribed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,16 +26,16 @@ class JoinedSyncGroupRepositoryImpl(
         .flowOn(Dispatchers.IO)
         .shareInWhileSubscribed(scope, 1)
 
-    override suspend fun upsert(group: JoinedSyncGroup) {
+	override suspend fun upsert(group: JoinedSyncGroupModel) {
         joinedSyncGroupsLocalDataSource.upsert(group)
     }
 
-    override suspend fun delete(group: JoinedSyncGroup) {
-        joinedSyncGroupsLocalDataSource.delete(group)
+	override suspend fun delete(groupId: String) {
+		joinedSyncGroupsLocalDataSource.delete(groupId)
     }
 
-    override suspend fun setAsDefault(group: JoinedSyncGroup) {
-        joinedSyncGroupsLocalDataSource.setAsDefault(group)
+	override suspend fun setAsDefault(groupId: String) {
+		joinedSyncGroupsLocalDataSource.setAsDefault(groupId)
     }
 
     override suspend fun removeAllDefaults() {

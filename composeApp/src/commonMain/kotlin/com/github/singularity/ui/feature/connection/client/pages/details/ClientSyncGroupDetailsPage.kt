@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.singularity.core.shared.model.ClientSyncState
+import com.github.singularity.core.syncservice.ClientSyncState
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString

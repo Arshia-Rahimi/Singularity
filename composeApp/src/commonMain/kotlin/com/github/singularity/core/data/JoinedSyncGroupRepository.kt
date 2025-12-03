@@ -1,19 +1,19 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.model.JoinedSyncGroup
+import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
 import kotlinx.coroutines.flow.SharedFlow
 
 interface JoinedSyncGroupRepository {
 
-    val joinedSyncGroups: SharedFlow<List<JoinedSyncGroup>>
+	val joinedSyncGroups: SharedFlow<List<JoinedSyncGroupModel>>
 
-    val defaultJoinedSyncGroup: SharedFlow<JoinedSyncGroup?>
+	val defaultJoinedSyncGroup: SharedFlow<JoinedSyncGroupModel?>
 
-    suspend fun upsert(group: JoinedSyncGroup)
+	suspend fun upsert(group: JoinedSyncGroupModel)
 
-    suspend fun delete(group: JoinedSyncGroup)
+	suspend fun delete(groupId: String)
 
-    suspend fun setAsDefault(group: JoinedSyncGroup)
+	suspend fun setAsDefault(groupId: String)
 
     suspend fun removeAllDefaults()
 

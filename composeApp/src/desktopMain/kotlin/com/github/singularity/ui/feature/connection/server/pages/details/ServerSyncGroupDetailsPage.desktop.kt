@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.model.ServerSyncState
+import com.github.singularity.core.syncservice.ServerSyncState
 import com.github.singularity.ui.designsystem.components.Grid
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter

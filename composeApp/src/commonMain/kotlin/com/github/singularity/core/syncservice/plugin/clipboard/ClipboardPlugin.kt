@@ -1,6 +1,6 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
-import com.github.singularity.core.datasource.memory.SyncEventBridge
+import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.ClipboardPluginEvent
 import com.github.singularity.core.syncservice.plugin.Plugin
 import com.github.singularity.core.syncservice.plugin.SyncEvent

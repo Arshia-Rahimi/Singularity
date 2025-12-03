@@ -20,16 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.model.LocalServer
 import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.ClientIntent
+import com.github.singularity.ui.feature.connection.client.DiscoveredServer
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.send_pair_request
 
 @Composable
 fun LazyGridItemScope.ServerItem(
-	server: LocalServer,
+	server: DiscoveredServer,
 	execute: ClientIntent.() -> Unit,
 ) {
     var showPairRequestDialog by remember { mutableStateOf(false) }
@@ -48,7 +48,7 @@ fun LazyGridItemScope.ServerItem(
             modifier = Modifier.fillMaxSize(),
         ) {
             Text(
-                text = server.syncGroupName,
+	            text = server.groupName,
                 fontSize = 16.sp,
             )
             Text(
@@ -64,7 +64,7 @@ fun LazyGridItemScope.ServerItem(
 
     ConfirmationDialog(
         visible = showPairRequestDialog,
-        message = Res.string.send_pair_request.getString(server.syncGroupName),
+	    message = Res.string.send_pair_request.getString(server.groupName),
         onConfirm = { ClientIntent.SendPairRequest(server).execute() },
         onDismiss = { showPairRequestDialog = false },
     )

@@ -1,6 +1,6 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.shared.model.ServerSyncState
+import com.github.singularity.core.syncservice.ServerSyncState
 import kotlinx.coroutines.flow.Flow
 
 interface ServerConnectionRepository {

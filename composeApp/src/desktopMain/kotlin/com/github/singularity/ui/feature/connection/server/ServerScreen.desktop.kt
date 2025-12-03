@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.singularity.core.shared.model.ServerSyncState
+import com.github.singularity.core.syncservice.ServerSyncState
 import com.github.singularity.ui.designsystem.components.LinearLoader
 import com.github.singularity.ui.feature.connection.server.pages.details.ServerSyncGroupDetailsPage
 import com.github.singularity.ui.feature.connection.server.pages.index.ServerSyncGroupIndexPage

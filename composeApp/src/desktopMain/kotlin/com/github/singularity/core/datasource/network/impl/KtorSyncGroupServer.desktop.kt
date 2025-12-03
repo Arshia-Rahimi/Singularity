@@ -1,18 +1,18 @@
 package com.github.singularity.core.datasource.network.impl
 
-import com.github.singularity.core.datasource.memory.AuthTokenDataSource
-import com.github.singularity.core.datasource.memory.PairRequestDataSource
-import com.github.singularity.core.datasource.memory.SyncEventBridge
+import com.github.singularity.core.datasource.database.HostedSyncGroupModel
+import com.github.singularity.core.datasource.database.HostedSyncGroupNodeModel
+import com.github.singularity.core.datasource.network.AuthTokenDataSource
+import com.github.singularity.core.datasource.network.PairCheckRequestDto
+import com.github.singularity.core.datasource.network.PairCheckResponseDto
+import com.github.singularity.core.datasource.network.PairRequestDataSource
+import com.github.singularity.core.datasource.network.PairRequestDto
+import com.github.singularity.core.datasource.network.PairResponseDto
+import com.github.singularity.core.datasource.network.PairStatus
 import com.github.singularity.core.datasource.network.SyncGroupServer
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.SERVER_PORT
-import com.github.singularity.core.shared.model.HostedSyncGroup
-import com.github.singularity.core.shared.model.HostedSyncGroupNode
-import com.github.singularity.core.shared.model.http.PairCheckRequest
-import com.github.singularity.core.shared.model.http.PairCheckResponse
-import com.github.singularity.core.shared.model.http.PairRequest
-import com.github.singularity.core.shared.model.http.PairResponse
-import com.github.singularity.core.shared.model.http.PairStatus
+import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -60,7 +60,7 @@ class KtorSyncGroupServer(
 
 	private var syncGroupId: String? = null
 
-	private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNode>>(emptyList())
+	private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNodeModel>>(emptyList())
 	override val connectedNodes = _connectedNodes.asStateFlow()
 
 	private var serverStatusPlugin = createApplicationPlugin("ServerStatusPlugin") {
@@ -100,7 +100,7 @@ class KtorSyncGroupServer(
 		}.start(wait = false)
 	}
 
-	override fun start(group: HostedSyncGroup) {
+	override fun start(group: HostedSyncGroupModel) {
 		_connectedNodes.value = emptyList()
 		syncGroupId = group.hostedSyncGroupId
 	}
@@ -117,7 +117,7 @@ class KtorSyncGroupServer(
 				webSocket("/ws/sync") {
 					val converter = converter ?: return@webSocket
 
-					val node = call.principal<HostedSyncGroupNode>()
+					val node = call.principal<HostedSyncGroupNodeModel>()
 					if (node == null || node.syncGroupId != syncGroupId) {
 						close(
 							CloseReason(
@@ -161,46 +161,46 @@ class KtorSyncGroupServer(
 			contentType(ContentType.Application.Json) {
 				post("/api/pair") {
 					val groupId = syncGroupId
-					val pairRequest = call.receive<PairRequest>()
+					val pairRequest = call.receive<PairRequestDto>()
 
 					if (groupId == null || pairRequest.syncGroupId != groupId) {
-						call.respond(PairResponse(false))
+						call.respond(PairResponseDto(false))
 						return@post
 					}
 
 					val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
 					pairRequestRepo.add(requestId, pairRequest)
 
-					call.respond(PairResponse(true, requestId))
+					call.respond(PairResponseDto(true, requestId))
 
 				}
 
 				get("/api/pairCheck") {
 					val groupId = syncGroupId
-					val request = call.receive<PairCheckRequest>()
+					val request = call.receive<PairCheckRequestDto>()
 					val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
 					if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
-						call.respond(PairCheckResponse(PairStatus.Error))
+						call.respond(PairCheckResponseDto(PairStatus.Error))
 						return@get
 					}
 
 					if (pairCheck.status != PairStatus.Approved) {
-						call.respond(PairCheckResponse(pairCheck.status))
+						call.respond(PairCheckResponseDto(pairCheck.status))
 						return@get
 					}
 
 					val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
 
 					if (hostedNode == null) {
-						call.respond(PairCheckResponse(PairStatus.Error))
+						call.respond(PairCheckResponseDto(PairStatus.Error))
 						return@get
 					}
 
 					pairRequestRepo.remove(request.pairRequestId)
 
 					call.respond(
-						PairCheckResponse(
+						PairCheckResponseDto(
 							pairStatus = pairCheck.status,
 							node = hostedNode,
 						)

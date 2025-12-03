@@ -1,28 +1,19 @@
 package com.github.singularity.ui.feature.connection.client.pages.index
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.singularity.ui.designsystem.components.Grid
-import com.github.singularity.ui.designsystem.components.PulseAnimation
 import com.github.singularity.ui.designsystem.components.TopBar
-import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.ClientIntent
 import com.github.singularity.ui.feature.connection.client.ClientUiState
@@ -31,10 +22,7 @@ import singularity.composeapp.generated.resources.available_servers
 import singularity.composeapp.generated.resources.await_pair_request_approval
 import singularity.composeapp.generated.resources.discover
 import singularity.composeapp.generated.resources.joined_sync_groups
-import singularity.composeapp.generated.resources.radar
 import singularity.composeapp.generated.resources.rejected_pair_request_approval
-import singularity.composeapp.generated.resources.searching_dotted
-import singularity.composeapp.generated.resources.stop
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,19 +37,11 @@ fun ClientSyncGroupIndexPage(
 			)
 		},
 	) { ip ->
-
 		Grid(ip) {
-
 			joinedSyncGroupItems(uiState, execute)
-
 			sentPairRequestItem(uiState)
-
 			discoveredServerItems(uiState, execute)
-
-			discoverAnimationItem(uiState, execute)
-
 		}
-
 	}
 }
 
@@ -76,7 +56,7 @@ private fun LazyGridScope.sentPairRequestItem(
 			when (pairRequestState) {
 				is PairRequestState.Awaiting -> Text(
 					Res.string.await_pair_request_approval.getString(
-						pairRequestState.server.syncGroupName
+						pairRequestState.server.groupName
 					)
 				)
 
@@ -115,8 +95,8 @@ private fun LazyGridScope.joinedSyncGroupItems(
 		}
 
 		items(
-			items = uiState.joinedSyncGroups.distinctBy { it.syncGroupId },
-			key = { "joined_${it.syncGroupId}" },
+			items = uiState.joinedSyncGroups.distinctBy { it.groupId },
+			key = { "joined_${it.groupId}" },
 			contentType = { it },
 		) {
 			JoinedSyncGroupItem(
@@ -131,100 +111,33 @@ private fun LazyGridScope.discoveredServerItems(
 	uiState: ClientUiState,
 	execute: ClientIntent.() -> Unit,
 ) {
-	if (uiState.isDiscovering) {
-		if (!uiState.availableServers.isEmpty()) {
-			stickyHeader(
-				key = "available_title",
-				contentType = "title",
-			) {
-				Row(
-					modifier = Modifier
-						.animateItem()
-						.fillMaxWidth()
-						.padding(vertical = 8.dp, horizontal = 12.dp),
-				) {
-					Text(
-						text = Res.string.available_servers.getString(),
-						fontSize = 20.sp,
-					)
-				}
-			}
-
-			items(
-				items = uiState.availableServers.distinctBy { it.syncGroupId },
-				key = { "available${it.syncGroupId}" },
-				contentType = { it },
-			) {
-				ServerItem(
-					server = it,
-					execute = execute,
-				)
-			}
-		}
-	} else {
+	if (!uiState.discoveredServers.isEmpty()) {
 		stickyHeader(
-			key = "discover_title",
+			key = "available_title",
 			contentType = "title",
 		) {
 			Row(
 				modifier = Modifier
 					.animateItem()
 					.fillMaxWidth()
-					.padding(vertical = 8.dp),
-				verticalAlignment = Alignment.CenterVertically,
-				horizontalArrangement = Arrangement.Center,
+					.padding(vertical = 8.dp, horizontal = 12.dp),
 			) {
-				IconButton(
-					onClick = { ClientIntent.StartDiscovery.execute() },
-				) {
-					Icon(
-						painter = Res.drawable.radar.getPainter(),
-						contentDescription = "discover",
-					)
-				}
+				Text(
+					text = Res.string.available_servers.getString(),
+					fontSize = 20.sp,
+				)
 			}
 		}
-	}
 
-}
-
-private fun LazyGridScope.discoverAnimationItem(
-	uiState: ClientUiState,
-	execute: ClientIntent.() -> Unit,
-) {
-	if (uiState.isDiscovering) {
-		stickyHeader(
-			key = "pulse_animation",
-			contentType = "animation",
+		items(
+			items = uiState.discoveredServers.distinctBy { it.groupId },
+			key = { "available${it.groupId}" },
+			contentType = { it },
 		) {
-			Column(
-				modifier = Modifier
-					.animateItem()
-					.fillMaxWidth()
-					.padding(vertical = 8.dp),
-				horizontalAlignment = Alignment.CenterHorizontally,
-			) {
-				PulseAnimation(
-					modifier = Modifier.size(150.dp)
-				) {
-					Text(
-						text = Res.string.searching_dotted.getString(),
-					)
-				}
-
-				Row(
-					modifier = Modifier.fillMaxWidth(),
-					horizontalArrangement = Arrangement.SpaceEvenly,
-				) {
-					TextButton(
-						onClick = { ClientIntent.StopDiscovery.execute() },
-					) {
-						Text(
-							text = Res.string.stop.getString(),
-						)
-					}
-				}
-			}
+			ServerItem(
+				server = it,
+				execute = execute,
+			)
 		}
 	}
 }

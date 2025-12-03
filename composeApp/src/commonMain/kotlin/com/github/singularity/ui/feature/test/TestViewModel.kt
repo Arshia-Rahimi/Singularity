@@ -2,8 +2,8 @@ package com.github.singularity.ui.feature.test
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.singularity.core.datasource.memory.SyncEventBridge
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
+import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.ClipboardPluginEvent
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import kotlinx.coroutines.flow.runningFold

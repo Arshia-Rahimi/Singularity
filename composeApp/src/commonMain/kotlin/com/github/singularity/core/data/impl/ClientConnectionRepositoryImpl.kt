@@ -2,13 +2,13 @@ package com.github.singularity.core.data.impl
 
 import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.JoinedSyncGroupRepository
+import com.github.singularity.core.datasource.network.DeviceDiscoveryService
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
-import com.github.singularity.core.datasource.presence.DeviceDiscoveryService
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.DISCOVER_TIMEOUT_MS
 import com.github.singularity.core.shared.WEBSOCKET_CONNECTION_RETRY_MS
-import com.github.singularity.core.shared.model.ClientSyncState
 import com.github.singularity.core.shared.util.sendPulse
+import com.github.singularity.core.syncservice.ClientSyncState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO

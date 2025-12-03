@@ -1,15 +1,10 @@
 package com.github.singularity.ui.feature.connection.client
 
-import com.github.singularity.core.shared.model.JoinedSyncGroup
-import com.github.singularity.core.shared.model.LocalServer
-
 sealed interface ClientIntent {
-    data class SendPairRequest(val server: LocalServer) : ClientIntent
-    data class DeleteGroup(val group: JoinedSyncGroup) : ClientIntent
-    data class SetAsDefault(val group: JoinedSyncGroup) : ClientIntent
+	data class SendPairRequest(val server: DiscoveredServer) : ClientIntent
+	data class DeleteGroup(val group: PairedSyncGroup) : ClientIntent
+	data class SetAsDefault(val group: PairedSyncGroup) : ClientIntent
     data object CancelPairRequest : ClientIntent
-    data object StartDiscovery : ClientIntent
-    data object StopDiscovery : ClientIntent
 	data object RefreshConnection : ClientIntent
     data object ToIndex : ClientIntent
 }

@@ -1,16 +1,16 @@
 package com.github.singularity.core.datasource.network.impl
 
-import com.github.singularity.core.datasource.memory.SyncEventBridge
+import com.github.singularity.core.datasource.network.LocalServerModel
+import com.github.singularity.core.datasource.network.NodeModel
+import com.github.singularity.core.datasource.network.PairCheckRequestDto
+import com.github.singularity.core.datasource.network.PairCheckResponseDto
+import com.github.singularity.core.datasource.network.PairRequestDto
+import com.github.singularity.core.datasource.network.PairResponseDto
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.SERVER_PORT
-import com.github.singularity.core.shared.model.LocalServer
-import com.github.singularity.core.shared.model.Node
-import com.github.singularity.core.shared.model.http.PairCheckRequest
-import com.github.singularity.core.shared.model.http.PairCheckResponse
-import com.github.singularity.core.shared.model.http.PairRequest
-import com.github.singularity.core.shared.model.http.PairResponse
 import com.github.singularity.core.shared.util.Success
+import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -55,7 +55,7 @@ class KtorSyncRemoteDataSource(
 	    }
     }
 
-    override fun connect(server: LocalServer, token: String) = flow {
+	override fun connect(server: LocalServerModel, token: String) = flow {
 	    client.webSocket(
 		    host = server.ip,
 		    port = SERVER_PORT,
@@ -98,11 +98,11 @@ class KtorSyncRemoteDataSource(
 	    }
     }
 
-    override suspend fun sendPairRequest(server: LocalServer, currentDevice: Node) =
+	override suspend fun sendPairRequest(server: LocalServerModel, currentDevice: NodeModel) =
         client.post("http://${server.ip}:${SERVER_PORT}/api/pair") {
             contentType(ContentType.Application.Json)
             setBody(
-	            PairRequest(
+	            PairRequestDto(
 		            deviceName = currentDevice.deviceName,
 		            deviceId = currentDevice.deviceId,
 		            deviceOs = currentDevice.deviceOs,
@@ -110,19 +110,19 @@ class KtorSyncRemoteDataSource(
 		            syncGroupId = server.syncGroupId,
 	            )
             )
-        }.body<PairResponse>()
+        }.body<PairResponseDto>()
 
     override suspend fun sendPairCheckRequest(
-	    server: LocalServer,
+	    server: LocalServerModel,
 	    pairRequestId: Int
     ) = client.get("http://${server.ip}:${SERVER_PORT}/api/pairCheck") {
         contentType(ContentType.Application.Json)
         setBody(
-	        PairCheckRequest(
+	        PairCheckRequestDto(
 		        pairRequestId = pairRequestId,
 		        syncGroupId = server.syncGroupId,
 	        )
         )
-    }.body<PairCheckResponse>()
+    }.body<PairCheckResponseDto>()
 
 }

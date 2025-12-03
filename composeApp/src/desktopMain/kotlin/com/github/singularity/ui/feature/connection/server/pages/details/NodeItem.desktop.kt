@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.model.Node
+import com.github.singularity.core.datasource.network.NodeModel
 import com.github.singularity.ui.designsystem.shared.components.dialogs.ApprovalDialog
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.server.ServerIntent
@@ -30,7 +30,7 @@ import singularity.composeapp.generated.resources.reject_or_approve
 @Composable
 fun LazyGridItemScope.NodeItem(
 	isPairRequest: Boolean = false,
-	node: Node,
+	node: NodeModel,
 	execute: ServerIntent.() -> Unit,
 ) {
     var showApproveNodeDialog by remember { mutableStateOf(false) }

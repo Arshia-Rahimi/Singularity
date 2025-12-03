@@ -29,12 +29,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.shared.model.HostedSyncGroup
 import com.github.singularity.ui.designsystem.shared.components.dialogs.ConfirmationDialog
 import com.github.singularity.ui.designsystem.shared.components.dialogs.InputDialog
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.designsystem.shared.onCondition
+import com.github.singularity.ui.feature.connection.server.HostedSyncGroup
 import com.github.singularity.ui.feature.connection.server.ServerIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.confirm_action
@@ -81,12 +81,12 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 			Column {
 				Text(
 					fontSize = 16.sp,
-					text = hostedSyncGroup.name,
+					text = hostedSyncGroup.groupName,
 					color = textColor,
 				)
 
 				Text(
-					text = "${hostedSyncGroup.nodes.size} ${Res.string.nodes_paired.getString()}",
+					text = "${hostedSyncGroup.pairedNodesCount} ${Res.string.nodes_paired.getString()}",
 					fontSize = 12.sp,
 					color = textColor,
 				)
@@ -142,7 +142,7 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 	ConfirmationDialog(
 		visible = showDeletionDialog,
 		title = Res.string.confirm_action.getString(),
-		message = Res.string.delete_group.getString(hostedSyncGroup.name),
+		message = Res.string.delete_group.getString(hostedSyncGroup.groupName),
 		onConfirm = { ServerIntent.DeleteGroup(hostedSyncGroup).execute() },
 		onDismiss = { showDeletionDialog = false },
 		confirmText = Res.string.delete.getString(),
@@ -152,7 +152,7 @@ fun LazyGridItemScope.HostedSyncGroupItem(
 		visible = showEditDialog,
 		title = Res.string.edit_group_name.getString(),
 		onConfirm = { ServerIntent.EditGroupName(it, hostedSyncGroup).execute() },
-		initialValue = hostedSyncGroup.name,
+		initialValue = hostedSyncGroup.groupName,
 		onDismiss = {
 			showEditDialog = false
 			focusManager.clearFocus()
