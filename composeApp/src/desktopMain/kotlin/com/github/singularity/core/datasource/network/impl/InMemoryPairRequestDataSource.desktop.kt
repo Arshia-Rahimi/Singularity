@@ -40,7 +40,9 @@ class InMemoryPairRequestDataSource : PairRequestDataSource {
 
     override fun get(id: Int) = requests.value.firstOrNull { it.requestId == id }
 
-    override fun clear() {
+	override fun get(nodeId: String) = requests.value.firstOrNull { it.node.deviceId == nodeId }
+
+	override fun clear() {
         _requests.value = emptyList()
     }
 

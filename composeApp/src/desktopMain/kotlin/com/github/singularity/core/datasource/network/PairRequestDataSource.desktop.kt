@@ -16,6 +16,8 @@ interface PairRequestDataSource {
 
 	fun get(id: Int): PairCheckModel?
 
+	fun get(nodeId: String): PairCheckModel?
+
     fun clear()
 
 }

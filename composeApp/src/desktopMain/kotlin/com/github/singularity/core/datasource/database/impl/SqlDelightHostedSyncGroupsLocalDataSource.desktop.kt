@@ -73,13 +73,13 @@ class SqlDelightHostedSyncGroupsLocalDataSource(
         }
     }
 
-	override fun delete(syncGroupNode: HostedSyncGroupNodeModel) {
-        nodesQueries.delete(syncGroupNode.deviceId)
-    }
-
 	override fun delete(groupId: String) {
 		queries.delete(groupId)
     }
+
+	override fun delete(groupId: String, nodeId: String) {
+		nodesQueries.delete(groupId, nodeId)
+	}
 
 	override suspend fun setAsDefault(groupId: String) {
         val groups = hostedSyncGroups.first()

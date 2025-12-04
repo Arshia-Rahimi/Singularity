@@ -12,9 +12,9 @@ interface HostedSyncGroupsLocalDataSource {
 
 	fun upsert(syncGroupNode: HostedSyncGroupNodeModel)
 
-	fun delete(syncGroupNode: HostedSyncGroupNodeModel)
-
 	fun delete(groupId: String)
+
+	fun delete(groupId: String, nodeId: String)
 
 	suspend fun setAsDefault(groupId: String)
 

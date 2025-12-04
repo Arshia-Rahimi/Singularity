@@ -1,5 +1,6 @@
 package com.github.singularity.core.datasource.network.impl
 
+import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.datasource.database.HostedSyncGroupModel
 import com.github.singularity.core.datasource.database.HostedSyncGroupNodeModel
 import com.github.singularity.core.datasource.network.AuthTokenDataSource
@@ -55,6 +56,7 @@ class KtorSyncGroupServer(
 	private val syncEventBridge: SyncEventBridge,
 	private val authTokenRepo: AuthTokenDataSource,
 	private val pairRequestRepo: PairRequestDataSource,
+	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
 	private val logger: Logger,
 ) : SyncGroupServer {
 
@@ -160,14 +162,27 @@ class KtorSyncGroupServer(
 			// http
 			contentType(ContentType.Application.Json) {
 				post("/api/pair") {
-					val groupId = syncGroupId
+					val groupId = syncGroupId ?: return@post
 					val pairRequest = call.receive<PairRequestDto>()
 
-					if (groupId == null || pairRequest.syncGroupId != groupId) {
+					if (pairRequest.syncGroupId != groupId) {
 						call.respond(PairResponseDto(false))
 						return@post
 					}
 
+					val hasRequestedBefore = pairRequestRepo.get(pairRequest.deviceId) != null
+					if (hasRequestedBefore) {
+						call.respond(PairResponseDto(false))
+					}
+
+					val hasPairedBefore = hostedSyncGroupRepo.hasPairedBefore(
+						pairRequest.deviceId,
+						pairRequest.syncGroupId
+					)
+					if (hasPairedBefore) {
+						hostedSyncGroupRepo.delete(pairRequest.syncGroupId, pairRequest.deviceId)
+					}
+					
 					val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
 					pairRequestRepo.add(requestId, pairRequest)
 
@@ -176,17 +191,21 @@ class KtorSyncGroupServer(
 				}
 
 				get("/api/pairCheck") {
-					val groupId = syncGroupId
+					val groupId = syncGroupId ?: return@get
 					val request = call.receive<PairCheckRequestDto>()
 					val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-					if (groupId == null || groupId != request.syncGroupId || pairCheck == null) {
+					if (groupId != request.syncGroupId || pairCheck == null) {
 						call.respond(PairCheckResponseDto(PairStatus.Error))
 						return@get
 					}
 
 					if (pairCheck.status != PairStatus.Approved) {
 						call.respond(PairCheckResponseDto(pairCheck.status))
+
+						if (pairCheck.status == PairStatus.Rejected)
+							pairRequestRepo.remove(pairCheck.requestId)
+
 						return@get
 					}
 
