@@ -29,20 +29,17 @@ class ClientViewModel(
 		.filterIsInstance<ClientSyncState>()
 		.stateInWhileSubscribed(ClientSyncState.Loading)
 
-	private val availableServers = discoverRepo.discoveredServers
-		.map {
-			it.map { localServerModel -> localServerModel.toDiscoveredServer() }
-				.distinctBy { discoveredServer -> discoveredServer.groupId }
-		}.stateInWhileSubscribed(emptyList())
+	private val availableServers = discoverRepo.discoveredServers.map {
+		it.map { localServerModel -> localServerModel.toDiscoveredServer() }
+			.distinctBy { discoveredServer -> discoveredServer.groupId }
+	}.stateInWhileSubscribed(emptyList())
+
+	private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups.map {
+		it.map { joinedSyncGroupModel -> joinedSyncGroupModel.toPairedSyncGroup() }
+			.distinctBy { pairedSyncGroup -> pairedSyncGroup.groupId }
+	}.stateInWhileSubscribed(emptyList())
 
 	private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
-
-	private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups
-		.map {
-			it.map { joinedSyncGroupModel -> joinedSyncGroupModel.toPairedSyncGroup() }
-				.distinctBy { pairedSyncGroup -> pairedSyncGroup.groupId }
-		}
-		.stateInWhileSubscribed(emptyList())
 
 	val uiState = combine(
 		availableServers,
@@ -52,9 +49,17 @@ class ClientViewModel(
 	) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
 		ClientUiState(
 			connectionState = connectionState,
-			discoveredServers = availableServers.toMutableStateList(),
-			joinedSyncGroups = joinedSyncGroups.toMutableStateList(),
 			sentPairRequestState = sentPairRequestState,
+
+			discoveredServers = availableServers.filter { availableServer ->
+				availableServer.groupId !in joinedSyncGroups.map { it.groupId }
+			}.toMutableStateList(),
+
+			joinedSyncGroups = joinedSyncGroups.map { joinedGroup ->
+				val isAvailable = availableServers
+					.find { joinedGroup.groupId == it.groupId } != null
+				joinedGroup.copy(isAvailable = isAvailable)
+			}.toMutableStateList(),
 		)
 	}.stateInWhileSubscribed(ClientUiState())
 

@@ -1,11 +1,11 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.datasource.database.HostedSyncGroupModel
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.Flow
 
 interface BroadcastRepository {
 
-	val syncGroups: SharedFlow<List<HostedSyncGroupModel>>
+	val syncGroups: Flow<List<HostedSyncGroupModel>>
 
 	suspend fun create(group: HostedSyncGroupModel)
 
