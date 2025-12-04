@@ -1,18 +1,18 @@
 package com.github.singularity.core.datasource.network.impl
 
 import com.bfo.zeroconf.Service
-import com.github.singularity.core.datasource.network.LocalServerModel
+import com.github.singularity.core.datasource.network.LocalServerDto
 import java.net.Inet4Address
 
 sealed interface MdnsEvent {
-	val server: LocalServerModel
+	val server: LocalServerDto
 
-	data class Resolved(override val server: LocalServerModel) : MdnsEvent
-	data class Removed(override val server: LocalServerModel) : MdnsEvent
+	data class Resolved(override val server: LocalServerDto) : MdnsEvent
+	data class Removed(override val server: LocalServerDto) : MdnsEvent
 }
 
 
-fun Service.toServer() = LocalServerModel(
+fun Service.toServer() = LocalServerDto(
 	ip = addresses.firstOrNull {
 		it is Inet4Address && !it.isLoopbackAddress
 	}?.hostAddress ?: "Unknown",

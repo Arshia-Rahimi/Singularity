@@ -5,7 +5,7 @@ import com.bfo.zeroconf.Zeroconf
 import com.bfo.zeroconf.ZeroconfListener
 import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
 import com.github.singularity.core.datasource.network.DeviceDiscoveryService
-import com.github.singularity.core.datasource.network.LocalServerModel
+import com.github.singularity.core.datasource.network.LocalServerDto
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -45,7 +45,7 @@ class ZeroconfDeviceDiscoveryService : DeviceDiscoveryService {
 		}
 	}
 
-	override fun discoverServers(): Flow<List<LocalServerModel>> = servers
+	override fun discoverServers(): Flow<List<LocalServerDto>> = servers
 		.runningFold(emptyList()) { list, newServer ->
 			when (newServer) {
 				is MdnsEvent.Removed -> list - newServer.server
@@ -53,7 +53,7 @@ class ZeroconfDeviceDiscoveryService : DeviceDiscoveryService {
 			}.distinctBy { it.syncGroupId }
 		}
 
-	override suspend fun findServer(syncGroup: JoinedSyncGroupModel): LocalServerModel? =
+	override suspend fun findServer(syncGroup: JoinedSyncGroupModel): LocalServerDto? =
 		servers.filterIsInstance<MdnsEvent.Resolved>()
 			.map { it.server }
 			.firstOrNull { it.syncGroupId == syncGroup.syncGroupId }

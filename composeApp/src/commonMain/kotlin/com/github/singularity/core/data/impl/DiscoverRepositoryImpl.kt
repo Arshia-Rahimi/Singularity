@@ -5,8 +5,8 @@ import com.github.singularity.core.data.JoinedSyncGroupRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
 import com.github.singularity.core.datasource.network.DeviceDiscoveryService
-import com.github.singularity.core.datasource.network.LocalServerModel
-import com.github.singularity.core.datasource.network.NodeModel
+import com.github.singularity.core.datasource.network.LocalServerDto
+import com.github.singularity.core.datasource.network.NodeDto
 import com.github.singularity.core.datasource.network.PairStatus
 import com.github.singularity.core.datasource.network.SyncRemoteDataSource
 import com.github.singularity.core.log.Logger
@@ -37,7 +37,7 @@ class DiscoverRepositoryImpl(
         .catch {}
         .flowOn(Dispatchers.IO)
 
-	override suspend fun sendPairRequest(server: LocalServerModel) {
+    override suspend fun sendPairRequest(server: LocalServerDto) {
         try {
             val response = syncRemoteDataSource.sendPairRequest(server, getCurrentDeviceAsNode())
             if (!response.success || response.pairRequestId == null) {
@@ -83,7 +83,7 @@ class DiscoverRepositoryImpl(
         joinedSyncGroupsRepo.removeAllDefaults()
     }
 
-	private suspend fun getCurrentDeviceAsNode() = NodeModel(
+    private suspend fun getCurrentDeviceAsNode() = NodeDto(
         deviceName = deviceName,
         deviceOs = os,
         deviceId = preferencesRepo.preferences.first().deviceId,

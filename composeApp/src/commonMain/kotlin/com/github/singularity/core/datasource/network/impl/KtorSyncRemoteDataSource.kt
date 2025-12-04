@@ -1,7 +1,7 @@
 package com.github.singularity.core.datasource.network.impl
 
-import com.github.singularity.core.datasource.network.LocalServerModel
-import com.github.singularity.core.datasource.network.NodeModel
+import com.github.singularity.core.datasource.network.LocalServerDto
+import com.github.singularity.core.datasource.network.NodeDto
 import com.github.singularity.core.datasource.network.PairCheckRequestDto
 import com.github.singularity.core.datasource.network.PairCheckResponseDto
 import com.github.singularity.core.datasource.network.PairRequestDto
@@ -55,7 +55,7 @@ class KtorSyncRemoteDataSource(
 	    }
     }
 
-	override fun connect(server: LocalServerModel, token: String) = flow {
+	override fun connect(server: LocalServerDto, token: String) = flow {
 	    client.webSocket(
 		    host = server.ip,
 		    port = SERVER_PORT,
@@ -98,7 +98,7 @@ class KtorSyncRemoteDataSource(
 	    }
     }
 
-	override suspend fun sendPairRequest(server: LocalServerModel, currentDevice: NodeModel) =
+	override suspend fun sendPairRequest(server: LocalServerDto, currentDevice: NodeDto) =
         client.post("http://${server.ip}:${SERVER_PORT}/api/pair") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -113,7 +113,7 @@ class KtorSyncRemoteDataSource(
         }.body<PairResponseDto>()
 
     override suspend fun sendPairCheckRequest(
-	    server: LocalServerModel,
+	    server: LocalServerDto,
 	    pairRequestId: Int
     ) = client.get("http://${server.ip}:${SERVER_PORT}/api/pairCheck") {
         contentType(ContentType.Application.Json)

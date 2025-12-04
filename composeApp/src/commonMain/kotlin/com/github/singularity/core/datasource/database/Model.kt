@@ -1,6 +1,6 @@
 package com.github.singularity.core.datasource.database
 
-import com.github.singularity.core.datasource.network.NodeModel
+import com.github.singularity.core.datasource.network.NodeDto
 import com.github.singularity.core.shared.AppTheme
 import com.github.singularity.core.shared.SyncMode
 import kotlinx.serialization.Serializable
@@ -43,7 +43,7 @@ data class HostedSyncGroupNodeModel(
 	val syncGroupId: String,
 	val syncGroupName: String,
 ) {
-	fun toNode() = NodeModel(
+	fun toNodeDto() = NodeDto(
 		deviceName = deviceName,
 		deviceOs = deviceOs,
 		deviceId = deviceId,

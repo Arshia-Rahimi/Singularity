@@ -41,8 +41,8 @@ class ServerViewModel(
 	}.stateInWhileSubscribed(ServerUiState())
 
 	fun execute(intent: ServerIntent) = when (intent) {
-		is ServerIntent.Approve -> broadcastRepo.approvePairRequest(intent.node)
-		is ServerIntent.Reject -> broadcastRepo.rejectPairRequest(intent.node)
+		is ServerIntent.Approve -> broadcastRepo.approvePairRequest(intent.node.deviceId)
+		is ServerIntent.Reject -> broadcastRepo.rejectPairRequest(intent.node.deviceId)
 		is ServerIntent.CreateGroup -> create(intent.groupName)
 		is ServerIntent.EditGroupName -> editName(intent.groupName, intent.group)
 		is ServerIntent.DeleteGroup -> delete(intent.group)

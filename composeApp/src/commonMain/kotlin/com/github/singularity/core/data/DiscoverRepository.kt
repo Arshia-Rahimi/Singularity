@@ -1,13 +1,13 @@
 package com.github.singularity.core.data
 
-import com.github.singularity.core.datasource.network.LocalServerModel
+import com.github.singularity.core.datasource.network.LocalServerDto
 import kotlinx.coroutines.flow.Flow
 
 interface DiscoverRepository {
 
-	val discoveredServers: Flow<List<LocalServerModel>>
+	val discoveredServers: Flow<List<LocalServerDto>>
 
-	suspend fun sendPairRequest(server: LocalServerModel)
+	suspend fun sendPairRequest(server: LocalServerDto)
 
     suspend fun removeAllDefaults()
 

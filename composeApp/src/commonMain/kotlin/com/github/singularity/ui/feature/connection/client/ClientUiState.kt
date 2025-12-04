@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
-import com.github.singularity.core.datasource.network.LocalServerModel
+import com.github.singularity.core.datasource.network.LocalServerDto
 import com.github.singularity.core.syncservice.ClientSyncState
 import com.github.singularity.ui.feature.connection.client.pages.index.PairRequestState
 
@@ -16,7 +16,7 @@ data class DiscoveredServer(
 	val deviceId: String,
 	val ip: String,
 ) {
-	fun toLocalServer() = LocalServerModel(
+	fun toLocalServer() = LocalServerDto(
 		deviceName = deviceName,
 		deviceOs = deviceOs,
 		deviceId = deviceId,
@@ -26,7 +26,7 @@ data class DiscoveredServer(
 	)
 }
 
-fun LocalServerModel.toDiscoveredServer() = DiscoveredServer(
+fun LocalServerDto.toDiscoveredServer() = DiscoveredServer(
 	groupName = syncGroupName,
 	groupId = syncGroupId,
 	deviceName = deviceName,

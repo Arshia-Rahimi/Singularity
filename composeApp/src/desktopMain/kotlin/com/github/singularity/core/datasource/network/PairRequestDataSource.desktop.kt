@@ -10,9 +10,9 @@ interface PairRequestDataSource {
 
     fun remove(id: Int)
 
-	fun approve(node: NodeModel)
+	fun approve(nodeId: String)
 
-	fun reject(node: NodeModel)
+	fun reject(nodeId: String)
 
 	fun get(id: Int): PairCheckModel?
 

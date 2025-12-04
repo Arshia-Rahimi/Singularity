@@ -1,6 +1,5 @@
 package com.github.singularity.core.datasource.network.impl
 
-import com.github.singularity.core.datasource.network.NodeModel
 import com.github.singularity.core.datasource.network.PairCheckModel
 import com.github.singularity.core.datasource.network.PairRequestDataSource
 import com.github.singularity.core.datasource.network.PairRequestDto
@@ -25,17 +24,17 @@ class InMemoryPairRequestDataSource : PairRequestDataSource {
         _requests.value = _requests.value.filter { it.requestId == id }
     }
 
-	override fun approve(node: NodeModel) {
+	override fun approve(nodeId: String) {
         _requests.value = _requests.value.replaceFirstWith(
             newItem = { it.copy(status = PairStatus.Approved) },
-            predicate = { node.deviceId == it.node.deviceId }
+	        predicate = { nodeId == it.node.deviceId }
         )
     }
 
-	override fun reject(node: NodeModel) {
+	override fun reject(nodeId: String) {
         _requests.value = _requests.value.replaceFirstWith(
             newItem = { it.copy(status = PairStatus.Rejected) },
-            predicate = { node == it.node }
+	        predicate = { nodeId == it.node.deviceId }
         )
     }
 

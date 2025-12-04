@@ -15,11 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.singularity.core.syncservice.ServerSyncState
 import com.github.singularity.ui.designsystem.components.Grid
 import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getPainter
 import com.github.singularity.ui.designsystem.shared.getString
+import com.github.singularity.ui.feature.connection.server.Node
+import com.github.singularity.ui.feature.connection.server.RunningSyncGroupServer
 import com.github.singularity.ui.feature.connection.server.ServerIntent
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.back
@@ -33,7 +34,7 @@ import singularity.composeapp.generated.resources.paired_nodes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerSyncGroupDetailsPage(
-	connectionState: ServerSyncState.Running,
+	connectionState: RunningSyncGroupServer,
 	execute: ServerIntent.() -> Unit,
 ) {
 
@@ -41,7 +42,7 @@ fun ServerSyncGroupDetailsPage(
 		modifier = Modifier.fillMaxSize(),
 		topBar = {
 			TopBar(
-				title = connectionState.group.name,
+				title = connectionState.group.groupName,
 				actions = {
 					IconButton(
                         onClick = { ServerIntent.ToIndex.execute() }
@@ -57,21 +58,25 @@ fun ServerSyncGroupDetailsPage(
 	) { ip ->
 		Grid(ip) {
 
-			pairRequestItems(connectionState, execute)
+			pairRequestItems(connectionState.requestedNodes, execute)
 
-			connectedDevicesItem(connectionState, execute)
+			connectedDevicesItem(connectionState.connectedNodes, execute)
 
-			pairedAndNotConnectedItems(connectionState, execute)
+			pairedAndNotConnectedItems(
+				connectionState.connectedNodes,
+				connectionState.pairedNodes,
+				execute
+			)
 
 		}
 	}
 }
 
 private fun LazyGridScope.pairRequestItems(
-	connectionState: ServerSyncState.Running,
+	requestedNodes: List<Node>,
 	execute: ServerIntent.() -> Unit,
 ) {
-	if (!connectionState.pairRequests.isEmpty()) {
+	if (!requestedNodes.isEmpty()) {
 		stickyHeader(
 			key = "pair_requests_title",
 		) {
@@ -88,7 +93,7 @@ private fun LazyGridScope.pairRequestItems(
 			}
 		}
 		items(
-			items = connectionState.pairRequests.distinctBy { it.deviceId },
+			items = requestedNodes.distinctBy { it.deviceId },
 			key = { "pairRequest_${it.deviceId}" },
 		) {
 			NodeItem(
@@ -101,7 +106,7 @@ private fun LazyGridScope.pairRequestItems(
 }
 
 private fun LazyGridScope.connectedDevicesItem(
-	connectionState: ServerSyncState.Running,
+	connectedNodes: List<Node>,
 	execute: ServerIntent.() -> Unit,
 ) {
 	stickyHeader(
@@ -114,28 +119,28 @@ private fun LazyGridScope.connectedDevicesItem(
 				.padding(vertical = 8.dp, horizontal = 12.dp),
 		) {
 			Text(
-				text = if (connectionState.connectedNodes.isEmpty()) Res.string.no_connected_nodes.getString() else Res.string.connected_nodes.getString(),
+				text = if (connectedNodes.isEmpty()) Res.string.no_connected_nodes.getString() else Res.string.connected_nodes.getString(),
 				fontSize = 12.sp,
 			)
 		}
 	}
 	items(
-		items = connectionState.connectedNodes.distinctBy { it.deviceId },
+		items = connectedNodes.distinctBy { it.deviceId },
 		key = { "connected_${it.deviceId}" },
 	) {
 		NodeItem(
-			node = it.toNode(),
+			node = it,
 			execute = execute
 		)
 	}
 }
 
 private fun LazyGridScope.pairedAndNotConnectedItems(
-	connectionState: ServerSyncState.Running,
+	connectedNodes: List<Node>,
+	pairedNodes: List<Node>,
 	execute: ServerIntent.() -> Unit,
 ) {
-	val pairedAndNotConnectedNodes =
-		connectionState.group.nodes.filter { it !in connectionState.connectedNodes }
+	val pairedAndNotConnectedNodes = pairedNodes.filter { it !in connectedNodes }
 	if (!pairedAndNotConnectedNodes.isEmpty()) {
 		stickyHeader(
 			key = "not_connected_title",
@@ -147,7 +152,7 @@ private fun LazyGridScope.pairedAndNotConnectedItems(
 					.padding(vertical = 8.dp, horizontal = 12.dp),
 			) {
 				Text(
-					text = if (connectionState.group.nodes.isEmpty()) Res.string.no_paired_nodes.getString() else Res.string.paired_nodes.getString(),
+					text = if (pairedNodes.isEmpty()) Res.string.no_paired_nodes.getString() else Res.string.paired_nodes.getString(),
 					fontSize = 12.sp,
 				)
 			}
@@ -158,7 +163,7 @@ private fun LazyGridScope.pairedAndNotConnectedItems(
 			key = { "pairedAndNotConnected_${it.deviceId}" },
 		) {
 			NodeItem(
-				node = it.toNode(),
+				node = it,
 				execute = execute
 			)
 		}

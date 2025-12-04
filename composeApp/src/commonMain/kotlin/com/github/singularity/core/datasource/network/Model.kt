@@ -10,14 +10,14 @@ interface Device {
 }
 
 @Serializable
-class NodeModel(
+class NodeDto(
 	override val deviceName: String,
 	override val deviceId: String,
 	override val deviceOs: String,
 ) : Device
 
 @Serializable
-data class LocalServerModel(
+data class LocalServerDto(
 	override val deviceName: String,
 	override val deviceId: String,
 	override val deviceOs: String,
@@ -34,7 +34,7 @@ data class PairRequestDto(
 	val syncGroupId: String,
 	val syncGroupName: String,
 ) {
-	fun toNode() = NodeModel(
+	fun toNode() = NodeDto(
 		deviceName = deviceName,
 		deviceId = deviceId,
 		deviceOs = deviceOs,

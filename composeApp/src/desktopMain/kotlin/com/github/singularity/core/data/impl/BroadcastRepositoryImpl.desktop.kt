@@ -3,7 +3,6 @@ package com.github.singularity.core.data.impl
 import com.github.singularity.core.data.BroadcastRepository
 import com.github.singularity.core.data.HostedSyncGroupRepository
 import com.github.singularity.core.datasource.database.HostedSyncGroupModel
-import com.github.singularity.core.datasource.network.NodeModel
 import com.github.singularity.core.datasource.network.PairRequestDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -32,10 +31,10 @@ class BroadcastRepositoryImpl(
 		hostedSyncGroupRepo.removeAllDefaults()
 	}
 
-	override fun approvePairRequest(node: NodeModel) =
-		pairRequestRepo.approve(node)
+	override fun approvePairRequest(nodeId: String) =
+		pairRequestRepo.approve(nodeId)
 
-	override fun rejectPairRequest(node: NodeModel) =
-		pairRequestRepo.reject(node)
+	override fun rejectPairRequest(nodeId: String) =
+		pairRequestRepo.reject(nodeId)
 
 }

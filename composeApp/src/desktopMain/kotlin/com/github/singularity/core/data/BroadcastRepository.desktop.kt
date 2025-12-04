@@ -1,7 +1,6 @@
 package com.github.singularity.core.data
 
 import com.github.singularity.core.datasource.database.HostedSyncGroupModel
-import com.github.singularity.core.datasource.network.NodeModel
 import kotlinx.coroutines.flow.SharedFlow
 
 interface BroadcastRepository {
@@ -18,8 +17,8 @@ interface BroadcastRepository {
 
     suspend fun removeAllDefaults()
 
-	fun approvePairRequest(node: NodeModel)
+	fun approvePairRequest(nodeId: String)
 
-	fun rejectPairRequest(node: NodeModel)
+	fun rejectPairRequest(nodeId: String)
 
 }

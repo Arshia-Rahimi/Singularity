@@ -57,18 +57,12 @@ class ClientConnectionRepositoryImpl(
 							.catch {
 								logger.e("error connecting to server", it)
 								emit(
-									ClientSyncState.ConnectionFailed(
-										defaultServer.syncGroupName,
-										server,
-									)
+									ClientSyncState.ConnectionFailed(defaultServer.syncGroupName)
 								)
 							}
 							.collect {
 								emit(
-									ClientSyncState.Connected(
-										defaultServer.syncGroupName,
-										server,
-									)
+									ClientSyncState.Connected(defaultServer.syncGroupName)
 								)
 							}
 						delay(WEBSOCKET_CONNECTION_RETRY_MS)
