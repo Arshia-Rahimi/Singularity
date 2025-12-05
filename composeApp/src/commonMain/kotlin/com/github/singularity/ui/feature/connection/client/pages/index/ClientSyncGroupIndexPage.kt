@@ -17,6 +17,7 @@ import com.github.singularity.ui.designsystem.components.TopBar
 import com.github.singularity.ui.designsystem.shared.getString
 import com.github.singularity.ui.feature.connection.client.ClientIntent
 import com.github.singularity.ui.feature.connection.client.ClientUiState
+import com.github.singularity.ui.feature.connection.client.PairedSyncGroup
 import singularity.composeapp.generated.resources.Res
 import singularity.composeapp.generated.resources.available_servers
 import singularity.composeapp.generated.resources.await_pair_request_approval
@@ -95,7 +96,8 @@ private fun LazyGridScope.joinedSyncGroupItems(
 		}
 
 		items(
-			items = uiState.joinedSyncGroups,
+			items = uiState.joinedSyncGroups
+				.sortedWith(compareBy<PairedSyncGroup> { !it.isAvailable }.thenBy { it.groupName }),
 			key = { it.groupId },
 			contentType = { it },
 		) {

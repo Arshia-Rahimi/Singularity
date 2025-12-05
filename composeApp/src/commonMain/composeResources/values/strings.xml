@@ -73,4 +73,5 @@
     <string name="permissions">Permissions</string>
     <string name="clear_log">clear log</string>
     <string name="clear_log_message">Clear app logs?</string>
+    <string name="active">active</string>
 </resources>
