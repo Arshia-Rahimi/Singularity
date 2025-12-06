@@ -11,4 +11,7 @@ sealed class ClipboardPluginEvent : SyncEvent {
 	@Serializable
 	data class Copied(val content: String) : ClipboardPluginEvent()
 
+    @Serializable
+    data class SendToClipboard(val content: String) : ClipboardPluginEvent()
+
 }

@@ -18,12 +18,12 @@ data class PreferencesModel(
 
 @Serializable
 data class PluginSettingsModel(
-	val name: String,
-	val pluginDataMap: PluginDataMap = emptyMap(),
-	val isEnabled: Boolean = true,
+    val name: String,
+    val data: PluginSettingsData = emptyMap(),
+    val isEnabled: Boolean = true,
 )
 
-typealias PluginDataMap = Map<String, String>
+typealias PluginSettingsData = Map<String, String?>
 
 data class JoinedSyncGroupModel(
 	val authToken: String,

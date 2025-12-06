@@ -3,7 +3,7 @@ package com.github.singularity.core.datasource.database.impl
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.github.singularity.core.database.SingularityDatabase
-import com.github.singularity.core.datasource.database.PluginDataMap
+import com.github.singularity.core.datasource.database.PluginSettingsData
 import com.github.singularity.core.datasource.database.PluginSettingsDataSource
 import com.github.singularity.core.datasource.database.PluginSettingsModel
 import com.github.singularity.core.shared.util.filterNotNull
@@ -23,14 +23,14 @@ class SqlDelightPluginSettingsDataSource(
 			query.executeAsList()
 				.groupBy { it.name }
 				.map { (pluginName, data) ->
-					val pluginData: PluginDataMap = data
+                    val pluginData: PluginSettingsData = data
 						.associate { it.data_key to it.data_value }
 						.filterNotNull()
 
 					PluginSettingsModel(
 						name = pluginName,
 						isEnabled = data.first().is_enabled.toBoolean(),
-						pluginDataMap = pluginData,
+                        data = pluginData,
 					)
 				}
 		}
@@ -49,7 +49,7 @@ class SqlDelightPluginSettingsDataSource(
 			PluginSettingsModel(
 				name = queryResult.first().name,
 				isEnabled = queryResult.first().is_enabled.toBoolean(),
-				pluginDataMap = pluginData,
+                data = pluginData,
 			)
 		}
 
@@ -60,7 +60,7 @@ class SqlDelightPluginSettingsDataSource(
 					name = it.name,
 					is_enabled = it.isEnabled.toLong(),
 				)
-				it.pluginDataMap.toMap().forEach { (key, value) ->
+                it.data.toMap().forEach { (key, value) ->
 					queries.insertPluginData(
 						plugin_name = it.name,
 						data_key = key,
@@ -78,7 +78,7 @@ class SqlDelightPluginSettingsDataSource(
 					is_enabled = it.isEnabled.toLong(),
 					name = it.name,
 				)
-				it.pluginDataMap.toMap().forEach { (key, value) ->
+                it.data.toMap().forEach { (key, value) ->
 					queries.updatePluginData(
 						data_value = value,
 						data_key = key,
@@ -93,7 +93,7 @@ class SqlDelightPluginSettingsDataSource(
 		queries.transaction {
 			pluginSettingsModel.forEach {
 				queries.delete(name = it.name)
-				it.pluginDataMap.toMap().forEach { (key, _) ->
+                it.data.toMap().forEach { (key, _) ->
 					queries.deletePluginData(
 						data_key = key,
 						plugin_name = it.name,

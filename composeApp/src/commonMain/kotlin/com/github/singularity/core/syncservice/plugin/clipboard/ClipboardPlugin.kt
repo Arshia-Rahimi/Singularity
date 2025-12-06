@@ -1,5 +1,6 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
+import com.github.singularity.core.datasource.database.PluginSettingsData
 import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.ClipboardPluginEvent
 import com.github.singularity.core.syncservice.plugin.Plugin
@@ -12,27 +13,38 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+expect val platformClipboardPluginSettingsData: PluginSettingsData
+
 class ClipboardPlugin(
-	private val platformClipboardPlugin: PlatformClipboardPlugin,
-	syncEventBridge: SyncEventBridge,
+    private val platformClipboardPlugin: PlatformClipboardPlugin,
+    syncEventBridge: SyncEventBridge,
 ) : Plugin {
 
-	override val eventClass = ClipboardPluginEvent::class
+    override val pluginName = PLUGIN_NAME
 
-	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    companion object {
+        const val PLUGIN_NAME = "Clipboard"
 
-	init {
-		platformClipboardPlugin.systemClipboardUpdatedEvent
-			.onEach {
-				syncEventBridge.send(ClipboardPluginEvent.Copied(it))
-			}.launchIn(scope)
-	}
+        val pluginSettingsData: PluginSettingsData =
+            emptyMap<String, String?>() + platformClipboardPluginSettingsData
+    }
 
-	override fun handleEvent(event: SyncEvent) {
-		if (!event.instanceOf(eventClass)) return
-		when (event) {
-			is ClipboardPluginEvent.Copied -> platformClipboardPlugin.copy(event.content)
-		}
-	}
+    override val eventClass = ClipboardPluginEvent::class
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    init {
+        platformClipboardPlugin.systemClipboardUpdatedEvent.onEach {
+            syncEventBridge.send(ClipboardPluginEvent.Copied(it))
+        }.launchIn(scope)
+    }
+
+    override fun handleEvent(event: SyncEvent) {
+        if (!event.instanceOf(eventClass)) return
+        when (event) {
+            is ClipboardPluginEvent.Copied -> platformClipboardPlugin.copy(event.content)
+            is ClipboardPluginEvent.SendToClipboard -> platformClipboardPlugin.copy(event.content)
+        }
+    }
 
 }

@@ -3,6 +3,7 @@ package com.github.singularity.core.syncservice.plugin.clipboard
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Build
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -13,6 +14,9 @@ class AndroidClipboardPlugin(
 	val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
 	override val systemClipboardUpdatedEvent = callbackFlow {
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) close()
+
 		val listener = ClipboardManager.OnPrimaryClipChangedListener {
 			val newClip = clipboardManager.primaryClip
 			if (newClip != null && newClip.itemCount > 0) {
