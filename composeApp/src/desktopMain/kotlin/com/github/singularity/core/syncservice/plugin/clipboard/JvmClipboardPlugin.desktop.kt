@@ -20,7 +20,7 @@ class JvmClipboardPlugin(
     override val systemClipboardUpdatedEvent = pluginSettingsRepo
         .getPluginSettingsData(
             ClipboardPlugin.PLUGIN_NAME,
-            DesktopClipboardPluginSettingsData.clipboardPollDelay,
+            DesktopClipboardPluginSettings.clipboardPollDelay,
         ).flatMapLatest { pollDelay ->
             if (pollDelay == null) emptyFlow()
             else flow {

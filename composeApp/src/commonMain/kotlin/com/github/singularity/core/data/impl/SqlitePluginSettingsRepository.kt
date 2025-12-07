@@ -35,7 +35,6 @@ class SqlitePluginSettingsRepository(
     ): Flow<String?> =
         getPluginSettings(pluginName).map { it?.data[data.first] ?: data.second }
 
-
     override suspend fun insert(vararg pluginSettingsModel: PluginSettingsModel) {
         pluginSettingsDataSource.insert(*pluginSettingsModel)
     }

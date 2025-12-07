@@ -4,8 +4,6 @@ import kotlin.reflect.KClass
 
 interface Plugin {
 
-    val pluginName: String
-
 	val eventClass: KClass<*>
 
 	fun handleEvent(event: SyncEvent)
