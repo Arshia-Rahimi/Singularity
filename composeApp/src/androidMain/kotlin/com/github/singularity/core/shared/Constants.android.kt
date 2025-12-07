@@ -14,8 +14,6 @@ actual val deviceName: String
 		}
 	}
 
-actual val canHostSyncServer = false
-
 actual val platform = "Android"
 
 actual val os = platform + Build.VERSION.RELEASE

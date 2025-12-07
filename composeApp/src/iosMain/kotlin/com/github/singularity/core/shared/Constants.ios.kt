@@ -5,8 +5,6 @@ import platform.UIKit.UIDevice
 actual val deviceName: String
 	get() = UIDevice.currentDevice.name
 
-actual val canHostSyncServer = false
-
 actual val platform = "Ios"
 
 actual val os: String

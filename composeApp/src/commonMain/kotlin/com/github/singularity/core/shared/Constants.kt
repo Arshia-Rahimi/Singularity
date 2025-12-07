@@ -1,7 +1,6 @@
 package com.github.singularity.core.shared
 
 expect val deviceName: String
-expect val canHostSyncServer: Boolean
 expect val platform: String
 expect val os: String
 

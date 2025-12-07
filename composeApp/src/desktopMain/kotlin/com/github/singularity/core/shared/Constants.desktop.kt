@@ -2,8 +2,6 @@ package com.github.singularity.core.shared
 
 import java.io.File
 
-actual val canHostSyncServer = true
-
 actual val platform = "Desktop"
 
 actual val os: String
