@@ -10,7 +10,7 @@ import org.koin.dsl.module
 
 val ViewmodelModule = module {
     viewModelOf(::ClientViewModel)
-	viewModelOf(::PluginsViewModel)
+    viewModelOf(::PluginsViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::LogViewModel)
 

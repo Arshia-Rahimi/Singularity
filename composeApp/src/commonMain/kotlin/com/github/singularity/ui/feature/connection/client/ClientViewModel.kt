@@ -8,7 +8,6 @@ import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.syncservice.ClientSyncState
 import com.github.singularity.core.syncservice.SyncService
 import com.github.singularity.ui.feature.connection.client.pages.index.PairRequestState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ClientViewModel(
     private val discoverRepo: DiscoverRepository,
     private val joinedSyncGroupRepo: JoinedSyncGroupRepository,
