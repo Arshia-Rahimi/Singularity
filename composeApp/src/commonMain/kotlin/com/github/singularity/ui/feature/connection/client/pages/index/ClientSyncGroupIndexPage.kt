@@ -113,7 +113,7 @@ private fun LazyGridScope.discoveredServerItems(
 	uiState: ClientUiState,
 	execute: ClientIntent.() -> Unit,
 ) {
-	if (!uiState.discoveredServers.isEmpty()) {
+    if (!uiState.availableServers.isEmpty()) {
 		stickyHeader(
 			key = "available_title",
 			contentType = "title",
@@ -132,7 +132,7 @@ private fun LazyGridScope.discoveredServerItems(
 		}
 
 		items(
-			items = uiState.discoveredServers,
+            items = uiState.availableServers,
 			key = { it.groupId },
 			contentType = { it },
 		) {

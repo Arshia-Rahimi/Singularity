@@ -46,9 +46,8 @@ fun JoinedSyncGroupModel.toPairedSyncGroup() = PairedSyncGroup(
 
 @Immutable
 data class ClientUiState(
-	val connectionState: ClientSyncState = ClientSyncState.Loading,
-    val discoveredServers: List<DiscoveredServer> = emptyList(),
-	val sentPairRequestState: PairRequestState = PairRequestState.Idle,
+    val connectionState: ClientSyncState = ClientSyncState.Loading,
+    val availableServers: List<DiscoveredServer> = emptyList(),
+    val sentPairRequestState: PairRequestState = PairRequestState.Idle,
     val joinedSyncGroups: List<PairedSyncGroup> = emptyList(),
-	val defaultSyncGroup: PairedSyncGroup? = null,
 )

@@ -28,39 +28,39 @@ class ClientViewModel(
         .filterIsInstance<ClientSyncState>()
         .stateInWhileSubscribed(ClientSyncState.Loading)
 
-    private val availableServers = discoverRepo.discoveredServers.map {
-        it.map { localServerModel -> localServerModel.toDiscoveredServer() }
-            .distinctBy { discoveredServer -> discoveredServer.groupId }
-    }.stateInWhileSubscribed(emptyList())
+    private val combinedDiscoveredAndJoinedSyncGroupsFlow = combine(
+        discoverRepo.discoveredServers,
+        joinedSyncGroupRepo.joinedSyncGroups,
+    ) { discoveredServers, joinedSyncGroups ->
+        discoveredServers.map { it.toDiscoveredServer() }.distinctBy { it.groupId } to
+                joinedSyncGroups.map { it.toPairedSyncGroup() }.distinctBy { it.groupId }
+    }.stateInWhileSubscribed(emptyList<DiscoveredServer>() to emptyList())
 
-    private val joinedSyncGroups = joinedSyncGroupRepo.joinedSyncGroups.map {
-        it.map { joinedSyncGroupModel -> joinedSyncGroupModel.toPairedSyncGroup() }
-            .distinctBy { pairedSyncGroup -> pairedSyncGroup.groupId }
-    }.stateInWhileSubscribed(emptyList())
+    private val availableServers = combinedDiscoveredAndJoinedSyncGroupsFlow
+        .map { (discoveredServers, joinedSyncGroups) ->
+            discoveredServers.filter {
+                it.groupId !in joinedSyncGroups.map { j -> j.groupId }
+            }
+        }.stateInWhileSubscribed(emptyList())
+
+    private val joinedSyncGroups = combinedDiscoveredAndJoinedSyncGroupsFlow
+        .map { (discoveredServers, joinedSyncGroups) ->
+            joinedSyncGroups.map { joinedGroup ->
+                val isAvailable =
+                    discoveredServers.find { joinedGroup.groupId == it.groupId } != null
+                joinedGroup.copy(isAvailable = isAvailable)
+            }
+        }.stateInWhileSubscribed(emptyList())
 
     private val sentPairRequestState = MutableStateFlow<PairRequestState>(PairRequestState.Idle)
 
     val uiState = combine(
+        connectionState,
         availableServers,
         sentPairRequestState,
         joinedSyncGroups,
-        connectionState,
-    ) { availableServers, sentPairRequestState, joinedSyncGroups, connectionState ->
-        ClientUiState(
-            connectionState = connectionState,
-            sentPairRequestState = sentPairRequestState,
-
-            discoveredServers = availableServers.filter { availableServer ->
-                availableServer.groupId !in joinedSyncGroups.map { it.groupId }
-            },
-
-            joinedSyncGroups = joinedSyncGroups.map { joinedGroup ->
-                val isAvailable = availableServers
-                    .find { joinedGroup.groupId == it.groupId } != null
-                joinedGroup.copy(isAvailable = isAvailable)
-            },
-        )
-    }.stateInWhileSubscribed(ClientUiState())
+        ::ClientUiState,
+    ).stateInWhileSubscribed(ClientUiState())
 
     private var pairRequestJob: Job? = null
 
