@@ -1,6 +1,5 @@
 package com.github.singularity.ui.feature.plugins
 
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.singularity.core.data.PluginSettingsRepository
@@ -12,13 +11,12 @@ class PluginsViewModel(
     private val pluginSettingsRepo: PluginSettingsRepository,
 ) : ViewModel() {
 
-	val uiState = pluginSettingsRepo.pluginSettingsModel
+    val uiState = pluginSettingsRepo.pluginSettingsModel
         .map { pluginSettings ->
             PluginsUiState(
                 plugins = pluginSettings.sortedBy { pluginSettings -> pluginSettings.name }
-	                .map { it.toPlugin() }
+                    .map { it.toPlugin() }
                     .distinctBy { it.name }
-                    .toMutableStateList(),
             )
         }.stateInWhileSubscribed(PluginsUiState())
 

@@ -34,15 +34,15 @@ import singularity.composeapp.generated.resources.paired_nodes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerSyncGroupDetailsPage(
-	connectionState: RunningSyncGroupServer,
-	execute: ServerIntent.() -> Unit,
+    server: RunningSyncGroupServer,
+    execute: ServerIntent.() -> Unit,
 ) {
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
 		topBar = {
 			TopBar(
-				title = connectionState.group.groupName,
+                title = server.group.groupName,
 				actions = {
 					IconButton(
                         onClick = { ServerIntent.ToIndex.execute() }
@@ -58,13 +58,13 @@ fun ServerSyncGroupDetailsPage(
 	) { ip ->
 		Grid(ip) {
 
-			pairRequestItems(connectionState.requestedNodes, execute)
+            pairRequestItems(server.requestedNodes, execute)
 
-			connectedDevicesItem(connectionState.connectedNodes, execute)
+            connectedDevicesItem(server.connectedNodes, execute)
 
 			pairedAndNotConnectedItems(
-				connectionState.connectedNodes,
-				connectionState.pairedNodes,
+                server.connectedNodes,
+                server.pairedNodes,
 				execute
 			)
 

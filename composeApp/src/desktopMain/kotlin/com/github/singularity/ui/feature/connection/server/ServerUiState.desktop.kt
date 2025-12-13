@@ -1,8 +1,6 @@
 package com.github.singularity.ui.feature.connection.server
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.github.singularity.core.datasource.database.HostedSyncGroupModel
 import com.github.singularity.core.datasource.database.HostedSyncGroupNodeModel
 import com.github.singularity.core.datasource.network.NodeDto
@@ -57,5 +55,5 @@ fun ServerSyncState.Running.toRunningSyncGroupServer() = RunningSyncGroupServer(
 @Immutable
 data class ServerUiState(
 	val connectionState: ServerSyncState = ServerSyncState.Loading,
-	val hostedSyncGroups: SnapshotStateList<HostedSyncGroup> = mutableStateListOf(),
+    val hostedSyncGroups: List<HostedSyncGroup> = emptyList(),
 )

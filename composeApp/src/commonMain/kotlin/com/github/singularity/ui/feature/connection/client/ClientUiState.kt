@@ -1,8 +1,6 @@
 package com.github.singularity.ui.feature.connection.client
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.github.singularity.core.datasource.database.JoinedSyncGroupModel
 import com.github.singularity.core.datasource.network.LocalServerDto
 import com.github.singularity.core.syncservice.ClientSyncState
@@ -49,8 +47,8 @@ fun JoinedSyncGroupModel.toPairedSyncGroup() = PairedSyncGroup(
 @Immutable
 data class ClientUiState(
 	val connectionState: ClientSyncState = ClientSyncState.Loading,
-	val discoveredServers: SnapshotStateList<DiscoveredServer> = mutableStateListOf(),
+    val discoveredServers: List<DiscoveredServer> = emptyList(),
 	val sentPairRequestState: PairRequestState = PairRequestState.Idle,
-	val joinedSyncGroups: SnapshotStateList<PairedSyncGroup> = mutableStateListOf(),
+    val joinedSyncGroups: List<PairedSyncGroup> = emptyList(),
 	val defaultSyncGroup: PairedSyncGroup? = null,
 )

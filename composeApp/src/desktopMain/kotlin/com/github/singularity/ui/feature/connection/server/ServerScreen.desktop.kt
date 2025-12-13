@@ -52,7 +52,7 @@ private fun ServerScreen(
             )
 
 	        is ServerSyncState.Running -> ServerSyncGroupDetailsPage(
-		        connectionState = it.toRunningSyncGroupServer(),
+                server = it.toRunningSyncGroupServer(),
                 execute = execute,
             )
         }
