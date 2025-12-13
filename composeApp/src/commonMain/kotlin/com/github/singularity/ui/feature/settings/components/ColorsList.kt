@@ -10,4 +10,5 @@ val ColorsList = listOf(
     Color.Red,
     Color.Cyan,
     Color.Yellow,
+    Color.Magenta,
 )
