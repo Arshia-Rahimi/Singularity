@@ -1,9 +1,9 @@
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+	alias(libs.plugins.android.kmp)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
@@ -12,13 +12,18 @@ plugins {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+	jvmToolchain(17)
 
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+	androidLibrary {
+		namespace = "com.github.singularity"
+		compileSdk = 36
+		minSdk = 26
+
+		localDependencySelection {
+			selectBuildTypeFrom.set(listOf("debug", "release"))
+		}
+
+	}
 
     listOf(
         iosX64(),
@@ -60,19 +65,13 @@ kotlin {
                 implementation(libs.kolor)
             }
         }
+
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.junit)
             }
         }
-
-	    val mobileMain by creating {
-		    dependsOn(commonMain)
-		    dependencies {
-			    implementation(libs.dns.sd)
-		    }
-	    }
 
 	    val desktopMain by getting {
 		    dependencies {
@@ -89,12 +88,13 @@ kotlin {
 		    }
 	    }
 
-	    val androidInstrumentedTest by getting {
+	    val mobileMain by creating {
+		    dependsOn(commonMain)
 		    dependencies {
-			    implementation(libs.androidx.testExt.junit)
-			    implementation(libs.androidx.espresso.core)
+			    implementation(libs.dns.sd)
 		    }
 	    }
+
 	    val androidMain by getting {
 		    dependsOn(mobileMain)
 		    dependencies {
@@ -103,11 +103,23 @@ kotlin {
 		    }
 	    }
 
-	    val iosMain by getting {
+	    val iosMain by creating {
 		    dependsOn(mobileMain)
 		    dependencies {
 			    implementation(libs.sqldelight.driver.native)
 		    }
+	    }
+
+	    val iosX64Main by getting {
+		    dependsOn(iosMain)
+	    }
+
+	    val iosArm64Main by getting {
+		    dependsOn(iosMain)
+	    }
+
+	    val iosSimulatorArm64Main by getting {
+		    dependsOn(iosMain)
 	    }
 
     }
@@ -122,48 +134,8 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.github.singularity"
-    compileSdk = 36
-
-    defaultConfig {
-        applicationId = "com.github.singularity"
-        minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            isDebuggable = false
-        }
-
-        debug {
-            isMinifyEnabled = false
-            isDebuggable = true
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-	    isCoreLibraryDesugaringEnabled = true
-    }
-
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-    }
-}
-
 dependencies {
-	debugImplementation(libs.compose.ui.tooling)
-    testImplementation(libs.junit)
-	coreLibraryDesugaring(libs.desugaring)
+	"androidRuntimeClasspath"(libs.androidx.compose.ui.tooling)
 }
 
 compose.desktop {
