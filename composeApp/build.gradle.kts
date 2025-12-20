@@ -12,6 +12,9 @@ plugins {
 }
 
 kotlin {
+
+    applyDefaultHierarchyTemplate()
+
 	jvmToolchain(17)
 
 	androidLibrary {
@@ -103,23 +106,11 @@ kotlin {
 		    }
 	    }
 
-	    val iosMain by creating {
+        val iosMain by getting {
 		    dependsOn(mobileMain)
 		    dependencies {
 			    implementation(libs.sqldelight.driver.native)
 		    }
-	    }
-
-	    val iosX64Main by getting {
-		    dependsOn(iosMain)
-	    }
-
-	    val iosArm64Main by getting {
-		    dependsOn(iosMain)
-	    }
-
-	    val iosSimulatorArm64Main by getting {
-		    dependsOn(iosMain)
 	    }
 
     }
