@@ -15,7 +15,7 @@ koin = "4.1.1"
 appDirs = "1.5.0"
 desugaring = "2.1.5"
 sqldelight = "2.2.1"
-dns-sd = "1.0.4"
+dns-sd = "1.0.5"
 kolor = "4.0.5"
 
 
