@@ -21,11 +21,6 @@ kotlin {
 		namespace = "com.github.singularity"
 		compileSdk = 36
 		minSdk = 26
-
-		localDependencySelection {
-			selectBuildTypeFrom.set(listOf("debug", "release"))
-		}
-
 	}
 
     listOf(
