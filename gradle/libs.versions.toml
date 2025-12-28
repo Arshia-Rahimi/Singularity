@@ -13,7 +13,6 @@ ksp = "2.3.4"
 serialization-json = "1.9.0"
 koin = "4.1.1"
 appDirs = "1.5.0"
-desugaring = "2.1.5"
 sqldelight = "2.2.1"
 dns-sd = "1.0.5"
 kolor = "4.0.5"
@@ -68,8 +67,6 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-driver-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
-##desugaring
-desugaring = { module = "com.android.tools:desugar_jdk_libs_nio", version.ref = "desugaring" }
 ##mdns
 dns-sd = { module = "com.appstractive:dns-sd-kt", version.ref = "dns-sd" }
 ##materialKolor
@@ -77,14 +74,16 @@ kolor = { module = "com.materialkolor:material-kolor", version.ref = "kolor" }
 
 [plugins]
 ##kotlin
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ##android
 android-kmp = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "agp" }
 ##compose
-composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
-composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ##sqldelight
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
