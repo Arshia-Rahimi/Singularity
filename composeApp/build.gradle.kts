@@ -16,10 +16,14 @@ kotlin {
 
 	jvmToolchain(17)
 
-	androidLibrary {
+    android {
 		namespace = "com.github.singularity"
 		compileSdk = 36
 		minSdk = 26
+
+        androidResources {
+            enable = true
+        }
 	}
 
     listOf(
