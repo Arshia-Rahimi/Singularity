@@ -132,7 +132,7 @@ compose.desktop {
         mainClass = "com.github.singularity.app.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.AppImage)
             packageName = "com.github.singularity"
             packageVersion = "1.0.0"
         }
