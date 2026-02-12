@@ -1,5 +1,5 @@
 plugins {
-	alias(libs.plugins.android.kmp) apply false
+	alias(libs.plugins.android.kmp.library) apply false
     alias(libs.plugins.compose.multiplatform) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinJvm) apply false
