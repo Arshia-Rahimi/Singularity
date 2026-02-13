@@ -52,6 +52,7 @@ kotlin {
 	            implementation(libs.compose.foundation)
 	            implementation(libs.compose.material3)
 	            implementation(libs.compose.ui)
+                implementation(libs.compose.ui.tooling.preview)
 	            implementation(libs.compose.nav3.ui)
 	            implementation(libs.compose.nav3.viewmodel)
 	            implementation(libs.compose.components.resources)
@@ -120,6 +121,8 @@ kotlin {
 		    dependencies {
                 // sqldelight
 			    implementation(libs.sqldelight.driver.android)
+                // compose
+                implementation(libs.compose.ui.tooling)
 		    }
 	    }
 
@@ -141,6 +144,10 @@ kotlin {
 		    )
 	    )
     }
+}
+
+dependencies {
+    "androidRuntimeClasspath"(libs.compose.ui.tooling)
 }
 
 compose.desktop {
