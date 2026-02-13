@@ -104,7 +104,7 @@ kotlin {
 			    implementation(libs.ktor.server.auth)
 			    implementation(libs.ktor.server.websockets)
                 // zeroconf
-			    implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
+			    implementation(files("libs/desktop/zeroconf-1.0.3.jar"))
 		    }
 	    }
 
