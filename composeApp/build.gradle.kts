@@ -1,12 +1,17 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
+    // kmp
     alias(libs.plugins.kotlin.multiplatform)
-	alias(libs.plugins.android.kmp.library)
+    // cmp
     alias(libs.plugins.compose.multiplatform)
+    // compose-compiler
     alias(libs.plugins.compose.compiler)
+    // android-kmp-library
+	alias(libs.plugins.android.kmp.library)
+    // serialization
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
+    // sqldelight
     alias(libs.plugins.sqldelight)
 }
 
@@ -42,6 +47,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                // compose
 	            implementation(libs.compose.runtime)
 	            implementation(libs.compose.foundation)
 	            implementation(libs.compose.material3)
@@ -49,20 +55,26 @@ kotlin {
 	            implementation(libs.compose.nav3.ui)
 	            implementation(libs.compose.nav3.viewmodel)
 	            implementation(libs.compose.components.resources)
+                // lifecycle
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
+                // koin
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
 	            implementation(libs.koin.compose.viewmodel.navigation)
+                // sqldelight
                 implementation(libs.sqldelight.coroutines)
+                // ktor
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.client.auth)
                 implementation(libs.ktor.client.websockets)
                 implementation(libs.ktor.json)
+                // serialization
                 implementation(libs.kotlinx.serialization.json)
+                // kolor
                 implementation(libs.kolor)
             }
         }
@@ -76,15 +88,21 @@ kotlin {
 
 	    val desktopMain by getting {
 		    dependencies {
+                // compose
 			    implementation(compose.desktop.currentOs)
+                // swing
 			    implementation(libs.kotlinx.coroutinesSwing)
+                // appDirs
 			    implementation(libs.appdirs)
+                // sqldelight
 			    implementation(libs.sqldelight.driver.sqlite)
+                // ktor
 			    implementation(libs.ktor.server.cio)
 			    implementation(libs.ktor.server.core)
 			    implementation(libs.ktor.server.content.negotiation)
 			    implementation(libs.ktor.server.auth)
 			    implementation(libs.ktor.server.websockets)
+                // zeroconf
 			    implementation(files("libs/desktop/zeroconf-1.0.2.jar"))
 		    }
 	    }
@@ -92,6 +110,7 @@ kotlin {
 	    val mobileMain by creating {
 		    dependsOn(commonMain)
 		    dependencies {
+                // dns-sd
 			    implementation(libs.dns.sd)
 		    }
 	    }
@@ -99,7 +118,7 @@ kotlin {
 	    val androidMain by getting {
 		    dependsOn(mobileMain)
 		    dependencies {
-			    implementation(libs.androidx.activity.compose)
+                // sqldelight
 			    implementation(libs.sqldelight.driver.android)
 		    }
 	    }
@@ -107,6 +126,7 @@ kotlin {
         val iosMain by getting {
 		    dependsOn(mobileMain)
 		    dependencies {
+                // sqldelight
 			    implementation(libs.sqldelight.driver.native)
 		    }
 	    }
@@ -121,10 +141,6 @@ kotlin {
 		    )
 	    )
     }
-}
-
-dependencies {
-	"androidRuntimeClasspath"(libs.androidx.compose.ui.tooling)
 }
 
 compose.desktop {

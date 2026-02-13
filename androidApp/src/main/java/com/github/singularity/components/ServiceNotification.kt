@@ -1,5 +1,6 @@
-package com.github.singularity.core.syncservice
+package com.github.singularity.components
 
+import android.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -7,7 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.github.singularity.app.MainActivity
+import com.github.singularity.MainActivity
 
 const val NOTIFICATION_CHANNEL_ID = "android_sync_service"
 
@@ -35,7 +36,7 @@ fun Context.createNotification(): Notification {
 		.setContentTitle("Singularity")
 		.setContentText("Sync Service Running...")
 		.setContentIntent(pendingIntent)
-		.setSmallIcon(android.R.drawable.ic_popup_sync)
+		.setSmallIcon(R.drawable.ic_popup_sync)
 		.setOngoing(true)
 		.build()
 }

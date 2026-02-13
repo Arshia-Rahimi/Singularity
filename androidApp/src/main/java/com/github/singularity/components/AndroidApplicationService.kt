@@ -1,4 +1,4 @@
-package com.github.singularity.core.syncservice
+package com.github.singularity.components
 
 import android.Manifest
 import android.app.Service
@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import com.github.singularity.core.syncservice.SyncService
 import org.koin.android.ext.android.inject
 
 class AndroidApplicationService : Service() {

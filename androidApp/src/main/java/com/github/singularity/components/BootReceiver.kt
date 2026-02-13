@@ -1,4 +1,4 @@
-package com.github.singularity.core.syncservice
+package com.github.singularity.components
 
 import android.content.BroadcastReceiver
 import android.content.Context

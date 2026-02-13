@@ -1,6 +1,8 @@
 plugins {
+	// android
 	alias(libs.plugins.android.application)
-	alias(libs.plugins.kotlin.android)
+	// compose-compiler
+	alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -31,8 +33,17 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
 	}
+
+	buildFeatures {
+		compose = true
+	}
 }
 
 dependencies {
     implementation(projects.composeApp)
+
+    // compose
+    implementation(libs.androidx.activity.compose)
+    // koin
+    implementation(libs.koin.android)
 }
