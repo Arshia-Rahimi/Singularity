@@ -98,7 +98,7 @@ private fun LazyGridScope.joinedSyncGroupItems(
 		items(
 			items = uiState.joinedSyncGroups
 				.sortedWith(compareBy<PairedSyncGroup> { !it.isAvailable }.thenBy { it.groupName }),
-			key = { it.groupId },
+			key = { "joinedSyncGroups_${it.groupId}" },
 			contentType = { it },
 		) {
 			JoinedSyncGroupItem(
@@ -133,7 +133,7 @@ private fun LazyGridScope.discoveredServerItems(
 
 		items(
             items = uiState.availableServers,
-			key = { it.groupId },
+			key = { "availableServers_${it.groupId}" },
 			contentType = { it },
 		) {
 			ServerItem(

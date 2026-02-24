@@ -47,9 +47,9 @@ fun NodeDto.toNode() = Node(
 
 fun ServerSyncState.Running.toRunningSyncGroupServer() = RunningSyncGroupServer(
 	group = group.toHostedSyncGroup(),
-	pairedNodes = group.nodes.map { it.toNode() },
-	connectedNodes = connectedNodes.map { it.toNode() },
-	requestedNodes = pairRequests.map { it.toNode() },
+	pairedNodes = group.nodes.map { it.toNode() }.distinctBy { it.deviceId },
+	connectedNodes = connectedNodes.map { it.toNode() }.distinctBy { it.deviceId },
+	requestedNodes = pairRequests.map { it.toNode() }.distinctBy { it.deviceId },
 )
 
 @Immutable
