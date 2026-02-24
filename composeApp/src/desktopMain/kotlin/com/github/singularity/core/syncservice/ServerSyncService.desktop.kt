@@ -7,8 +7,6 @@ import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.util.next
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.syncservice.plugin.PluginEventHandler
-import com.github.singularity.core.syncservice.plugin.PluginEventHandlerImpl
 import com.github.singularity.core.syncservice.plugin.PluginWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,12 +26,11 @@ class ServerSyncService(
 	pluginSettingsRepo: PluginSettingsRepository,
 	syncEventBridge: SyncEventBridge,
 	pluginWrapper: PluginWrapper,
-) : SyncService,
-	PluginEventHandler by PluginEventHandlerImpl(
-		pluginSettingsRepo,
-		syncEventBridge,
-		pluginWrapper,
-	) {
+) : SyncService(
+	pluginSettingsRepo,
+	syncEventBridge,
+	pluginWrapper,
+) {
 
 	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 

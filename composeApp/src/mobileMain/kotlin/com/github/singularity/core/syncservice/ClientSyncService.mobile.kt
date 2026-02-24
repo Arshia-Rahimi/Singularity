@@ -4,8 +4,6 @@ import com.github.singularity.core.data.ClientConnectionRepository
 import com.github.singularity.core.data.PluginSettingsRepository
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
-import com.github.singularity.core.syncservice.plugin.PluginEventHandler
-import com.github.singularity.core.syncservice.plugin.PluginEventHandlerImpl
 import com.github.singularity.core.syncservice.plugin.PluginWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,30 +15,29 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ClientSyncService(
-	private val clientConnectionRepo: ClientConnectionRepository,
-	pluginSettingsRepo: PluginSettingsRepository,
-	syncEventBridge: SyncEventBridge,
-	pluginWrapper: PluginWrapper,
-) : SyncService,
-	PluginEventHandler by PluginEventHandlerImpl(
-		pluginSettingsRepo,
-		syncEventBridge,
-		pluginWrapper,
-	) {
+    private val clientConnectionRepo: ClientConnectionRepository,
+    pluginSettingsRepo: PluginSettingsRepository,
+    syncEventBridge: SyncEventBridge,
+    pluginWrapper: PluginWrapper,
+) : SyncService(
+    pluginSettingsRepo,
+    syncEventBridge,
+    pluginWrapper,
+) {
 
-	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-	override val syncMode = MutableStateFlow(SyncMode.Client).asStateFlow()
+    override val syncMode = MutableStateFlow(SyncMode.Client).asStateFlow()
 
-	override val syncState: StateFlow<SyncState> = clientConnectionRepo.connectionState
-		.stateInWhileSubscribed(ClientSyncState.NoDefaultServer, scope)
+    override val syncState: StateFlow<SyncState> = clientConnectionRepo.connectionState
+        .stateInWhileSubscribed(ClientSyncState.NoDefaultServer, scope)
 
-	override fun toggleSyncMode() = Unit
+    override fun toggleSyncMode() = Unit
 
-	override fun refresh() {
-		scope.launch {
-			clientConnectionRepo.refresh()
-		}
-	}
+    override fun refresh() {
+        scope.launch {
+            clientConnectionRepo.refresh()
+        }
+    }
 
 }

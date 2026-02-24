@@ -1,16 +1,28 @@
 package com.github.singularity.core.syncservice
 
+import com.github.singularity.core.data.PluginSettingsRepository
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.syncservice.plugin.PluginEventHandler
+import com.github.singularity.core.syncservice.plugin.PluginEventHandlerImpl
+import com.github.singularity.core.syncservice.plugin.PluginWrapper
 import kotlinx.coroutines.flow.StateFlow
 
-interface SyncService {
+abstract class SyncService(
+    pluginSettingsRepo: PluginSettingsRepository,
+    syncEventBridge: SyncEventBridge,
+    pluginWrapper: PluginWrapper,
+): PluginEventHandler by PluginEventHandlerImpl(
+    pluginSettingsRepo,
+    syncEventBridge,
+    pluginWrapper,
+) {
 
-    val syncMode: StateFlow<SyncMode>
+    abstract val syncMode: StateFlow<SyncMode>
 
-    val syncState: StateFlow<SyncState>
+    abstract val syncState: StateFlow<SyncState>
 
-    fun toggleSyncMode()
+    abstract fun toggleSyncMode()
 
-    fun refresh()
+    abstract fun refresh()
 
 }
