@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface ClientConnectionRepository {
 
-    val connectionState: Flow<ClientSyncState>
-
     suspend fun refresh()
+
+    val connectionState: Flow<ClientSyncState>
 
 }
