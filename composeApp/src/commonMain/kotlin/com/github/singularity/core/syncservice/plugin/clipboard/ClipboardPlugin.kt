@@ -1,7 +1,6 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
 import com.github.singularity.core.syncservice.SyncEventBridge
-import com.github.singularity.core.syncservice.plugin.ClipboardPluginEvent
 import com.github.singularity.core.syncservice.plugin.Plugin
 import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.util.reflect.instanceOf
@@ -21,21 +20,21 @@ class ClipboardPlugin(
         const val PLUGIN_NAME = "Clipboard"
     }
 
-    override val eventClass = ClipboardPluginEvent::class
+    override val eventClass = ClipboardEvent::class
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     init {
         platformClipboardPlugin.systemClipboardUpdatedEvent.onEach {
-            syncEventBridge.send(ClipboardPluginEvent.Copied(it))
+            syncEventBridge.send(ClipboardEvent.Copied(it))
         }.launchIn(scope)
     }
 
     override fun handleEvent(event: SyncEvent) {
         if (!event.instanceOf(eventClass)) return
         when (event) {
-            is ClipboardPluginEvent.Copied -> platformClipboardPlugin.copy(event.content)
-            is ClipboardPluginEvent.SendToClipboard -> platformClipboardPlugin.copy(event.content)
+            is ClipboardEvent.Copied -> platformClipboardPlugin.copy(event.content)
+            is ClipboardEvent.SendToClipboard -> platformClipboardPlugin.copy(event.content)
         }
     }
 

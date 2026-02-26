@@ -1,7 +1,6 @@
 package com.github.singularity.core.syncservice
 
 import com.github.singularity.core.data.ClientConnectionRepository
-import com.github.singularity.core.data.PluginSettingsRepository
 import com.github.singularity.core.shared.SyncMode
 import com.github.singularity.core.shared.util.stateInWhileSubscribed
 import com.github.singularity.core.syncservice.plugin.PluginWrapper
@@ -16,11 +15,9 @@ import kotlinx.coroutines.launch
 
 class ClientSyncService(
     private val clientConnectionRepo: ClientConnectionRepository,
-    pluginSettingsRepo: PluginSettingsRepository,
     syncEventBridge: SyncEventBridge,
     pluginWrapper: PluginWrapper,
 ) : SyncService(
-    pluginSettingsRepo,
     syncEventBridge,
     pluginWrapper,
 ) {

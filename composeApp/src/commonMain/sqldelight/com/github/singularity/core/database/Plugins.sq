@@ -1,52 +1,28 @@
+import com.github.singularity.core.syncservice.plugin.PluginOptions;
+
 CREATE TABLE Plugins (
     name TEXT PRIMARY KEY NOT NULL UNIQUE,
-    is_enabled INTEGER NOT NULL CHECK (is_enabled IN (0, 1))
-);
-
-CREATE TABLE PluginData (
-    plugin_name TEXT NOT NULL,
-    data_key TEXT NOT NULL,
-    data_value TEXT,
-    FOREIGN KEY (plugin_name) REFERENCES Plugins(name) ON DELETE CASCADE,
-    PRIMARY KEY (plugin_name, data_key)
+    options TEXT AS PluginOptions NOT NULL
 );
 
 index:
-SELECT *
-    FROM Plugins
-    LEFT JOIN PluginData
-    ON Plugins.name = PluginData.data_key;
+SELECT * FROM Plugins;
 
 getPlugin:
 SELECT *
     FROM Plugins
-    LEFT JOIN PluginData
-    ON Plugins.name = PluginData.data_key
     WHERE name == ?
     LIMIT 1;
 
 insert:
-INSERT INTO Plugins (name, is_enabled)
+INSERT INTO Plugins (name, options)
     VALUES (?, ?);
 
 update:
 UPDATE Plugins
-    SET is_enabled = ?
+    SET options = ?
     WHERE name == ?;
 
 delete:
 DELETE FROM Plugins
     WHERE name = ?;
-
-insertPluginData:
-INSERT INTO PluginData (plugin_name, data_key, data_value)
-    VALUES (?, ?, ?);
-
-updatePluginData:
-UPDATE PluginData
-    SET data_value = ?
-    WHERE plugin_name == ? AND data_key == ?;
-
-deletePluginData:
-DELETE FROM PluginData
-    WHERE plugin_name == ? AND data_key == ?;

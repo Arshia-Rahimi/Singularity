@@ -1,7 +1,6 @@
 package com.github.singularity.core.syncservice
 
 import com.github.singularity.core.data.ClientConnectionRepository
-import com.github.singularity.core.data.PluginSettingsRepository
 import com.github.singularity.core.data.PreferencesRepository
 import com.github.singularity.core.data.ServerConnectionRepository
 import com.github.singularity.core.shared.SyncMode
@@ -20,40 +19,38 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServerSyncService(
-	private val preferencesRepo: PreferencesRepository,
-	private val clientConnectionRepo: ClientConnectionRepository,
-	private val serverConnectionRepo: ServerConnectionRepository,
-	pluginSettingsRepo: PluginSettingsRepository,
-	syncEventBridge: SyncEventBridge,
-	pluginWrapper: PluginWrapper,
+    private val preferencesRepo: PreferencesRepository,
+    private val clientConnectionRepo: ClientConnectionRepository,
+    private val serverConnectionRepo: ServerConnectionRepository,
+    syncEventBridge: SyncEventBridge,
+    pluginWrapper: PluginWrapper,
 ) : SyncService(
-	pluginSettingsRepo,
-	syncEventBridge,
-	pluginWrapper,
+    syncEventBridge,
+    pluginWrapper,
 ) {
 
-	private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-	override val syncMode = preferencesRepo.preferences.map { it.syncMode }
-		.stateInWhileSubscribed(SyncMode.Client, scope)
+    override val syncMode = preferencesRepo.preferences.map { it.syncMode }
+        .stateInWhileSubscribed(SyncMode.Client, scope)
 
-	override val syncState: StateFlow<SyncState> = syncMode.flatMapLatest {
-		if (it == SyncMode.Client) clientConnectionRepo.connectionState
-		else serverConnectionRepo.runServer()
-	}.stateInWhileSubscribed(ClientSyncState.NoDefaultServer, scope)
+    override val syncState: StateFlow<SyncState> = syncMode.flatMapLatest {
+        if (it == SyncMode.Client) clientConnectionRepo.connectionState
+        else serverConnectionRepo.runServer()
+    }.stateInWhileSubscribed(ClientSyncState.NoDefaultServer, scope)
 
-	override fun toggleSyncMode() {
-		scope.launch {
-			preferencesRepo.setSyncMode(syncMode.first().next())
-		}
-	}
+    override fun toggleSyncMode() {
+        scope.launch {
+            preferencesRepo.setSyncMode(syncMode.first().next())
+        }
+    }
 
-	override fun refresh() {
-		scope.launch {
-			if (syncMode.first() == SyncMode.Client)
-				clientConnectionRepo.refresh()
-			else serverConnectionRepo.refresh()
-		}
-	}
+    override fun refresh() {
+        scope.launch {
+            if (syncMode.first() == SyncMode.Client)
+                clientConnectionRepo.refresh()
+            else serverConnectionRepo.refresh()
+        }
+    }
 
 }

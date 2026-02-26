@@ -15,6 +15,7 @@ import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.SyncEvent
+import com.github.singularity.core.syncservice.plugin.syncEventJson
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.deserialize
@@ -49,185 +50,184 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 class KtorSyncGroupServer(
-	private val syncEventBridge: SyncEventBridge,
-	private val authTokenRepo: AuthTokenDataSource,
-	private val pairRequestRepo: PairRequestDataSource,
-	private val hostedSyncGroupRepo: HostedSyncGroupRepository,
-	private val logger: Logger,
+    private val syncEventBridge: SyncEventBridge,
+    private val authTokenRepo: AuthTokenDataSource,
+    private val pairRequestRepo: PairRequestDataSource,
+    private val hostedSyncGroupRepo: HostedSyncGroupRepository,
+    private val logger: Logger,
 ) : SyncGroupServer {
 
-	private var syncGroupId: String? = null
+    private var syncGroupId: String? = null
 
-	private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNodeModel>>(emptyList())
-	override val connectedNodes = _connectedNodes.asStateFlow()
+    private val _connectedNodes = MutableStateFlow<List<HostedSyncGroupNodeModel>>(emptyList())
+    override val connectedNodes = _connectedNodes.asStateFlow()
 
-	private var serverStatusPlugin = createApplicationPlugin("ServerStatusPlugin") {
-		onCallReceive {
-			if (syncGroupId == null)
-				it.respond(HttpStatusCode.NotImplemented)
-		}
-	}
+    private var serverStatusPlugin = createApplicationPlugin("ServerStatusPlugin") {
+        onCallReceive {
+            if (syncGroupId == null)
+                it.respond(HttpStatusCode.NotImplemented)
+        }
+    }
 
-	init {
-		embeddedServer(
-			factory = CIO,
-			port = SERVER_PORT,
-			host = "0.0.0.0",
-		) {
-			install(serverStatusPlugin)
+    init {
+        embeddedServer(
+            factory = CIO,
+            port = SERVER_PORT,
+            host = "0.0.0.0",
+        ) {
+            install(serverStatusPlugin)
 
-			install(WebSockets) {
-				contentConverter = KotlinxWebsocketSerializationConverter(Json)
-				maxFrameSize = Long.MAX_VALUE
-			}
+            install(WebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(syncEventJson)
+                maxFrameSize = Long.MAX_VALUE
+            }
 
-			install(ContentNegotiation) {
-				json()
-			}
+            install(ContentNegotiation) {
+                json(syncEventJson)
+            }
 
-			install(Authentication.Companion) {
-				bearer("auth") {
-					authenticate {
-						authTokenRepo.getNode(it.token)
-					}
-				}
-			}
+            install(Authentication.Companion) {
+                bearer("auth") {
+                    authenticate {
+                        authTokenRepo.getNode(it.token)
+                    }
+                }
+            }
 
 
-			registerRoutes()
-		}.start(wait = false)
-	}
+            registerRoutes()
+        }.start(wait = false)
+    }
 
-	override fun start(group: HostedSyncGroupModel) {
-		_connectedNodes.value = emptyList()
-		syncGroupId = group.hostedSyncGroupId
-	}
+    override fun start(group: HostedSyncGroupModel) {
+        _connectedNodes.value = emptyList()
+        syncGroupId = group.hostedSyncGroupId
+    }
 
-	override fun stop() {
-		_connectedNodes.value = emptyList()
-		syncGroupId = null
-	}
+    override fun stop() {
+        _connectedNodes.value = emptyList()
+        syncGroupId = null
+    }
 
-	private fun Application.registerRoutes() {
-		routing {
-			// websocket
-			authenticate("auth", strategy = AuthenticationStrategy.Required) {
-				webSocket("/ws/sync") {
-					val converter = converter ?: return@webSocket
+    private fun Application.registerRoutes() {
+        routing {
+            // websocket
+            authenticate("auth", strategy = AuthenticationStrategy.Required) {
+                webSocket("/ws/sync") {
+                    val converter = converter ?: return@webSocket
 
-					val node = call.principal<HostedSyncGroupNodeModel>()
-					if (node == null || node.syncGroupId != syncGroupId) {
-						close(
-							CloseReason(
-								CloseReason.Codes.VIOLATED_POLICY,
-								"authentication failed"
-							)
-						)
-						return@webSocket
-					}
+                    val node = call.principal<HostedSyncGroupNodeModel>()
+                    if (node == null || node.syncGroupId != syncGroupId) {
+                        close(
+                            CloseReason(
+                                CloseReason.Codes.VIOLATED_POLICY,
+                                "authentication failed"
+                            )
+                        )
+                        return@webSocket
+                    }
 
-					_connectedNodes.value += node
+                    _connectedNodes.value += node
 
-					val sendJob = launch {
-						syncEventBridge.outgoingSyncEvents.collect { event ->
-							try {
-								sendSerialized(event)
-							} catch (e: Exception) {
-								logger.e("outgoingEvent error", e)
-							}
-						}
-					}
+                    val sendJob = launch {
+                        syncEventBridge.outgoingSyncEvents.collect { event ->
+                            try {
+                                sendSerialized(event)
+                            } catch (e: Exception) {
+                                logger.e("outgoingEvent error", e)
+                            }
+                        }
+                    }
 
-					val receiveJob = launch {
-						try {
-							incoming.consumeEach { frame ->
-								if (frame !is Frame.Text) return@consumeEach
-								val event = converter.deserialize<SyncEvent>(frame)
-								syncEventBridge.incomingEventCallback(event)
-							}
-						} catch (e: Exception) {
-							logger.e("incomingEvent error", e)
-						}
-					}
+                    val receiveJob = launch {
+                        try {
+                            incoming.consumeEach { frame ->
+                                if (frame !is Frame.Text) return@consumeEach
+                                val event = converter.deserialize<SyncEvent>(frame)
+                                syncEventBridge.incomingEventCallback(event)
+                            }
+                        } catch (e: Exception) {
+                            logger.e("incomingEvent error", e)
+                        }
+                    }
 
-					joinAll(receiveJob, sendJob)
+                    joinAll(receiveJob, sendJob)
 
-				}
-			}
+                }
+            }
 
-			// http
-			contentType(ContentType.Application.Json) {
-				post("/api/pair") {
-					val groupId = syncGroupId ?: return@post
-					val pairRequest = call.receive<PairRequestDto>()
+            // http
+            contentType(ContentType.Application.Json) {
+                post("/api/pair") {
+                    val groupId = syncGroupId ?: return@post
+                    val pairRequest = call.receive<PairRequestDto>()
 
-					if (pairRequest.syncGroupId != groupId) {
-						call.respond(PairResponseDto(false))
-						return@post
-					}
+                    if (pairRequest.syncGroupId != groupId) {
+                        call.respond(PairResponseDto(false))
+                        return@post
+                    }
 
-					val hasRequestedBefore = pairRequestRepo.get(pairRequest.deviceId) != null
-					if (hasRequestedBefore) {
-						call.respond(PairResponseDto(false))
-					}
+                    val hasRequestedBefore = pairRequestRepo.get(pairRequest.deviceId) != null
+                    if (hasRequestedBefore) {
+                        call.respond(PairResponseDto(false))
+                    }
 
-					val hasPairedBefore = hostedSyncGroupRepo.hasPairedBefore(
-						pairRequest.deviceId,
-						pairRequest.syncGroupId
-					)
-					if (hasPairedBefore) {
-						hostedSyncGroupRepo.delete(pairRequest.syncGroupId, pairRequest.deviceId)
-					}
-					
-					val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
-					pairRequestRepo.add(requestId, pairRequest)
+                    val hasPairedBefore = hostedSyncGroupRepo.hasPairedBefore(
+                        pairRequest.deviceId,
+                        pairRequest.syncGroupId
+                    )
+                    if (hasPairedBefore) {
+                        hostedSyncGroupRepo.delete(pairRequest.syncGroupId, pairRequest.deviceId)
+                    }
 
-					call.respond(PairResponseDto(true, requestId))
+                    val requestId = Random.nextInt(1000000000, Int.MAX_VALUE)
+                    pairRequestRepo.add(requestId, pairRequest)
 
-				}
+                    call.respond(PairResponseDto(true, requestId))
 
-				get("/api/pairCheck") {
-					val groupId = syncGroupId ?: return@get
-					val request = call.receive<PairCheckRequestDto>()
-					val pairCheck = pairRequestRepo.get(request.pairRequestId)
+                }
 
-					if (groupId != request.syncGroupId || pairCheck == null) {
-						call.respond(PairCheckResponseDto(PairStatus.Error))
-						return@get
-					}
+                get("/api/pairCheck") {
+                    val groupId = syncGroupId ?: return@get
+                    val request = call.receive<PairCheckRequestDto>()
+                    val pairCheck = pairRequestRepo.get(request.pairRequestId)
 
-					if (pairCheck.status != PairStatus.Approved) {
-						call.respond(PairCheckResponseDto(pairCheck.status))
+                    if (groupId != request.syncGroupId || pairCheck == null) {
+                        call.respond(PairCheckResponseDto(PairStatus.Error))
+                        return@get
+                    }
 
-						if (pairCheck.status == PairStatus.Rejected)
-							pairRequestRepo.remove(pairCheck.requestId)
+                    if (pairCheck.status != PairStatus.Approved) {
+                        call.respond(PairCheckResponseDto(pairCheck.status))
 
-						return@get
-					}
+                        if (pairCheck.status == PairStatus.Rejected)
+                            pairRequestRepo.remove(pairCheck.requestId)
 
-					val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
+                        return@get
+                    }
 
-					if (hostedNode == null) {
-						call.respond(PairCheckResponseDto(PairStatus.Error))
-						return@get
-					}
+                    val hostedNode = authTokenRepo.generateAuthToken(pairCheck.node)
 
-					pairRequestRepo.remove(request.pairRequestId)
+                    if (hostedNode == null) {
+                        call.respond(PairCheckResponseDto(PairStatus.Error))
+                        return@get
+                    }
 
-					call.respond(
-						PairCheckResponseDto(
-							pairStatus = pairCheck.status,
-							node = hostedNode,
-						)
-					)
+                    pairRequestRepo.remove(request.pairRequestId)
 
-				}
-			}
-		}
-	}
+                    call.respond(
+                        PairCheckResponseDto(
+                            pairStatus = pairCheck.status,
+                            node = hostedNode,
+                        )
+                    )
+
+                }
+            }
+        }
+    }
 
 }

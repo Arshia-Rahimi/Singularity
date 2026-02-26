@@ -12,6 +12,7 @@ import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.util.Success
 import com.github.singularity.core.syncservice.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.SyncEvent
+import com.github.singularity.core.syncservice.plugin.syncEventJson
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -36,50 +37,48 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 class KtorSyncRemoteDataSource(
-	private val syncEventBridge: SyncEventBridge,
-	private val logger: Logger,
+    private val syncEventBridge: SyncEventBridge,
+    private val logger: Logger,
 ) : SyncRemoteDataSource {
 
     private var client = HttpClient(CIO) {
-	    install(WebSockets.Plugin) {
-		    contentConverter =
-			    KotlinxWebsocketSerializationConverter(Json.Default)
-		    maxFrameSize = Long.MAX_VALUE
-	    }
+        install(WebSockets.Plugin) {
+            contentConverter = KotlinxWebsocketSerializationConverter(syncEventJson)
+            maxFrameSize = Long.MAX_VALUE
+        }
 
-	    install(ContentNegotiation) {
-		    json()
-	    }
+        install(ContentNegotiation) {
+            json(syncEventJson)
+        }
     }
 
-	override fun connect(server: LocalServerDto, token: String) = flow {
-	    client.webSocket(
-		    host = server.ip,
-		    port = SERVER_PORT,
-		    path = "/ws/sync",
-		    request = {
-			    header(HttpHeaders.Authorization, "Bearer $token")
-		    },
-	    ) {
-		    emit(Success)
+    override fun connect(server: LocalServerDto, token: String) = flow {
+        client.webSocket(
+            host = server.ip,
+            port = SERVER_PORT,
+            path = "/ws/sync",
+            request = {
+                header(HttpHeaders.Authorization, "Bearer $token")
+            },
+        ) {
+            emit(Success)
 
-		    val converter = converter ?: run {
-			    close()
-			    return@webSocket
-		    }
+            val converter = converter ?: run {
+                close()
+                return@webSocket
+            }
 
-		    val sendJob = launch {
-			    syncEventBridge.outgoingSyncEvents.collect { event ->
+            val sendJob = launch {
+                syncEventBridge.outgoingSyncEvents.collect { event ->
                     try {
                         sendSerialized(event)
                     } catch (e: Exception) {
-	                    logger.e("outgoingEvent error", e)
+                        logger.e("outgoingEvent error", e)
                     }
-			    }
-		    }
+                }
+            }
 
             val receiveJob = launch {
                 try {
@@ -89,39 +88,39 @@ class KtorSyncRemoteDataSource(
                         syncEventBridge.incomingEventCallback(event)
                     }
                 } catch (e: Exception) {
-	                logger.e("incomingEvent error", e)
+                    logger.e("incomingEvent error", e)
                 }
             }
 
             joinAll(receiveJob, sendJob)
 
-	    }
+        }
     }
 
-	override suspend fun sendPairRequest(server: LocalServerDto, currentDevice: NodeDto) =
+    override suspend fun sendPairRequest(server: LocalServerDto, currentDevice: NodeDto) =
         client.post("http://${server.ip}:${SERVER_PORT}/api/pair") {
             contentType(ContentType.Application.Json)
             setBody(
-	            PairRequestDto(
-		            deviceName = currentDevice.deviceName,
-		            deviceId = currentDevice.deviceId,
-		            deviceOs = currentDevice.deviceOs,
-		            syncGroupName = server.syncGroupName,
-		            syncGroupId = server.syncGroupId,
-	            )
+                PairRequestDto(
+                    deviceName = currentDevice.deviceName,
+                    deviceId = currentDevice.deviceId,
+                    deviceOs = currentDevice.deviceOs,
+                    syncGroupName = server.syncGroupName,
+                    syncGroupId = server.syncGroupId,
+                )
             )
         }.body<PairResponseDto>()
 
     override suspend fun sendPairCheckRequest(
-	    server: LocalServerDto,
-	    pairRequestId: Int
+        server: LocalServerDto,
+        pairRequestId: Int
     ) = client.get("http://${server.ip}:${SERVER_PORT}/api/pairCheck") {
         contentType(ContentType.Application.Json)
         setBody(
-	        PairCheckRequestDto(
-		        pairRequestId = pairRequestId,
-		        syncGroupId = server.syncGroupId,
-	        )
+            PairCheckRequestDto(
+                pairRequestId = pairRequestId,
+                syncGroupId = server.syncGroupId,
+            )
         )
     }.body<PairCheckResponseDto>()
 
