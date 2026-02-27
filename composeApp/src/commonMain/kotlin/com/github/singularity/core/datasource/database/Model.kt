@@ -1,7 +1,7 @@
 package com.github.singularity.core.datasource.database
 
 import com.github.singularity.core.shared.AppTheme
-import com.github.singularity.core.shared.PluginOptions
+import com.github.singularity.core.shared.PluginSettings
 import com.github.singularity.core.shared.SyncMode
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
@@ -47,5 +47,5 @@ data class HostedSyncGroupModel(
 @Serializable
 data class PluginSettingsModel(
 	val name: String,
-	val options: PluginOptions,
+	val options: PluginSettings,
 )

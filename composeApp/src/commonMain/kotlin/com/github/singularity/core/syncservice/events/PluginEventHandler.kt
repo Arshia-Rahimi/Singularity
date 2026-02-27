@@ -1,7 +1,6 @@
-package com.github.singularity.core.syncservice.plugin
+package com.github.singularity.core.syncservice.events
 
-import com.github.singularity.core.syncservice.events.SyncEvent
-import com.github.singularity.core.syncservice.events.SyncEventBridge
+import com.github.singularity.core.syncservice.plugin.Plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -17,7 +16,6 @@ value class PluginWrapper(
 ) {
     fun handleEvent(event: SyncEvent) = plugins.forEach { it.handleEvent(event) }
 }
-
 
 class PluginEventHandlerImpl(
     syncEventBridge: SyncEventBridge,

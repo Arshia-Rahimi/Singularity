@@ -1,8 +1,8 @@
-import com.github.singularity.core.shared.PluginOptions;
+import com.github.singularity.core.shared.PluginSettings;
 
 CREATE TABLE Plugins (
     name TEXT PRIMARY KEY NOT NULL UNIQUE,
-    options TEXT AS PluginOptions NOT NULL
+    options TEXT AS PluginSettings NOT NULL
 );
 
 index:

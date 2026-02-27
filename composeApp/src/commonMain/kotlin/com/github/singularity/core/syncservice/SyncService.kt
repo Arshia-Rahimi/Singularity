@@ -1,10 +1,10 @@
 package com.github.singularity.core.syncservice
 
 import com.github.singularity.core.shared.SyncMode
+import com.github.singularity.core.syncservice.events.PluginEventHandler
+import com.github.singularity.core.syncservice.events.PluginEventHandlerImpl
+import com.github.singularity.core.syncservice.events.PluginWrapper
 import com.github.singularity.core.syncservice.events.SyncEventBridge
-import com.github.singularity.core.syncservice.plugin.PluginEventHandler
-import com.github.singularity.core.syncservice.plugin.PluginEventHandlerImpl
-import com.github.singularity.core.syncservice.plugin.PluginWrapper
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class SyncService(

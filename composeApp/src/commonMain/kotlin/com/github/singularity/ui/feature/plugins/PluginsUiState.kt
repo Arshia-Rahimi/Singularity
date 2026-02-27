@@ -1,7 +1,7 @@
 package com.github.singularity.ui.feature.plugins
 
 import com.github.singularity.core.datasource.database.PluginSettingsModel
-import com.github.singularity.core.shared.PluginOptions
+import com.github.singularity.core.shared.PluginSettings
 
 fun PluginSettingsModel.toPlugin() = Plugin(
     name = name,
@@ -10,7 +10,7 @@ fun PluginSettingsModel.toPlugin() = Plugin(
 
 data class Plugin(
     val name: String,
-    val options: PluginOptions,
+    val options: PluginSettings,
 ) {
     val isEnabled: Boolean
         get() = options.options.firstOrNull { it.name == "isEnabled" }?.getValue<Boolean>() ?: false
