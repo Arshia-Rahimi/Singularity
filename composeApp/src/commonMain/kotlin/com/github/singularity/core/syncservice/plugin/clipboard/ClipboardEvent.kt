@@ -1,6 +1,6 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
-import com.github.singularity.core.syncservice.plugin.SyncEvent
+import com.github.singularity.core.syncservice.events.SyncEvent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

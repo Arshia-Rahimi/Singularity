@@ -1,4 +1,4 @@
-import com.github.singularity.core.syncservice.plugin.PluginOptions;
+import com.github.singularity.core.shared.PluginOptions;
 
 CREATE TABLE Plugins (
     name TEXT PRIMARY KEY NOT NULL UNIQUE,
@@ -8,12 +8,6 @@ CREATE TABLE Plugins (
 index:
 SELECT * FROM Plugins;
 
-getPlugin:
-SELECT *
-    FROM Plugins
-    WHERE name == ?
-    LIMIT 1;
-
 insert:
 INSERT INTO Plugins (name, options)
     VALUES (?, ?);
@@ -22,7 +16,3 @@ update:
 UPDATE Plugins
     SET options = ?
     WHERE name == ?;
-
-delete:
-DELETE FROM Plugins
-    WHERE name = ?;

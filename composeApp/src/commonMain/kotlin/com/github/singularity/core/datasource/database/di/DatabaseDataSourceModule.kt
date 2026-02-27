@@ -9,7 +9,7 @@ import com.github.singularity.core.datasource.database.PreferencesLocalDataSourc
 import com.github.singularity.core.datasource.database.impl.SqlDelightJoinedSyncGroupsLocalDataSource
 import com.github.singularity.core.datasource.database.impl.SqlDelightPluginSettingsDataSource
 import com.github.singularity.core.datasource.database.impl.SqlDelightPreferencesLocalDataSource
-import com.github.singularity.core.datasource.database.impl.pluginOptionsAdapter
+import com.github.singularity.core.datasource.database.impl.pluginSettingsAdapter
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -22,7 +22,7 @@ fun Module.databaseDataSourceModule() {
     single {
         SingularityDatabase(
             driver = get(),
-            PluginsAdapter = Plugins.Adapter(pluginOptionsAdapter),
+            PluginsAdapter = Plugins.Adapter(pluginSettingsAdapter),
         )
     }
     singleOf(::SqlDelightJoinedSyncGroupsLocalDataSource) bind JoinedSyncGroupsLocalDataSource::class

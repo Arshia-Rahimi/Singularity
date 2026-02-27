@@ -11,7 +11,7 @@ class PluginsViewModel(
     private val pluginSettingsRepo: PluginSettingsRepository,
 ) : ViewModel() {
 
-    val uiState = pluginSettingsRepo.pluginSettingsModel
+    val uiState = pluginSettingsRepo.pluginSettings
         .map { pluginSettings ->
             PluginsUiState(
                 plugins = pluginSettings.sortedBy { pluginSettings -> pluginSettings.name }

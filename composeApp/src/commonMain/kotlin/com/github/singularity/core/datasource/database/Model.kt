@@ -1,8 +1,8 @@
 package com.github.singularity.core.datasource.database
 
 import com.github.singularity.core.shared.AppTheme
+import com.github.singularity.core.shared.PluginOptions
 import com.github.singularity.core.shared.SyncMode
-import com.github.singularity.core.syncservice.plugin.PluginOptions
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -15,12 +15,6 @@ data class PreferencesModel(
 	val appSecret: ByteArray = byteArrayOf(),
 	val syncMode: SyncMode = SyncMode.Client,
 	val scale: Float = 1f,
-)
-
-@Serializable
-data class PluginSettingsModel(
-    val name: String,
-    val options: PluginOptions,
 )
 
 data class JoinedSyncGroupModel(
@@ -47,4 +41,11 @@ data class HostedSyncGroupModel(
 	val isDefault: Boolean = false,
 	val hostedSyncGroupId: String = Uuid.random().toString(),
 	val nodes: List<HostedSyncGroupNodeModel> = emptyList(),
+)
+
+
+@Serializable
+data class PluginSettingsModel(
+	val name: String,
+	val options: PluginOptions,
 )

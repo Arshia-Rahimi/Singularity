@@ -10,9 +10,9 @@ import com.github.singularity.core.datasource.network.SyncRemoteDataSource
 import com.github.singularity.core.log.Logger
 import com.github.singularity.core.shared.SERVER_PORT
 import com.github.singularity.core.shared.util.Success
-import com.github.singularity.core.syncservice.SyncEventBridge
-import com.github.singularity.core.syncservice.plugin.SyncEvent
-import com.github.singularity.core.syncservice.plugin.syncEventJson
+import com.github.singularity.core.syncservice.events.SyncEvent
+import com.github.singularity.core.syncservice.events.SyncEventBridge
+import com.github.singularity.core.syncservice.events.syncEventJson
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO

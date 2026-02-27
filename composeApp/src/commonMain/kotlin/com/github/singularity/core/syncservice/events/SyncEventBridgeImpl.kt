@@ -1,6 +1,5 @@
-package com.github.singularity.core.syncservice.plugin
+package com.github.singularity.core.syncservice.events
 
-import com.github.singularity.core.syncservice.SyncEventBridge
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 

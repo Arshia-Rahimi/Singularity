@@ -1,8 +1,8 @@
 package com.github.singularity.core.syncservice.plugin.clipboard
 
-import com.github.singularity.core.syncservice.SyncEventBridge
+import com.github.singularity.core.syncservice.events.SyncEvent
+import com.github.singularity.core.syncservice.events.SyncEventBridge
 import com.github.singularity.core.syncservice.plugin.Plugin
-import com.github.singularity.core.syncservice.plugin.SyncEvent
 import io.ktor.util.reflect.instanceOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,10 +15,6 @@ class ClipboardPlugin(
     private val platformClipboardPlugin: PlatformClipboardPlugin,
     syncEventBridge: SyncEventBridge,
 ) : Plugin {
-
-    companion object {
-        const val PLUGIN_NAME = "Clipboard"
-    }
 
     override val eventClass = ClipboardEvent::class
 

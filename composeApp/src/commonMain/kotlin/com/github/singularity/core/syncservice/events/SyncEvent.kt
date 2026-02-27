@@ -1,4 +1,4 @@
-package com.github.singularity.core.syncservice.plugin
+package com.github.singularity.core.syncservice.events
 
 import com.github.singularity.core.syncservice.plugin.clipboard.ClipboardEvent
 import kotlinx.serialization.Polymorphic

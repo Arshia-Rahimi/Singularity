@@ -4,7 +4,6 @@ import app.cash.sqldelight.coroutines.asFlow
 import com.github.singularity.core.database.SingularityDatabase
 import com.github.singularity.core.datasource.database.PluginSettingsDataSource
 import com.github.singularity.core.datasource.database.PluginSettingsModel
-import com.github.singularity.core.syncservice.plugin.PluginOptions
 import kotlinx.coroutines.flow.map
 
 class SqlDelightPluginSettingsDataSource(
@@ -13,43 +12,21 @@ class SqlDelightPluginSettingsDataSource(
 
     private val queries = db.pluginsQueries
 
-    override val pluginSettingsModel = queries.index()
+    override val pluginSettings = queries.index()
         .asFlow()
         .map { query ->
-            query.executeAsList()
-                .map {
-                    PluginSettingsModel(
-                        name = it.name,
-                        options = it.options,
-                    )
-                }
+            query.executeAsList().map { PluginSettingsModel(it.name, it.options) }
         }
 
-    override suspend fun insert(vararg pluginSettingsModel: PluginSettingsModel) {
+    override suspend fun insert(vararg pluginSettings: PluginSettingsModel) {
         queries.transaction {
-            pluginSettingsModel.forEach {
-                queries.insert(
-                    name = it.name,
-                    options = it.options,
-                )
-            }
+            pluginSettings.forEach { queries.insert(it.name, it.options) }
         }
     }
 
-    override suspend fun update(vararg plugin: Pair<String, PluginOptions>) {
+    override suspend fun update(vararg pluginSettings: PluginSettingsModel) {
         queries.transaction {
-            plugin.forEach {
-                queries.update(
-                    name = it.first,
-                    options = it.second,
-                )
-            }
-        }
-    }
-
-    override suspend fun delete(vararg pluginName: String) {
-        queries.transaction {
-            pluginName.forEach(queries::delete)
+            pluginSettings.forEach { queries.update(it.options, it.name) }
         }
     }
 
